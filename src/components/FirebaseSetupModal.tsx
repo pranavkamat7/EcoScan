@@ -210,3 +210,4 @@ export const FirebaseSetupModal: React.FC<FirebaseSetupModalProps> = ({ isOpen, 
     </div>
   );
 };
+

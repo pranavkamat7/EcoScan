@@ -73,3 +73,4 @@ if (config && config.apiKey && !config.apiKey.includes('YOUR_')) {
 export const isFirebaseConfigured = Boolean(app && auth && db);
 
 export { app, auth, db, storage, googleProvider };
+

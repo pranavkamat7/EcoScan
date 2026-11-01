@@ -81,3 +81,4 @@ export async function saveCleanVerificationCloud(
   const updated = current.map((s) => (s.id === spotId ? { ...s, status: 'cleaned' as const, verification } : s));
   saveSpots(updated);
 }
+
