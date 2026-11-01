@@ -72,5 +72,17 @@ export interface Badge {
   unlockedAt?: string;
 }
 
-export type FeedFilter = 'all' | 'needs_cleaning' | 'cleaned' | 'nearby';
+export interface LeaderboardItem {
+  rank: number;
+  id: string;
+  name: string;
+  handle: string;
+  avatar: string;
+  points: number;
+  spotsCleaned: number;
+  wasteKg: number;
+  badge: string;
+  isCurrentUser?: boolean;
+}
 
+export type FeedFilter = 'all' | 'needs_cleaning' | 'cleaned' | 'nearby';

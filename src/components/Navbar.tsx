@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Sparkles,
   Map,
   Compass,
   Trophy,
@@ -8,8 +7,13 @@ import {
   Plus,
   CloudUpload,
   RotateCcw,
+  LogIn,
+  LogOut,
+  Database,
+  ChevronDown,
 } from 'lucide-react';
-import { UserProfile } from '../types';
+import type { UserProfile } from '../types';
+import { useAuth } from '../firebase/authContext';
 
 export type NavTab = 'feed' | 'map' | 'leaderboard' | 'rewards';
 
@@ -18,6 +22,8 @@ interface NavbarProps {
   onTabChange: (tab: NavTab) => void;
   onOpenReportModal: () => void;
   onOpenDeployGuide: () => void;
+  onOpenAuthModal: () => void;
+  onOpenFirebaseSetup: () => void;
   onResetDemo: () => void;
   currentUser: UserProfile;
 }
@@ -27,9 +33,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   onTabChange,
   onOpenReportModal,
   onOpenDeployGuide,
+  onOpenAuthModal,
+  onOpenFirebaseSetup,
   onResetDemo,
   currentUser,
 }) => {
+  const { user, isFirebaseActive, logout } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
   return (
     <>
       {/* Top Navbar */}
@@ -47,10 +58,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <div>
                 <span className="font-bold text-base sm:text-lg text-[#181A19] tracking-tight block">
-                  SpotClean
+                  GarbageMedia
                 </span>
                 <span className="text-[10px] text-[#7E8681] hidden sm:block uppercase tracking-wider font-mono">
-                  Civic Cleanup & Before/After Proofs
+                  Civic Cleanups & Before/After Proofs
                 </span>
               </div>
             </button>
@@ -108,44 +119,108 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </nav>
 
-          {/* Right Actions: Points Pill, Deploy Guide, and Primary CTA */}
+          {/* Right Actions: Firebase Status, Auth / Points, Deploy, CTA */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Firebase Pill / Config */}
+            <button
+              type="button"
+              onClick={onOpenFirebaseSetup}
+              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md border transition-colors ${
+                isFirebaseActive
+                  ? 'bg-[#E7EFEA] text-[#233F2E] border-[#2D513B]/30'
+                  : 'bg-[#F2F2EC] text-[#535A55] border-[#E3E3DC] hover:text-[#181A19]'
+              }`}
+              title="Firebase status & setup"
+            >
+              <Database className="w-3 h-3 text-[#2D513B]" />
+              <span>{isFirebaseActive ? 'Firebase Live' : 'Connect Firebase'}</span>
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isFirebaseActive ? 'bg-[#2D513B]' : 'bg-amber-500'
+                }`}
+              />
+            </button>
+
             {/* Deploy to Render Free Guide button */}
             <button
               type="button"
               onClick={onOpenDeployGuide}
-              className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium text-[#535A55] hover:text-[#181A19] bg-[#F2F2EC] hover:bg-[#E7EFEA] border border-[#E3E3DC] rounded-md transition-colors"
+              className="hidden xl:flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-[#535A55] hover:text-[#181A19] bg-[#F2F2EC] hover:bg-[#E7EFEA] border border-[#E3E3DC] rounded-md transition-colors"
               title="How to host for free on Render"
             >
               <CloudUpload className="w-3.5 h-3.5 text-[#2D513B]" />
-              <span>Deploy on Render (Free)</span>
+              <span>Deploy</span>
             </button>
 
-            {/* Reset Demo Data */}
+            {/* Reset Data */}
             <button
               type="button"
               onClick={onResetDemo}
               className="p-1.5 rounded-md text-[#7E8681] hover:text-[#181A19] hover:bg-[#F2F2EC] transition-colors"
-              title="Reset Demo Data"
+              title="Reset Local Data"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
 
-            {/* User Points Badge */}
-            <button
-              type="button"
-              onClick={() => onTabChange('rewards')}
-              className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F2F7F4] border border-[#4D8262]/30 hover:border-[#2D513B] transition-colors"
-            >
-              <img
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-6 h-6 rounded-full object-cover border border-[#4D8262]"
-              />
-              <span className="font-mono font-bold text-xs text-[#2D513B]">
-                {currentUser.points} pts
-              </span>
-            </button>
+            {/* User Account / Auth Button */}
+            {user ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#F2F7F4] border border-[#4D8262]/30 hover:border-[#2D513B] transition-colors"
+                >
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="w-6 h-6 rounded-full object-cover border border-[#4D8262]"
+                  />
+                  <span className="font-mono font-bold text-xs text-[#2D513B]">
+                    {currentUser.points} pts
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-[#535A55]" />
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-1 w-48 bg-white border border-[#E3E3DC] rounded-md shadow-modal p-2 z-50 text-xs">
+                    <div className="px-2 py-1.5 border-b border-[#F0EFEA] mb-1">
+                      <p className="font-semibold text-[#181A19] truncate">{currentUser.name}</p>
+                      <p className="text-[10px] text-[#7E8681] truncate">{currentUser.handle}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onTabChange('rewards');
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full text-left px-2 py-1.5 rounded hover:bg-[#F9F9F6] text-[#2C302D]"
+                    >
+                      View Rewards & Badges
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full text-left px-2 py-1.5 rounded hover:bg-[#FDEEEA] text-[#BA4A2B] flex items-center gap-1.5 mt-1"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={onOpenAuthModal}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[#E3E3DC] bg-white hover:bg-[#F9F9F6] text-xs font-medium text-[#181A19] transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5 text-[#2D513B]" />
+                <span className="hidden sm:inline">Sign In</span>
+              </button>
+            )}
 
             {/* Primary Action Button: Report Dirty Spot */}
             <button
@@ -220,4 +295,3 @@ export const Navbar: React.FC<NavbarProps> = ({
     </>
   );
 };
-

@@ -1,4 +1,4 @@
-import { Spot, UserProfile } from '../types';
+import { Spot, UserProfile, LeaderboardItem } from '../types';
 import { INITIAL_SPOTS, INITIAL_USER, INITIAL_LEADERBOARD } from '../data/initialSpots';
 
 const SPOTS_STORAGE_KEY = 'garbagemedia_spots_v2';
@@ -47,7 +47,7 @@ export function saveUserProfile(user: UserProfile): void {
   }
 }
 
-export function loadLeaderboard() {
+export function loadLeaderboard(): LeaderboardItem[] {
   try {
     const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
     if (raw) {
@@ -59,7 +59,7 @@ export function loadLeaderboard() {
   return INITIAL_LEADERBOARD;
 }
 
-export function saveLeaderboard(leaderboard: typeof INITIAL_LEADERBOARD) {
+export function saveLeaderboard(leaderboard: LeaderboardItem[]) {
   try {
     localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(leaderboard));
   } catch (err) {
@@ -67,7 +67,7 @@ export function saveLeaderboard(leaderboard: typeof INITIAL_LEADERBOARD) {
   }
 }
 
-export function resetToDemoData(): { spots: Spot[]; user: UserProfile; leaderboard: typeof INITIAL_LEADERBOARD } {
+export function resetToDemoData(): { spots: Spot[]; user: UserProfile; leaderboard: LeaderboardItem[] } {
   localStorage.removeItem(SPOTS_STORAGE_KEY);
   localStorage.removeItem(USER_STORAGE_KEY);
   localStorage.removeItem(LEADERBOARD_STORAGE_KEY);

@@ -1,14 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   loadSpots,
   saveSpots,
-  loadUserProfile,
-  saveUserProfile,
   loadLeaderboard,
   saveLeaderboard,
   resetToDemoData,
 } from './utils/storage';
-import type { FeedFilter, Spot, CleanVerification, SpotComment } from './types';
+import type { FeedFilter, Spot, CleanVerification, SpotComment, LeaderboardItem } from './types';
 import { Navbar, type NavTab } from './components/Navbar';
 import { SpotCard } from './components/SpotCard';
 import { FilterTabs } from './components/FilterTabs';
@@ -18,7 +16,10 @@ import { MapView } from './components/MapView';
 import { Leaderboard } from './components/Leaderboard';
 import { RewardsView } from './components/RewardsView';
 import { RenderDeployGuide } from './components/RenderDeployGuide';
-import { getUserLevel } from './utils/rewards';
+import { AuthModal } from './components/AuthModal';
+import { FirebaseSetupModal } from './components/FirebaseSetupModal';
+import { AuthProvider, useAuth } from './firebase/authContext';
+import { subscribeToSpots, saveSpotCloud, saveCleanVerificationCloud } from './firebase/spotsService';
 import {
   Sparkles,
   AlertTriangle,
@@ -26,9 +27,10 @@ import {
   Info,
 } from 'lucide-react';
 
-export function App() {
+function GarbageMediaApp() {
+  const { profile: currentUser, awardCleanupReward, recordSpotReported } = useAuth();
+
   const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
-  const [currentUser, setCurrentUser] = useState(() => loadUserProfile());
   const [leaderboard, setLeaderboard] = useState(() => loadLeaderboard());
 
   const [currentTab, setCurrentTab] = useState<NavTab>('feed');
@@ -38,7 +40,65 @@ export function App() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [activeCleanSpot, setActiveCleanSpot] = useState<Spot | null>(null);
   const [isDeployGuideOpen, setIsDeployGuideOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isFirebaseSetupOpen, setIsFirebaseSetupOpen] = useState(false);
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
+
+  // Subscribe to real-time Firestore spots (with local storage fallback)
+  useEffect(() => {
+    const unsubscribe = subscribeToSpots((updatedSpots) => {
+      setSpots(updatedSpots);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Update leaderboard when current user profile changes
+  useEffect(() => {
+    setLeaderboard((prev: LeaderboardItem[]) => {
+      const updated = prev.map((item: LeaderboardItem) => {
+        if (item.id === currentUser.id || item.isCurrentUser) {
+          return {
+            ...item,
+            id: currentUser.id,
+            name: `${currentUser.name} (You)`,
+            handle: currentUser.handle,
+            avatar: currentUser.avatar,
+            points: currentUser.points,
+            spotsCleaned: currentUser.spotsCleaned,
+            wasteKg: currentUser.wasteClearedKg,
+            badge: currentUser.level,
+            isCurrentUser: true,
+          };
+        }
+        return item;
+      });
+
+      // If user isn't in leaderboard yet, add them
+      const exists = updated.some((i: LeaderboardItem) => i.id === currentUser.id || i.isCurrentUser);
+      if (!exists) {
+        updated.push({
+          rank: updated.length + 1,
+          id: currentUser.id,
+          name: `${currentUser.name} (You)`,
+          handle: currentUser.handle,
+          avatar: currentUser.avatar,
+          points: currentUser.points,
+          spotsCleaned: currentUser.spotsCleaned,
+          wasteKg: currentUser.wasteClearedKg,
+          badge: currentUser.level,
+          isCurrentUser: true,
+        });
+      }
+
+      updated.sort((a: LeaderboardItem, b: LeaderboardItem) => b.points - a.points);
+      updated.forEach((item: LeaderboardItem, idx: number) => {
+        item.rank = idx + 1;
+      });
+
+      saveLeaderboard(updated);
+      return updated;
+    });
+  }, [currentUser]);
 
   // Statistics calculation
   const stats = useMemo(() => {
@@ -68,7 +128,6 @@ export function App() {
       case 'needs_cleaning':
         return spots.filter((s) => s.status === 'needs_cleaning');
       case 'nearby':
-        // For demonstration, list needs_cleaning first then cleaned
         return [...spots].sort((a) => (a.status === 'needs_cleaning' ? -1 : 1));
       default:
         return spots;
@@ -76,7 +135,7 @@ export function App() {
   }, [spots, feedFilter]);
 
   // Handlers
-  const handleReportSubmit = (
+  const handleReportSubmit = async (
     newSpotData: Omit<Spot, 'id' | 'createdAt' | 'likesCount' | 'comments' | 'status'>
   ) => {
     const newSpot: Spot = {
@@ -88,72 +147,18 @@ export function App() {
       comments: [],
     };
 
-    const updatedSpots = [newSpot, ...spots];
-    setSpots(updatedSpots);
-    saveSpots(updatedSpots);
-
-    // Update user stats
-    const updatedUser = {
-      ...currentUser,
-      spotsReported: currentUser.spotsReported + 1,
-    };
-    setCurrentUser(updatedUser);
-    saveUserProfile(updatedUser);
+    // Save to Firestore and local state
+    await saveSpotCloud(newSpot);
+    await recordSpotReported();
   };
 
-  const handleCleanSubmit = (spotId: string, verification: CleanVerification) => {
-    const updatedSpots = spots.map((s) => {
-      if (s.id === spotId) {
-        return {
-          ...s,
-          status: 'cleaned' as const,
-          verification,
-        };
-      }
-      return s;
-    });
+  const handleCleanSubmit = async (spotId: string, verification: CleanVerification) => {
+    const targetSpot = spots.find((s) => s.id === spotId);
+    const wasteKg = targetSpot?.estimatedWasteKg || 12;
 
-    setSpots(updatedSpots);
-    saveSpots(updatedSpots);
-
-    // Update current user points & level
-    const newPoints = currentUser.points + verification.pointsEarned;
-    const newLevelInfo = getUserLevel(newPoints);
-    const updatedUser = {
-      ...currentUser,
-      points: newPoints,
-      level: newLevelInfo.levelTitle,
-      spotsCleaned: currentUser.spotsCleaned + 1,
-      wasteClearedKg:
-        currentUser.wasteClearedKg +
-        (spots.find((s) => s.id === spotId)?.estimatedWasteKg || 12),
-    };
-
-    setCurrentUser(updatedUser);
-    saveUserProfile(updatedUser);
-
-    // Update leaderboard
-    const updatedLeaderboard = leaderboard.map((item: typeof leaderboard[number]) => {
-      if (item.id === currentUser.id || ('isCurrentUser' in item && item.isCurrentUser)) {
-        return {
-          ...item,
-          points: newPoints,
-          spotsCleaned: updatedUser.spotsCleaned,
-          wasteKg: updatedUser.wasteClearedKg,
-          badge: newLevelInfo.levelTitle,
-        };
-      }
-      return item;
-    });
-
-    // Re-sort leaderboard by points
-    updatedLeaderboard.sort((a: typeof leaderboard[number], b: typeof leaderboard[number]) => b.points - a.points);
-    updatedLeaderboard.forEach((item: typeof leaderboard[number], idx: number) => {
-      item.rank = idx + 1;
-    });
-
-    setLeaderboard(updatedLeaderboard);
-    saveLeaderboard(updatedLeaderboard);
+    // Save to Firestore and update user stats in cloud
+    await saveCleanVerificationCloud(spotId, verification);
+    await awardCleanupReward(verification.pointsEarned, wasteKg);
   };
 
   const handleLikeToggle = (spotId: string) => {
@@ -204,7 +209,6 @@ export function App() {
     if (window.confirm('Reset all demo data back to default initial state?')) {
       const reset = resetToDemoData();
       setSpots(reset.spots);
-      setCurrentUser(reset.user);
       setLeaderboard(reset.leaderboard);
     }
   };
@@ -220,6 +224,8 @@ export function App() {
         }}
         onOpenReportModal={() => setIsReportModalOpen(true)}
         onOpenDeployGuide={() => setIsDeployGuideOpen(true)}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onOpenFirebaseSetup={() => setIsFirebaseSetupOpen(true)}
         onResetDemo={handleReset}
         currentUser={currentUser}
       />
@@ -338,7 +344,7 @@ export function App() {
 
               {/* Right Column: Context Sidebar */}
               <aside className="lg:col-span-4 space-y-5 hidden lg:block">
-                {/* How SpotClean Works Card */}
+                {/* How GarbageMedia Works Card */}
                 <div className="bg-white p-5 rounded-lg border border-[#E3E3DC] shadow-subtle">
                   <h3 className="font-semibold text-xs uppercase tracking-wider text-[#181A19] mb-3 flex items-center gap-1.5">
                     <Info className="w-4 h-4 text-[#2D513B]" />
@@ -519,7 +525,31 @@ export function App() {
         isOpen={isDeployGuideOpen}
         onClose={() => setIsDeployGuideOpen(false)}
       />
+
+      {/* MODAL 4: Firebase Auth (Sign In / Sign Up / Google Login) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onOpenFirebaseConfig={() => {
+          setIsAuthModalOpen(false);
+          setIsFirebaseSetupOpen(true);
+        }}
+      />
+
+      {/* MODAL 5: Firebase Credentials Setup */}
+      <FirebaseSetupModal
+        isOpen={isFirebaseSetupOpen}
+        onClose={() => setIsFirebaseSetupOpen(false)}
+      />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <GarbageMediaApp />
+    </AuthProvider>
   );
 }
 

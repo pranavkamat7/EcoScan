@@ -1,42 +1,64 @@
-# 🌱 SpotClean — Civic Cleanup & Before/After Proofs Platform
+# 🌱 GarbageMedia — Civic Cleanup & Before/After Proofs Platform
 
 A responsive, community-driven civic platform where neighbors report dirty spots with live GPS, clean them up, verify on-site proximity, and automatically generate interactive **Before & After** comparison sliders while earning reward points.
 
-Designed with an honest, utilitarian, editorial aesthetic — **no neon gradients, no glassy blur effects, no generic AI styling**. Built with earthy tones, crisp borders, and clean typography.
+Now integrated with **Firebase** for cloud authentication (Google & Email/Password), real-time Firestore database sync across devices, and cloud profiles — running on Firebase's **100% Free Spark Plan** (no credit card required).
 
 ---
 
 ## 🌟 Core Features
 
-1. **Social Civic Feed**:
-   - Live stream of transformed spots and open cleanup bounties.
-   - Interactive **Before & After comparison slider** (drag to reveal transformation or switch to side-by-side mode).
-   - Upvotes ("Civic Respect"), comments, and waste reduction metrics.
+1. **Firebase Authentication & Profiles**:
+   - One-click **Google Sign-In** & **Email/Password** registration.
+   - Cloud user profile synced in Firestore (`users/{uid}`) tracking points, level, and cleanups.
+   - Graceful offline fallback: if Firebase is not yet configured, runs locally without crashing!
 
-2. **Report a Dirty Spot**:
-   - Take or upload photo directly on mobile or desktop.
-   - Automatically acquires live device GPS (Latitude, Longitude) and reverse geocodes to a human-readable street address via OpenStreetMap Nominatim.
+2. **Real-Time Cloud Synchronization (Firestore)**:
+   - When one user snaps and reports a dirty spot from their phone, it appears **instantly in real time** on everyone's screen.
+   - Cleanup submissions, Before & After transformations, and civic likes sync across all devices.
+
+3. **Live GPS Capture & Address Reverse Geocoding**:
+   - Takes or uploads photos directly on mobile or desktop.
+   - Automatically acquires live device GPS and reverse geocodes to a human-readable street address via free **OpenStreetMap Nominatim**.
    - Assigns severity level and generates an automatic community bounty.
 
-3. **Clean & Verify On-Site Proximity**:
+4. **Clean & Verify On-Site Proximity**:
    - Volunteers click *"I Cleaned This Spot"* on any open mission.
-   - Submit cleaned photo proof.
-   - **Haversine Geolocation Matching**: Calculates the exact distance in meters between the original report GPS and the cleaner's location. If within threshold (<250m), grants verified on-site status and maximum reward points!
+   - **Haversine Geolocation Matching**: Calculates the exact distance in meters between the report GPS and the cleaner's location. If within threshold (<250m), grants verified on-site status and bonus reward points!
    - Built-in location simulation toggle for easy desktop testing.
 
-4. **Automatic Before/After Proof Generation**:
+5. **Automatic Before/After Proof Generation**:
    - Instantly pairs the dirty report with the cleaned proof into an interactive dual-mode slider.
-   - Accurately attributes both the reporter and the cleaner.
+   - Drag the slider handle or toggle Side-by-Side mode.
 
-5. **Gamification & Rewards Ledger**:
+6. **Gamification & Rewards Ledger**:
    - Points earned based on spot severity, GPS verification, and speed.
-   - Levels: *Civic Scout*, *Neighborhood Steward*, *Urban Eco-Guardian*, *Civic Transformer*, *Honorary Earth Champion*.
-   - Leaderboard showing top civic cleaners, spots transformed, and kilograms of waste removed.
-   - Free civic rewards store (Certificates of Commendation with PDF export, Tree Dedications, Steward Badges).
+   - 5 Levels: *Civic Scout*, *Neighborhood Steward*, *Urban Eco-Guardian*, *Civic Transformer*, *Honorary Earth Champion*.
+   - Live Leaderboard showing top civic cleaners.
 
-6. **Interactive Civic Map**:
+7. **Interactive Civic Map**:
    - 100% Free OpenStreetMap integration via Leaflet (no Google Maps API billing or credit card required).
    - Color-coded pins: Terracotta for open cleanup bounties, Forest Green for restored places.
+
+---
+
+## 🔥 Free Firebase Setup (Spark Plan — 0 Cost)
+
+1. Go to [console.firebase.google.com](https://console.firebase.google.com) and create a free project.
+2. Under **Build** > **Authentication**:
+   - Enable **Google** and **Email/Password** sign-in methods.
+3. Under **Build** > **Firestore Database**:
+   - Click **Create database** (start in Test mode).
+4. Register a Web app `</>` to view your config keys.
+5. In the GarbageMedia web app, click **"Connect Firebase"** in the top navigation bar and paste your keys, or add them to your `.env` file:
+
+```env
+VITE_FIREBASE_API_KEY=AIzaSy...
+VITE_FIREBASE_PROJECT_ID=garbagemedia-12345
+VITE_FIREBASE_AUTH_DOMAIN=garbagemedia-12345.firebaseapp.com
+VITE_FIREBASE_STORAGE_BUCKET=garbagemedia-12345.appspot.com
+VITE_FIREBASE_APP_ID=1:123456:web:abcd
+```
 
 ---
 
@@ -45,53 +67,18 @@ Designed with an honest, utilitarian, editorial aesthetic — **no neon gradient
 Render offers **Static Site hosting that is 100% free forever** with **zero spin-down / sleeping delays** and automatic SSL certificates.
 
 ### Step 1: Push your project to GitHub
-In your project directory:
 ```bash
-git init
 git add .
-git commit -m "Initial commit of SpotClean"
-# Create a repository on GitHub (github.com/new) and link it:
-git remote add origin https://github.com/YOUR_USERNAME/spotclean.git
-git branch -M main
+git commit -m "Integrate Firebase Authentication & real-time Firestore sync"
 git push -u origin main
 ```
 
 ### Step 2: Deploy on Render
-1. Go to [render.com](https://render.com) and create a free account (log in with your GitHub account).
-2. Click the **"New +"** button in the top right corner and select **"Static Site"**.
-3. Select your `spotclean` GitHub repository.
-4. Set the following settings:
-   - **Name**: `spotclean` (or any name you choose)
-   - **Branch**: `main`
+1. Go to [render.com](https://render.com) and sign in for free with your GitHub account.
+2. Click **"New +"** > **"Static Site"**.
+3. Select your repository `GarbageMedia`.
+4. Configure settings:
    - **Build Command**: `npm run build`
    - **Publish Directory**: `dist`
-5. Click **"Create Static Site"**.
-
-Render will automatically clone the repository, run `npm run build`, and provide your permanent free URL:
-`https://spotclean.onrender.com`
-
----
-
-## 💻 Local Development
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Run local dev server with hot reload
-npm run dev
-
-# 3. Build for production
-npm run build
-
-# 4. Preview production build locally
-npm run preview
-```
-
----
-
-## 🔒 100% Free Guarantee
-
-- **No Paid APIs**: Uses OpenStreetMap (free tile layer and free Nominatim reverse geocoding API).
-- **No Paid Databases**: Client-side offline-first architecture with `localStorage` persistence and sample data pre-seeded.
-- **No Render Subscription**: Built for Render's 100% free Static Sites tier.
+5. *(Optional)* Under **Environment Variables**, you can add your `VITE_FIREBASE_*` keys so your deployed site automatically connects to Firebase!
+6. Click **"Create Static Site"**.

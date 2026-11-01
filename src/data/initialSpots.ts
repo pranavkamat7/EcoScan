@@ -1,4 +1,4 @@
-import { Spot, UserProfile } from '../types';
+import { Spot, UserProfile, LeaderboardItem } from '../types';
 
 export const INITIAL_USER: UserProfile = {
   id: 'user_current',
@@ -17,7 +17,7 @@ export const INITIAL_USER: UserProfile = {
 export const INITIAL_SPOTS: Spot[] = [];
 
 // Clean initial leaderboard
-export const INITIAL_LEADERBOARD = [
+export const INITIAL_LEADERBOARD: LeaderboardItem[] = [
   {
     rank: 1,
     id: 'user_current',
