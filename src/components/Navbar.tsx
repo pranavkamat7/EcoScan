@@ -5,11 +5,7 @@ import {
   Trophy,
   Award,
   Plus,
-  CloudUpload,
-  RotateCcw,
-  LogIn,
   LogOut,
-  Database,
   ChevronDown,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
@@ -21,10 +17,6 @@ interface NavbarProps {
   currentTab: NavTab;
   onTabChange: (tab: NavTab) => void;
   onOpenReportModal: () => void;
-  onOpenDeployGuide: () => void;
-  onOpenAuthModal: () => void;
-  onOpenFirebaseSetup: () => void;
-  onResetDemo: () => void;
   currentUser: UserProfile;
 }
 
@@ -32,19 +24,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   onTabChange,
   onOpenReportModal,
-  onOpenDeployGuide,
-  onOpenAuthModal,
-  onOpenFirebaseSetup,
-  onResetDemo,
   currentUser,
 }) => {
-  const { user, isFirebaseActive, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <>
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-none border-b border-[#E3E3DC]">
+      <header className="sticky top-0 z-40 bg-white border-b border-[#E3E3DC]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Brand */}
           <div className="flex items-center gap-3">
@@ -119,114 +107,71 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </nav>
 
-          {/* Right Actions: Firebase Status, Auth / Points, Deploy, CTA */}
+          {/* Right Actions: User Menu & Report CTA */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Firebase Pill / Config */}
-            <button
-              type="button"
-              onClick={onOpenFirebaseSetup}
-              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md border transition-colors ${
-                isFirebaseActive
-                  ? 'bg-[#E7EFEA] text-[#233F2E] border-[#2D513B]/30'
-                  : 'bg-[#F2F2EC] text-[#535A55] border-[#E3E3DC] hover:text-[#181A19]'
-              }`}
-              title="Firebase status & setup"
-            >
-              <Database className="w-3 h-3 text-[#2D513B]" />
-              <span>{isFirebaseActive ? 'Firebase Live' : 'Connect Firebase'}</span>
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isFirebaseActive ? 'bg-[#2D513B]' : 'bg-amber-500'
-                }`}
-              />
-            </button>
-
-            {/* Deploy to Render Free Guide button */}
-            <button
-              type="button"
-              onClick={onOpenDeployGuide}
-              className="hidden xl:flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-[#535A55] hover:text-[#181A19] bg-[#F2F2EC] hover:bg-[#E7EFEA] border border-[#E3E3DC] rounded-md transition-colors"
-              title="How to host for free on Render"
-            >
-              <CloudUpload className="w-3.5 h-3.5 text-[#2D513B]" />
-              <span>Deploy</span>
-            </button>
-
-            {/* Reset Data */}
-            <button
-              type="button"
-              onClick={onResetDemo}
-              className="p-1.5 rounded-md text-[#7E8681] hover:text-[#181A19] hover:bg-[#F2F2EC] transition-colors"
-              title="Reset Local Data"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-
-            {/* User Account / Auth Button */}
-            {user ? (
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#F2F7F4] border border-[#4D8262]/30 hover:border-[#2D513B] transition-colors"
-                >
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-6 h-6 rounded-full object-cover border border-[#4D8262]"
-                  />
-                  <span className="font-mono font-bold text-xs text-[#2D513B]">
-                    {currentUser.points} pts
-                  </span>
-                  <ChevronDown className="w-3 h-3 text-[#535A55]" />
-                </button>
-
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white border border-[#E3E3DC] rounded-md shadow-modal p-2 z-50 text-xs">
-                    <div className="px-2 py-1.5 border-b border-[#F0EFEA] mb-1">
-                      <p className="font-semibold text-[#181A19] truncate">{currentUser.name}</p>
-                      <p className="text-[10px] text-[#7E8681] truncate">{currentUser.handle}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onTabChange('rewards');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full text-left px-2 py-1.5 rounded hover:bg-[#F9F9F6] text-[#2C302D]"
-                    >
-                      View Rewards & Badges
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logout();
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full text-left px-2 py-1.5 rounded hover:bg-[#FDEEEA] text-[#BA4A2B] flex items-center gap-1.5 mt-1"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
+            {/* User Account Dropdown */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={onOpenAuthModal}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[#E3E3DC] bg-white hover:bg-[#F9F9F6] text-xs font-medium text-[#181A19] transition-colors"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-[#F2F7F4] border border-[#4D8262]/30 hover:border-[#2D513B] transition-colors"
               >
-                <LogIn className="w-3.5 h-3.5 text-[#2D513B]" />
-                <span className="hidden sm:inline">Sign In</span>
+                <img
+                  src={currentUser.avatar}
+                  alt={currentUser.name}
+                  className="w-6 h-6 rounded-full object-cover border border-[#4D8262]"
+                />
+                <div className="text-left hidden sm:block">
+                  <span className="text-xs font-semibold text-[#181A19] block leading-tight truncate max-w-[100px]">
+                    {currentUser.name}
+                  </span>
+                  <span className="font-mono text-[10px] text-[#2D513B] font-bold block leading-tight">
+                    {currentUser.points} pts
+                  </span>
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-[#535A55]" />
               </button>
-            )}
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-1.5 w-52 bg-white border border-[#E3E3DC] rounded-md shadow-modal p-2 z-50 text-xs">
+                  <div className="px-2 py-1.5 border-b border-[#F0EFEA] mb-1">
+                    <p className="font-semibold text-[#181A19] truncate">{currentUser.name}</p>
+                    <p className="text-[11px] text-[#7E8681] truncate">{currentUser.handle}</p>
+                    <span className="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] bg-[#E7EFEA] text-[#233F2E] font-medium">
+                      {currentUser.level}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onTabChange('rewards');
+                      setShowUserMenu(false);
+                    }}
+                    className="w-full text-left px-2 py-1.5 rounded hover:bg-[#F9F9F6] text-[#2C302D] flex items-center justify-between"
+                  >
+                    <span>Rewards & Badges</span>
+                    <span className="font-mono font-bold text-[#2D513B]">{currentUser.points} pts</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      logout();
+                      setShowUserMenu(false);
+                    }}
+                    className="w-full text-left px-2 py-1.5 rounded hover:bg-[#FDEEEA] text-[#BA4A2B] flex items-center gap-1.5 mt-1 border-t border-[#F0EFEA] pt-1.5"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Primary Action Button: Report Dirty Spot */}
             <button
               type="button"
               onClick={onOpenReportModal}
-              className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-md bg-[#2D513B] text-white text-xs font-semibold hover:bg-[#233F2E] shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-md bg-[#2D513B] text-white text-xs font-semibold hover:bg-[#233F2E] shadow-sm transition-all"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Report Spot</span>

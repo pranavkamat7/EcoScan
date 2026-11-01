@@ -4,7 +4,6 @@ import {
   saveSpots,
   loadLeaderboard,
   saveLeaderboard,
-  resetToDemoData,
 } from './utils/storage';
 import type { FeedFilter, Spot, CleanVerification, SpotComment, LeaderboardItem } from './types';
 import { Navbar, type NavTab } from './components/Navbar';
@@ -15,23 +14,20 @@ import { CleanSubmissionModal } from './components/CleanSubmissionModal';
 import { MapView } from './components/MapView';
 import { Leaderboard } from './components/Leaderboard';
 import { RewardsView } from './components/RewardsView';
-import { RenderDeployGuide } from './components/RenderDeployGuide';
-import { AuthModal } from './components/AuthModal';
-import { FirebaseSetupModal } from './components/FirebaseSetupModal';
+import { AuthScreen } from './components/AuthScreen';
 import { AuthProvider, useAuth } from './firebase/authContext';
 import { subscribeToSpots, saveSpotCloud, saveCleanVerificationCloud } from './firebase/spotsService';
 import {
   Sparkles,
   AlertTriangle,
-  ArrowRight,
   Info,
 } from 'lucide-react';
 
-function GarbageMediaApp() {
+function GarbageMediaDashboard() {
   const { profile: currentUser, awardCleanupReward, recordSpotReported } = useAuth();
 
   const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
-  const [leaderboard, setLeaderboard] = useState(() => loadLeaderboard());
+  const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>(() => loadLeaderboard());
 
   const [currentTab, setCurrentTab] = useState<NavTab>('feed');
   const [feedFilter, setFeedFilter] = useState<FeedFilter>('all');
@@ -39,12 +35,9 @@ function GarbageMediaApp() {
   // Modals state
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [activeCleanSpot, setActiveCleanSpot] = useState<Spot | null>(null);
-  const [isDeployGuideOpen, setIsDeployGuideOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isFirebaseSetupOpen, setIsFirebaseSetupOpen] = useState(false);
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
 
-  // Subscribe to real-time Firestore spots (with local storage fallback)
+  // Subscribe to real-time Firestore spots (with local fallback)
   useEffect(() => {
     const unsubscribe = subscribeToSpots((updatedSpots) => {
       setSpots(updatedSpots);
@@ -156,7 +149,7 @@ function GarbageMediaApp() {
     const targetSpot = spots.find((s) => s.id === spotId);
     const wasteKg = targetSpot?.estimatedWasteKg || 12;
 
-    // Save to Firestore and update user stats in cloud
+    // Save to Firestore and update user points
     await saveCleanVerificationCloud(spotId, verification);
     await awardCleanupReward(verification.pointsEarned, wasteKg);
   };
@@ -205,14 +198,6 @@ function GarbageMediaApp() {
     setCurrentTab('map');
   };
 
-  const handleReset = () => {
-    if (window.confirm('Reset all demo data back to default initial state?')) {
-      const reset = resetToDemoData();
-      setSpots(reset.spots);
-      setLeaderboard(reset.leaderboard);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F9F9F6] text-[#181A19] pb-20 md:pb-12">
       {/* Navbar */}
@@ -223,10 +208,6 @@ function GarbageMediaApp() {
           if (tab !== 'map') setSelectedSpotForMap(null);
         }}
         onOpenReportModal={() => setIsReportModalOpen(true)}
-        onOpenDeployGuide={() => setIsDeployGuideOpen(true)}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
-        onOpenFirebaseSetup={() => setIsFirebaseSetupOpen(true)}
-        onResetDemo={handleReset}
         currentUser={currentUser}
       />
 
@@ -434,30 +415,6 @@ function GarbageMediaApp() {
                     )}
                   </div>
                 </div>
-
-                {/* Render Free Hosting Banner */}
-                <div className="p-4 rounded-lg bg-[#F2F7F4] border border-[#4D8262]/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[#14231A]">
-                      Deploy 100% Free on Render
-                    </span>
-                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 bg-[#2D513B] text-white rounded">
-                      $0/mo
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#535A55]">
-                    Ready to publish online? Render Static Sites host this Vite React app completely
-                    free forever without sleeping.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setIsDeployGuideOpen(true)}
-                    className="text-xs font-semibold text-[#2D513B] hover:underline flex items-center gap-1"
-                  >
-                    <span>View Setup Guide</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
               </aside>
             </div>
           </div>
@@ -519,36 +476,37 @@ function GarbageMediaApp() {
         onSubmitClean={handleCleanSubmit}
         currentUser={currentUser}
       />
-
-      {/* MODAL 3: Render Free Deployment Guide */}
-      <RenderDeployGuide
-        isOpen={isDeployGuideOpen}
-        onClose={() => setIsDeployGuideOpen(false)}
-      />
-
-      {/* MODAL 4: Firebase Auth (Sign In / Sign Up / Google Login) */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onOpenFirebaseConfig={() => {
-          setIsAuthModalOpen(false);
-          setIsFirebaseSetupOpen(true);
-        }}
-      />
-
-      {/* MODAL 5: Firebase Credentials Setup */}
-      <FirebaseSetupModal
-        isOpen={isFirebaseSetupOpen}
-        onClose={() => setIsFirebaseSetupOpen(false)}
-      />
     </div>
   );
+}
+
+function AppContent() {
+  const { user, loading } = useAuth();
+  const [isGuest, setIsGuest] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9F9F6] flex flex-col items-center justify-center space-y-3">
+        <div className="w-10 h-10 rounded-md bg-[#2D513B] text-white flex items-center justify-center text-xl font-bold animate-pulse">
+          🌱
+        </div>
+        <p className="text-xs text-[#535A55] font-mono">Loading GarbageMedia...</p>
+      </div>
+    );
+  }
+
+  // If user is not logged in and hasn't chosen guest mode, show the Welcome / Auth portal!
+  if (!user && !isGuest) {
+    return <AuthScreen onContinueAsGuest={() => setIsGuest(true)} />;
+  }
+
+  return <GarbageMediaDashboard />;
 }
 
 export function App() {
   return (
     <AuthProvider>
-      <GarbageMediaApp />
+      <AppContent />
     </AuthProvider>
   );
 }
