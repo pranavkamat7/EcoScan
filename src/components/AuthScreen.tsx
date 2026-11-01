@@ -16,13 +16,36 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const formatFirebaseError = (err: any): string => {
+    const msg = err?.code || err?.message || '';
+    if (msg.includes('auth/configuration-not-found')) {
+      return 'Authentication is not turned on yet in your Firebase Console. Go to Firebase Console > Build > Authentication, click "Get started", and enable Email/Password and Google under "Sign-in method".';
+    }
+    if (msg.includes('auth/unauthorized-domain')) {
+      return 'Domain not authorized. Go to Firebase Console > Authentication > Settings > Authorized domains, and add "garbagemedia.onrender.com".';
+    }
+    if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
+      return 'Invalid email or password. If you do not have an account, click "Register" above.';
+    }
+    if (msg.includes('auth/email-already-in-use')) {
+      return 'An account already exists with this email. Please click "Sign In" above.';
+    }
+    if (msg.includes('auth/weak-password')) {
+      return 'Password must be at least 6 characters long.';
+    }
+    if (msg.includes('auth/popup-closed-by-user')) {
+      return 'Google sign-in popup was closed before completing.';
+    }
+    return err?.message || 'Authentication error. Please try again.';
+  };
+
   const handleGoogleSignIn = async () => {
     setError(null);
     setLoading(true);
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -41,7 +64,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
         await signInWithEmail(email, password);
       }
     } catch (err: any) {
-      setError(err.message || 'Authentication error');
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -316,3 +339,4 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
     </div>
   );
 };
+
