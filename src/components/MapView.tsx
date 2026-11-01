@@ -119,6 +119,14 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
+      {/* Empty Map Callout */}
+      {spots.length === 0 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-white border border-[#E3E3DC] rounded-full px-4 py-1.5 shadow-sm text-xs text-[#535A55] flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#2D513B] animate-pulse"></span>
+          <span>No spots pinned yet. Click <strong>"+ Report Spot at Location"</strong> to add one!</span>
+        </div>
+      )}
+
       {/* Floating Legend / Stats */}
       <div className="absolute top-3 right-3 z-10 bg-white/95 backdrop-blur-none border border-[#E3E3DC] rounded-md p-2.5 shadow-sm text-xs space-y-1.5 hidden sm:block">
         <div className="font-semibold text-[#181A19] text-[11px] uppercase tracking-wider">

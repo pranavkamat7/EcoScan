@@ -1,9 +1,9 @@
 import { Spot, UserProfile } from '../types';
 import { INITIAL_SPOTS, INITIAL_USER, INITIAL_LEADERBOARD } from '../data/initialSpots';
 
-const SPOTS_STORAGE_KEY = 'spotclean_spots_v1';
-const USER_STORAGE_KEY = 'spotclean_user_v1';
-const LEADERBOARD_STORAGE_KEY = 'spotclean_leaderboard_v1';
+const SPOTS_STORAGE_KEY = 'garbagemedia_spots_v2';
+const USER_STORAGE_KEY = 'garbagemedia_user_v2';
+const LEADERBOARD_STORAGE_KEY = 'garbagemedia_leaderboard_v2';
 
 export function loadSpots(): Spot[] {
   try {
@@ -77,4 +77,3 @@ export function resetToDemoData(): { spots: Spot[]; user: UserProfile; leaderboa
     leaderboard: INITIAL_LEADERBOARD,
   };
 }
-

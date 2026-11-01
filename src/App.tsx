@@ -301,6 +301,25 @@ export function App() {
                       onOpenMap={handleOpenMapForSpot}
                     />
                   ))
+                ) : spots.length === 0 ? (
+                  <div className="bg-white p-10 rounded-lg border border-[#E3E3DC] text-center space-y-4">
+                    <div className="w-12 h-12 rounded-full bg-[#EDF3EE] text-[#2D513B] flex items-center justify-center mx-auto text-2xl">
+                      🌱
+                    </div>
+                    <div className="max-w-md mx-auto space-y-1">
+                      <h3 className="text-base font-semibold text-[#181A19]">No spots reported yet</h3>
+                      <p className="text-xs text-[#535A55]">
+                        Be the first community scout! Spot a dirty place in your neighborhood, snap a photo with live GPS, and invite volunteers to clean it.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsReportModalOpen(true)}
+                      className="px-4 py-2 text-xs font-semibold text-white bg-[#2D513B] rounded-md hover:bg-[#233F2E] inline-flex items-center gap-1.5 shadow-sm"
+                    >
+                      + Report the First Spot
+                    </button>
+                  </div>
                 ) : (
                   <div className="bg-white p-8 rounded-lg border border-[#E3E3DC] text-center space-y-3">
                     <p className="text-sm text-[#535A55]">
@@ -369,35 +388,44 @@ export function App() {
                   </div>
 
                   <div className="space-y-3">
-                    {spots
-                      .filter((s) => s.status === 'needs_cleaning')
-                      .slice(0, 3)
-                      .map((spot) => (
-                        <div
-                          key={spot.id}
-                          className="p-2.5 rounded border border-[#E3E3DC] bg-[#FDF7F5] space-y-1.5"
-                        >
-                          <div className="flex justify-between items-start gap-1">
-                            <span className="text-xs font-semibold text-[#181A19] line-clamp-1">
-                              {spot.title}
-                            </span>
-                            <span className="text-[10px] font-mono font-bold text-[#BA4A2B] bg-white px-1.5 py-0.5 rounded border border-[#E3E3DC] flex-shrink-0">
-                              +{spot.rewardPoints} pts
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-[#7E8681] truncate">
-                            {spot.location.address}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => setActiveCleanSpot(spot)}
-                            className="w-full mt-1 py-1 px-2 text-[11px] font-medium bg-[#2D513B] text-white rounded hover:bg-[#233F2E] flex items-center justify-center gap-1"
+                    {spots.filter((s) => s.status === 'needs_cleaning').length > 0 ? (
+                      spots
+                        .filter((s) => s.status === 'needs_cleaning')
+                        .slice(0, 3)
+                        .map((spot) => (
+                          <div
+                            key={spot.id}
+                            className="p-2.5 rounded border border-[#E3E3DC] bg-[#FDF7F5] space-y-1.5"
                           >
-                            <Sparkles className="w-3 h-3 text-yellow-300" />
-                            Clean This Spot
-                          </button>
-                        </div>
-                      ))}
+                            <div className="flex justify-between items-start gap-1">
+                              <span className="text-xs font-semibold text-[#181A19] line-clamp-1">
+                                {spot.title}
+                              </span>
+                              <span className="text-[10px] font-mono font-bold text-[#BA4A2B] bg-white px-1.5 py-0.5 rounded border border-[#E3E3DC] flex-shrink-0">
+                                +{spot.rewardPoints} pts
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[#7E8681] truncate">
+                              {spot.location.address}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => setActiveCleanSpot(spot)}
+                              className="w-full mt-1 py-1 px-2 text-[11px] font-medium bg-[#2D513B] text-white rounded hover:bg-[#233F2E] flex items-center justify-center gap-1"
+                            >
+                              <Sparkles className="w-3 h-3 text-yellow-300" />
+                              Clean This Spot
+                            </button>
+                          </div>
+                        ))
+                    ) : (
+                      <div className="p-3.5 rounded border border-dashed border-[#CACECB] bg-[#F9F9F6] text-center">
+                        <p className="text-xs text-[#535A55] font-medium">No open missions</p>
+                        <p className="text-[11px] text-[#7E8681] mt-0.5">
+                          Spot something dirty? Report it to start a community cleanup!
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

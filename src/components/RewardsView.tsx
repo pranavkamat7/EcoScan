@@ -48,7 +48,7 @@ const CIVIC_PERKS = [
 
 export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
   const levelInfo = getUserLevel(currentUser.points);
-  const [claimedPerks, setClaimedPerks] = useState<string[]>(['perk-1', 'perk-2']);
+  const [claimedPerks, setClaimedPerks] = useState<string[]>([]);
   const [showCertModal, setShowCertModal] = useState(false);
 
   const handleClaim = (perkId: string, cost: number) => {
@@ -106,31 +106,41 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
           Your Earned Badges ({currentUser.badges.length})
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {currentUser.badges.map((badge) => (
-            <div
-              key={badge.id}
-              className="p-3.5 rounded-md border border-[#E3E3DC] bg-[#F9F9F6] flex items-start gap-3"
-            >
-              <div className="text-2xl p-1 bg-white rounded border border-[#E3E3DC]">
-                {badge.icon}
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#181A19] block truncate">
-                  {badge.title}
-                </span>
-                <p className="text-[11px] text-[#535A55] line-clamp-2 mt-0.5">
-                  {badge.description}
-                </p>
-                {badge.unlockedAt && (
-                  <span className="text-[10px] text-[#7E8681] font-mono block mt-1">
-                    Unlocked {badge.unlockedAt}
+        {currentUser.badges.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {currentUser.badges.map((badge) => (
+              <div
+                key={badge.id}
+                className="p-3.5 rounded-md border border-[#E3E3DC] bg-[#F9F9F6] flex items-start gap-3"
+              >
+                <div className="text-2xl p-1 bg-white rounded border border-[#E3E3DC]">
+                  {badge.icon}
+                </div>
+                <div className="min-w-0">
+                  <span className="text-xs font-semibold text-[#181A19] block truncate">
+                    {badge.title}
                   </span>
-                )}
+                  <p className="text-[11px] text-[#535A55] line-clamp-2 mt-0.5">
+                    {badge.description}
+                  </p>
+                  {badge.unlockedAt && (
+                    <span className="text-[10px] text-[#7E8681] font-mono block mt-1">
+                      Unlocked {badge.unlockedAt}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-6 bg-[#F9F9F6] rounded-md border border-dashed border-[#CACECB] text-center">
+            <span className="text-2xl block mb-1">🏅</span>
+            <p className="text-xs font-medium text-[#181A19]">No badges unlocked yet</p>
+            <p className="text-[11px] text-[#7E8681] mt-0.5">
+              Report dirty spots and submit verified cleanup proofs to earn civic badges!
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Civic Perks & Rewards Store */}
