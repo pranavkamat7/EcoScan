@@ -312,35 +312,72 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             />
           </div>
 
-          {/* Severity & Bounty preview */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Severity & Waste estimation */}
+          <div className="space-y-3">
             <div>
-              <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1">
-                Severity
+              <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1.5">
+                Severity Level
               </label>
-              <select
-                value={severity}
-                onChange={(e) => setSeverity(e.target.value as SeverityLevel)}
-                className="w-full px-3 py-2 text-xs rounded-md bg-white border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#2D513B]"
-              >
-                <option value="low">Low (Light litter / wrappers)</option>
-                <option value="medium">Medium (Multiple bags needed)</option>
-                <option value="high">High (Heavy dumping / debris)</option>
-              </select>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSeverity('low')}
+                  className={`py-2 px-3 rounded-lg border text-xs font-semibold transition-all ${
+                    severity === 'low'
+                      ? 'bg-emerald-50 border-[#2D513B] text-[#2D513B] shadow-xs ring-1 ring-[#2D513B]'
+                      : 'bg-white border-[#E3E3DC] text-[#535A55] hover:bg-[#F9F9F6]'
+                  }`}
+                >
+                  <span className="block font-bold">Low</span>
+                  <span className="text-[10px] opacity-75 font-normal">Light litter</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSeverity('medium')}
+                  className={`py-2 px-3 rounded-lg border text-xs font-semibold transition-all ${
+                    severity === 'medium'
+                      ? 'bg-amber-50 border-amber-600 text-amber-900 shadow-xs ring-1 ring-amber-600'
+                      : 'bg-white border-[#E3E3DC] text-[#535A55] hover:bg-[#F9F9F6]'
+                  }`}
+                >
+                  <span className="block font-bold">Medium</span>
+                  <span className="text-[10px] opacity-75 font-normal">Multi-bag area</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSeverity('high')}
+                  className={`py-2 px-3 rounded-lg border text-xs font-semibold transition-all ${
+                    severity === 'high'
+                      ? 'bg-rose-50 border-[#BA4A2B] text-[#842D18] shadow-xs ring-1 ring-[#BA4A2B]'
+                      : 'bg-white border-[#E3E3DC] text-[#535A55] hover:bg-[#F9F9F6]'
+                  }`}
+                >
+                  <span className="block font-bold">High</span>
+                  <span className="text-[10px] opacity-75 font-normal">Heavy dumping</span>
+                </button>
+              </div>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1">
-                Est. Waste (kg)
+                Estimated Waste (kg)
               </label>
-              <input
-                type="number"
-                min="1"
-                max="500"
-                value={estimatedKg}
-                onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3 py-2 text-xs rounded-md bg-white border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#2D513B]"
-              />
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="2"
+                  max="100"
+                  step="2"
+                  value={estimatedKg}
+                  onChange={(e) => setEstimatedKg(Number(e.target.value))}
+                  className="flex-1 accent-[#2D513B] cursor-pointer"
+                />
+                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-[#F2F2EC] border border-[#E3E3DC] min-w-[65px] text-center">
+                  ~{estimatedKg} kg
+                </span>
+              </div>
             </div>
           </div>
 

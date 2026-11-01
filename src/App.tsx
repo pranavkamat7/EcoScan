@@ -21,6 +21,8 @@ import {
   Sparkles,
   AlertTriangle,
   Info,
+  CheckCircle2,
+  Scale,
 } from 'lucide-react';
 
 function GarbageMediaDashboard() {
@@ -217,38 +219,73 @@ function GarbageMediaDashboard() {
         {currentTab === 'feed' && (
           <div className="space-y-6">
             {/* Impact Highlights Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-lg border border-[#E3E3DC] shadow-subtle">
-              <div className="border-r border-[#F0EFEA] last:border-0 pr-2">
-                <span className="text-[11px] uppercase tracking-wider text-[#7E8681] block font-mono">
-                  Transformed Spots
-                </span>
-                <span className="text-xl sm:text-2xl font-bold text-[#2D513B]">
-                  {stats.cleanedCount}
-                </span>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#2D513B]/40 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+                    Transformed
+                  </span>
+                  <div className="w-7 h-7 rounded-full bg-emerald-50 text-[#2D513B] flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#181A19]">
+                    {stats.cleanedCount}
+                  </span>
+                  <span className="text-xs text-[#7E8681]">spots restored</span>
+                </div>
               </div>
-              <div className="border-r border-[#F0EFEA] last:border-0 pr-2">
-                <span className="text-[11px] uppercase tracking-wider text-[#7E8681] block font-mono">
-                  Pending Bounties
-                </span>
-                <span className="text-xl sm:text-2xl font-bold text-[#BA4A2B]">
-                  {stats.pendingCount}
-                </span>
+
+              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#BA4A2B]/40 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+                    Open Bounties
+                  </span>
+                  <div className="w-7 h-7 rounded-full bg-rose-50 text-[#BA4A2B] flex items-center justify-center">
+                    <AlertTriangle className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#BA4A2B]">
+                    {stats.pendingCount}
+                  </span>
+                  <span className="text-xs text-[#7E8681]">waiting for hero</span>
+                </div>
               </div>
-              <div className="border-r border-[#F0EFEA] last:border-0 pr-2">
-                <span className="text-[11px] uppercase tracking-wider text-[#7E8681] block font-mono">
-                  Waste Cleared
-                </span>
-                <span className="text-xl sm:text-2xl font-bold text-[#181A19]">
-                  {stats.totalWasteKg} kg
-                </span>
+
+              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#181A19]/40 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+                    Waste Removed
+                  </span>
+                  <div className="w-7 h-7 rounded-full bg-stone-100 text-[#181A19] flex items-center justify-center">
+                    <Scale className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#181A19]">
+                    {stats.totalWasteKg}
+                  </span>
+                  <span className="text-xs text-[#7E8681]">kg collected</span>
+                </div>
               </div>
-              <div>
-                <span className="text-[11px] uppercase tracking-wider text-[#7E8681] block font-mono">
-                  Civic Points Earned
-                </span>
-                <span className="text-xl sm:text-2xl font-bold text-[#2D513B]">
-                  +{stats.totalPointsAwarded}
-                </span>
+
+              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#2D513B]/40 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+                    Civic Reward
+                  </span>
+                  <div className="w-7 h-7 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#2D513B]">
+                    +{stats.totalPointsAwarded}
+                  </span>
+                  <span className="text-xs text-[#7E8681]">pts distributed</span>
+                </div>
               </div>
             </div>
 

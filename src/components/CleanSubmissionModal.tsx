@@ -344,21 +344,27 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           </div>
 
           {/* Reward Points Calculation Ledger */}
-          <div className="bg-[#F9F9F6] border border-[#E3E3DC] rounded-md p-3.5 space-y-2">
-            <span className="text-xs font-semibold text-[#181A19] flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-yellow-600" />
-              Reward Points Breakdown
-            </span>
-            <div className="space-y-1 text-xs">
+          <div className="bg-[#F9F9F6] border-2 border-dashed border-[#CACECB] rounded-lg p-4 space-y-2.5">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[#E3E3DC]">
+              <span className="text-xs font-bold text-[#181A19] flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                <Award className="w-4 h-4 text-amber-600" />
+                Civic Bounty Ledger
+              </span>
+              <span className="text-[10px] text-[#7E8681] font-mono">Verified Claim</span>
+            </div>
+
+            <div className="space-y-1.5 text-xs">
               {pointsCalc.breakdown.map((item, idx) => (
                 <div key={idx} className="flex justify-between text-[#535A55]">
                   <span>{item.label}</span>
-                  <span className="font-mono text-[#181A19] font-medium">+{item.points} pts</span>
+                  <span className="font-mono text-[#181A19] font-bold">+{item.points} pts</span>
                 </div>
               ))}
-              <div className="pt-2 border-t border-[#E3E3DC] flex justify-between font-semibold text-[#2D513B] text-sm">
-                <span>Total Civic Points to Earn</span>
-                <span className="font-mono font-bold">+{pointsCalc.totalPoints} pts</span>
+              <div className="pt-2.5 border-t border-[#E3E3DC] flex justify-between font-bold text-[#2D513B] text-sm">
+                <span>Total Points Credited</span>
+                <span className="font-mono font-bold text-base text-[#2D513B]">
+                  +{pointsCalc.totalPoints} pts
+                </span>
               </div>
             </div>
           </div>
