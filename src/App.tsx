@@ -14,7 +14,6 @@ import { CleanSubmissionModal } from './components/CleanSubmissionModal';
 import { MapView } from './components/MapView';
 import { Leaderboard } from './components/Leaderboard';
 import { RewardsView } from './components/RewardsView';
-import { AuthScreen } from './components/AuthScreen';
 import { AuthProvider, useAuth } from './firebase/authContext';
 import { subscribeToSpots, saveSpotCloud, saveCleanVerificationCloud } from './firebase/spotsService';
 import {
@@ -23,6 +22,10 @@ import {
   Info,
   CheckCircle2,
   Scale,
+  Plus,
+  MapPin,
+  Trophy,
+  ArrowRight,
 } from 'lucide-react';
 
 function GarbageMediaDashboard() {
@@ -42,7 +45,9 @@ function GarbageMediaDashboard() {
   // Subscribe to real-time Firestore spots (with local fallback)
   useEffect(() => {
     const unsubscribe = subscribeToSpots((updatedSpots) => {
-      setSpots(updatedSpots);
+      if (updatedSpots && updatedSpots.length > 0) {
+        setSpots(updatedSpots);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -68,7 +73,6 @@ function GarbageMediaDashboard() {
         return item;
       });
 
-      // If user isn't in leaderboard yet, add them
       const exists = updated.some((i: LeaderboardItem) => i.id === currentUser.id || i.isCurrentUser);
       if (!exists) {
         updated.push({
@@ -142,7 +146,7 @@ function GarbageMediaDashboard() {
       comments: [],
     };
 
-    // Save to Firestore and local state
+    setSpots((prev) => [newSpot, ...prev]);
     await saveSpotCloud(newSpot);
     await recordSpotReported();
   };
@@ -151,7 +155,18 @@ function GarbageMediaDashboard() {
     const targetSpot = spots.find((s) => s.id === spotId);
     const wasteKg = targetSpot?.estimatedWasteKg || 12;
 
-    // Save to Firestore and update user points
+    setSpots((prev) =>
+      prev.map((s) =>
+        s.id === spotId
+          ? {
+              ...s,
+              status: 'cleaned' as const,
+              verification,
+            }
+          : s
+      )
+    );
+
     await saveCleanVerificationCloud(spotId, verification);
     await awardCleanupReward(verification.pointsEarned, wasteKg);
   };
@@ -201,8 +216,8 @@ function GarbageMediaDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F9F6] text-[#181A19] pb-20 md:pb-12">
-      {/* Navbar */}
+    <div className="min-h-screen text-slate-900 pb-20 md:pb-12 selection:bg-rose-500 selection:text-white">
+      {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
         onTabChange={(tab) => {
@@ -214,77 +229,81 @@ function GarbageMediaDashboard() {
       />
 
       {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-7">
         {/* VIEW 1: Community Feed */}
         {currentTab === 'feed' && (
-          <div className="space-y-6">
-            {/* Impact Highlights Bar */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#2D513B]/40 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
-                    Transformed
+          <div className="space-y-7">
+            {/* Impact Metric Cards Bar with Modern Warm / Purple Accents */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Card 1: Spots Restored (Royal Violet / Purple) */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-purple-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] uppercase tracking-wider text-purple-700 font-mono font-extrabold">
+                    Spots Restored
                   </span>
-                  <div className="w-7 h-7 rounded-full bg-emerald-50 text-[#2D513B] flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center shadow-xs">
+                    <CheckCircle2 className="w-4 h-4 text-purple-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#181A19]">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
                     {stats.cleanedCount}
                   </span>
-                  <span className="text-xs text-[#7E8681]">spots restored</span>
+                  <span className="text-xs text-slate-500 font-medium">locations cleaned</span>
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#BA4A2B]/40 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+              {/* Card 2: Open Bounties (Fiery Orange-Red) */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-orange-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] uppercase tracking-wider text-orange-600 font-mono font-extrabold">
                     Open Bounties
                   </span>
-                  <div className="w-7 h-7 rounded-full bg-rose-50 text-[#BA4A2B] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shadow-xs">
                     <AlertTriangle className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#BA4A2B]">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-orange-600">
                     {stats.pendingCount}
                   </span>
-                  <span className="text-xs text-[#7E8681]">waiting for hero</span>
+                  <span className="text-xs text-slate-500 font-medium">active missions</span>
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#181A19]/40 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
+              {/* Card 3: Waste Removed (Deep Indigo & Violet) */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] uppercase tracking-wider text-indigo-700 font-mono font-extrabold">
                     Waste Removed
                   </span>
-                  <div className="w-7 h-7 rounded-full bg-stone-100 text-[#181A19] flex items-center justify-center">
-                    <Scale className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shadow-xs">
+                    <Scale className="w-4 h-4 text-indigo-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#181A19]">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
                     {stats.totalWasteKg}
                   </span>
-                  <span className="text-xs text-[#7E8681]">kg collected</span>
+                  <span className="text-xs text-slate-500 font-medium">kg collected</span>
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-[#E3E3DC] shadow-xs hover:border-[#2D513B]/40 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] uppercase tracking-wider text-[#7E8681] font-mono font-bold">
-                    Civic Reward
+              {/* Card 4: Civic Rewards (Fiery Sunset Amber & Rose) */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-rose-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] uppercase tracking-wider text-rose-600 font-mono font-extrabold">
+                    Civic Rewards
                   </span>
-                  <div className="w-7 h-7 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shadow-xs">
+                    <Sparkles className="w-4 h-4 text-rose-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#2D513B]">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-amber-600">
                     +{stats.totalPointsAwarded}
                   </span>
-                  <span className="text-xs text-[#7E8681]">pts distributed</span>
+                  <span className="text-xs text-slate-500 font-medium">pts awarded</span>
                 </div>
               </div>
             </div>
@@ -292,126 +311,119 @@ function GarbageMediaDashboard() {
             {/* Layout: Feed + Civic Missions Sidebar */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Left Column: Posts Feed */}
-              <div className="lg:col-span-8 space-y-4">
-                {/* Filter Controls */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#E3E3DC]">
+              <div className="lg:col-span-8 space-y-6">
+                {/* Filter Controls Header - Generous dedicated responsive layout */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
                   <div>
-                    <h2 className="text-base font-semibold text-[#181A19]">Community Feed</h2>
-                    <p className="text-xs text-[#535A55]">
-                      Real before & after proof comparisons generated by community cleanups.
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                      <span>Community Transformation Feed</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                        Live
+                      </span>
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Real before & after comparisons verified on-site by community volunteers.
                     </p>
                   </div>
-                  <FilterTabs
-                    currentFilter={feedFilter}
-                    onFilterChange={setFeedFilter}
-                    counts={{
-                      all: spots.length,
-                      needsCleaning: stats.pendingCount,
-                      cleaned: stats.cleanedCount,
-                    }}
-                  />
+                  <div className="flex-shrink-0 pt-1 sm:pt-0">
+                    <FilterTabs
+                      currentFilter={feedFilter}
+                      onFilterChange={setFeedFilter}
+                      counts={{
+                        all: spots.length,
+                        needsCleaning: stats.pendingCount,
+                        cleaned: stats.cleanedCount,
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* Spot Cards List */}
                 {filteredSpots.length > 0 ? (
-                  filteredSpots.map((spot) => (
-                    <SpotCard
-                      key={spot.id}
-                      spot={spot}
-                      currentUser={currentUser}
-                      onCleanSpot={(s) => setActiveCleanSpot(s)}
-                      onLikeToggle={handleLikeToggle}
-                      onAddComment={handleAddComment}
-                      onOpenMap={handleOpenMapForSpot}
-                    />
-                  ))
-                ) : spots.length === 0 ? (
-                  <div className="bg-white p-10 rounded-lg border border-[#E3E3DC] text-center space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-[#EDF3EE] text-[#2D513B] flex items-center justify-center mx-auto text-2xl">
+                  <div className="space-y-6">
+                    {filteredSpots.map((spot) => (
+                      <SpotCard
+                        key={spot.id}
+                        spot={spot}
+                        currentUser={currentUser}
+                        onCleanSpot={(s) => setActiveCleanSpot(s)}
+                        onLikeToggle={handleLikeToggle}
+                        onAddComment={handleAddComment}
+                        onOpenMap={handleOpenMapForSpot}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white p-10 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
                       🌱
                     </div>
                     <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base font-semibold text-[#181A19]">No spots reported yet</h3>
-                      <p className="text-xs text-[#535A55]">
-                        Be the first community scout! Spot a dirty place in your neighborhood, snap a photo with live GPS, and invite volunteers to clean it.
+                      <h3 className="text-base font-bold text-slate-900">No spots in this view</h3>
+                      <p className="text-xs text-slate-500">
+                        Try switching to "All" or report a new dirty spot in your neighborhood!
                       </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => setIsReportModalOpen(true)}
-                      className="px-4 py-2 text-xs font-semibold text-white bg-[#2D513B] rounded-md hover:bg-[#233F2E] inline-flex items-center gap-1.5 shadow-sm"
-                    >
-                      + Report the First Spot
-                    </button>
-                  </div>
-                ) : (
-                  <div className="bg-white p-8 rounded-lg border border-[#E3E3DC] text-center space-y-3">
-                    <p className="text-sm text-[#535A55]">
-                      No spots match this filter at the moment.
-                    </p>
-                    <button
-                      type="button"
                       onClick={() => setFeedFilter('all')}
-                      className="px-3 py-1.5 text-xs rounded bg-[#2D513B] text-white"
+                      className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-xl transition-all shadow-sm"
                     >
-                      Show All Spots
+                      Show All Posts
                     </button>
                   </div>
                 )}
               </div>
 
               {/* Right Column: Context Sidebar */}
-              <aside className="lg:col-span-4 space-y-5 hidden lg:block">
+              <aside className="lg:col-span-4 space-y-6 hidden lg:block sticky top-20">
                 {/* How GarbageMedia Works Card */}
-                <div className="bg-white p-5 rounded-lg border border-[#E3E3DC] shadow-subtle">
-                  <h3 className="font-semibold text-xs uppercase tracking-wider text-[#181A19] mb-3 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-[#2D513B]" />
-                    How Civic Cleanups Work
+                <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-purple-700 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-purple-600" />
+                    How GarbageMedia Works
                   </h3>
-                  <ol className="space-y-3 text-xs text-[#535A55]">
-                    <li className="flex gap-2.5 items-start">
-                      <span className="w-5 h-5 rounded-full bg-[#F2F2EC] text-[#181A19] font-mono font-bold flex items-center justify-center flex-shrink-0 text-[11px] border border-[#E3E3DC]">
+                  <ol className="space-y-3.5 text-xs text-slate-600">
+                    <li className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs shadow-xs">
                         1
                       </span>
                       <span>
-                        <strong className="text-[#181A19]">Find a dirty spot:</strong> Click "Report
-                        Spot", take a photo, and the app grabs your live GPS coordinates.
+                        <strong className="text-slate-900">Pin a dirty spot:</strong> Snap a photo and select the location on the live interactive map.
                       </span>
                     </li>
-                    <li className="flex gap-2.5 items-start">
-                      <span className="w-5 h-5 rounded-full bg-[#F2F2EC] text-[#181A19] font-mono font-bold flex items-center justify-center flex-shrink-0 text-[11px] border border-[#E3E3DC]">
+                    <li className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs shadow-xs">
                         2
                       </span>
                       <span>
-                        <strong className="text-[#181A19]">Clean & verify:</strong> You or another
-                        volunteer cleans it, snaps the after photo on-site to match the GPS location.
+                        <strong className="text-slate-900">Clean & verify on-site:</strong> Volunteers clean it and submit photo proof with GPS matching.
                       </span>
                     </li>
-                    <li className="flex gap-2.5 items-start">
-                      <span className="w-5 h-5 rounded-full bg-[#F2F2EC] text-[#181A19] font-mono font-bold flex items-center justify-center flex-shrink-0 text-[11px] border border-[#E3E3DC]">
+                    <li className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-mono font-bold flex items-center justify-center flex-shrink-0 text-xs shadow-xs">
                         3
                       </span>
                       <span>
-                        <strong className="text-[#181A19]">Automatic Comparison:</strong> A
-                        split-slider proof is generated and reward points are credited to the cleaner!
+                        <strong className="text-slate-900">Before & After Slider:</strong> Interactive split proof is published and reward points are credited!
                       </span>
                     </li>
                   </ol>
                 </div>
 
-                {/* Open Missions Waiting for Volunteers */}
-                <div className="bg-white p-5 rounded-lg border border-[#E3E3DC] shadow-subtle">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-xs uppercase tracking-wider text-[#BA4A2B] flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-[#BA4A2B]" />
-                      Open Cleanup Missions
+                {/* Open Cleanup Missions Spotlight - Full-width clean text so nothing is cut off */}
+                <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-extrabold text-xs uppercase tracking-wider text-orange-600 flex items-center gap-1.5">
+                      <AlertTriangle className="w-4 h-4 text-orange-600" />
+                      Active Missions
                     </h3>
-                    <span className="font-mono text-xs text-[#7E8681]">
+                    <span className="font-mono text-xs font-bold text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-lg border border-orange-200">
                       {stats.pendingCount} open
                     </span>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3.5">
                     {spots.filter((s) => s.status === 'needs_cleaning').length > 0 ? (
                       spots
                         .filter((s) => s.status === 'needs_cleaning')
@@ -419,37 +431,90 @@ function GarbageMediaDashboard() {
                         .map((spot) => (
                           <div
                             key={spot.id}
-                            className="p-2.5 rounded border border-[#E3E3DC] bg-[#FDF7F5] space-y-1.5"
+                            className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/70 space-y-2.5 hover:border-orange-300 transition-colors shadow-xs"
                           >
-                            <div className="flex justify-between items-start gap-1">
-                              <span className="text-xs font-semibold text-[#181A19] line-clamp-1">
-                                {spot.title}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-700 bg-orange-100/70 border border-orange-200 px-2 py-0.5 rounded-md">
+                                Bounty Mission
                               </span>
-                              <span className="text-[10px] font-mono font-bold text-[#BA4A2B] bg-white px-1.5 py-0.5 rounded border border-[#E3E3DC] flex-shrink-0">
+                              <span className="text-xs font-mono font-black text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 px-2.5 py-0.5 rounded-lg shadow-sm flex-shrink-0">
                                 +{spot.rewardPoints} pts
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#7E8681] truncate">
-                              {spot.location.address}
+                            <h4 className="text-xs font-extrabold text-slate-900 leading-snug break-words">
+                              {spot.title}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 flex items-start gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 mt-0.5" />
+                              <span className="break-words line-clamp-2 leading-tight">{spot.location.address}</span>
                             </p>
                             <button
                               type="button"
                               onClick={() => setActiveCleanSpot(spot)}
-                              className="w-full mt-1 py-1 px-2 text-[11px] font-medium bg-[#2D513B] text-white rounded hover:bg-[#233F2E] flex items-center justify-center gap-1"
+                              className="w-full mt-1.5 py-2.5 px-3 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex items-center justify-center gap-2 shadow-btn-orange hover:scale-[1.02] active:scale-95 transition-all"
                             >
-                              <Sparkles className="w-3 h-3 text-yellow-300" />
-                              Clean This Spot
+                              <Sparkles className="w-3.5 h-3.5 text-white" />
+                              <span>I Cleaned This Spot</span>
                             </button>
                           </div>
                         ))
                     ) : (
-                      <div className="p-3.5 rounded border border-dashed border-[#CACECB] bg-[#F9F9F6] text-center">
-                        <p className="text-xs text-[#535A55] font-medium">No open missions</p>
-                        <p className="text-[11px] text-[#7E8681] mt-0.5">
-                          Spot something dirty? Report it to start a community cleanup!
+                      <div className="p-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 text-center">
+                        <p className="text-xs text-slate-600 font-medium">All spots are clean!</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Report a littered place to start a community cleanup mission.
                         </p>
                       </div>
                     )}
+                  </div>
+                </div>
+
+                {/* Top Champions Quick Podium */}
+                <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                      <Trophy className="w-4 h-4 text-amber-600" />
+                      Top Champions
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentTab('leaderboard')}
+                      className="text-xs text-violet-600 hover:text-violet-700 font-bold flex items-center gap-0.5"
+                    >
+                      <span>View All</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {leaderboard.slice(0, 3).map((item, idx) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between gap-2 p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="font-mono font-extrabold text-xs text-slate-400 w-4">
+                            #{idx + 1}
+                          </span>
+                          <img
+                            src={item.avatar}
+                            alt={item.name}
+                            className="w-8 h-8 rounded-full object-cover border border-violet-200 flex-shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-slate-900 truncate block">
+                              {item.name}
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-mono">
+                              {item.spotsCleaned} cleanups
+                            </span>
+                          </div>
+                        </div>
+                        <span className="font-mono font-extrabold text-xs text-amber-600 flex-shrink-0">
+                          {item.points} pts
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </aside>
@@ -457,22 +522,25 @@ function GarbageMediaDashboard() {
           </div>
         )}
 
-        {/* VIEW 2: Interactive OpenStreetMap */}
+        {/* VIEW 2: Interactive Map View */}
         {currentTab === 'map' && (
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E3E3DC]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#232845]">
               <div>
-                <h2 className="text-base font-semibold text-[#181A19]">Interactive Civic Map</h2>
-                <p className="text-xs text-[#535A55]">
-                  Live map of uncleaned spots (terracotta) and restored zones (forest green).
+                <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                  Interactive Civic Clean Map
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Search locations, switch between Dark Matter, satellite, and street tiles, and discover dirty spots or restored proofs.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsReportModalOpen(true)}
-                className="px-3 py-1.5 text-xs font-medium rounded bg-[#2D513B] text-white self-start sm:self-auto"
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-glow-orange hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 self-start sm:self-auto"
               >
-                + Report Spot at Location
+                <Plus className="w-3.5 h-3.5" />
+                Report Spot at Location
               </button>
             </div>
 
@@ -497,7 +565,7 @@ function GarbageMediaDashboard() {
         {currentTab === 'rewards' && <RewardsView currentUser={currentUser} />}
       </main>
 
-      {/* MODAL 1: Report Dirty Spot */}
+      {/* MODAL 1: Report Dirty Spot with Interactive Leaflet Location Picker */}
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -505,7 +573,7 @@ function GarbageMediaDashboard() {
         currentUser={currentUser}
       />
 
-      {/* MODAL 2: Clean Submission (Proof + Location Match + Reward Points) */}
+      {/* MODAL 2: Clean Submission (Proof + Proximity Match + Confetti Reward) */}
       <CleanSubmissionModal
         spot={activeCleanSpot}
         isOpen={Boolean(activeCleanSpot)}
@@ -518,23 +586,17 @@ function GarbageMediaDashboard() {
 }
 
 function AppContent() {
-  const { user, loading } = useAuth();
-  const [isGuest, setIsGuest] = useState(false);
+  const { loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F9F9F6] flex flex-col items-center justify-center space-y-3">
-        <div className="w-10 h-10 rounded-md bg-[#2D513B] text-white flex items-center justify-center text-xl font-bold animate-pulse">
+      <div className="min-h-screen bg-[#0A0B14] flex flex-col items-center justify-center space-y-3">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center text-2xl font-bold animate-pulse shadow-glow-purple">
           🌱
         </div>
-        <p className="text-xs text-[#535A55] font-mono">Loading GarbageMedia...</p>
+        <p className="text-xs text-slate-400 font-mono">Initializing GarbageMedia...</p>
       </div>
     );
-  }
-
-  // If user is not logged in and hasn't chosen guest mode, show the Welcome / Auth portal!
-  if (!user && !isGuest) {
-    return <AuthScreen onContinueAsGuest={() => setIsGuest(true)} />;
   }
 
   return <GarbageMediaDashboard />;

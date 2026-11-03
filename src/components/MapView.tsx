@@ -1,7 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import type { Spot, UserProfile } from '../types';
-import { AlertTriangle, CheckCircle2, MapPin, Sparkles, X, Crosshair, ArrowRight } from 'lucide-react';
+import {
+  AlertTriangle,
+  CheckCircle2,
+  MapPin,
+  Sparkles,
+  X,
+  Crosshair,
+  ArrowRight,
+  Search,
+  Layers,
+  RotateCcw,
+  Loader2,
+} from 'lucide-react';
+import { searchLocations, GeocodeSearchResult } from '../utils/geo';
 
 interface MapViewProps {
   spots: Spot[];
@@ -11,6 +24,29 @@ interface MapViewProps {
   currentUser: UserProfile;
 }
 
+type MapTileStyle = 'voyager' | 'dark' | 'satellite';
+
+const TILE_PROVIDERS: Record<MapTileStyle, { url: string; maxZoom: number; attribution: string; name: string }> = {
+  voyager: {
+    name: 'Vibrant Streets',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  },
+  satellite: {
+    name: 'Satellite Aerial',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 18,
+    attribution: 'Tiles &copy; Esri',
+  },
+  dark: {
+    name: 'Dark Matter',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  },
+};
+
 export const MapView: React.FC<MapViewProps> = ({
   spots,
   selectedSpot,
@@ -19,9 +55,21 @@ export const MapView: React.FC<MapViewProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
+  const userMarkerRef = useRef<L.Marker | null>(null);
+
   const [activeSpot, setActiveSpot] = useState<Spot | null>(selectedSpot || null);
   const [mapFilter, setMapFilter] = useState<'all' | 'needs_cleaning' | 'cleaned'>('all');
+  const [tileStyle, setTileStyle] = useState<MapTileStyle>('voyager');
+  const [showLayerMenu, setShowLayerMenu] = useState(false);
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<GeocodeSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchTimeoutRef = useRef<any>(null);
 
   useEffect(() => {
     if (selectedSpot) {
@@ -29,26 +77,29 @@ export const MapView: React.FC<MapViewProps> = ({
     }
   }, [selectedSpot]);
 
+  // Initialize Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    const centerLat = activeSpot ? activeSpot.location.lat : spots[0]?.location.lat || 40.7829;
-    const centerLng = activeSpot ? activeSpot.location.lng : spots[0]?.location.lng || -73.9654;
+    const initialCenterLat = activeSpot ? activeSpot.location.lat : spots[0]?.location.lat || 40.7829;
+    const initialCenterLng = activeSpot ? activeSpot.location.lng : spots[0]?.location.lng || -73.9654;
 
     const map = L.map(mapContainerRef.current, {
-      center: [centerLat, centerLng],
+      center: [initialCenterLat, initialCenterLng],
       zoom: 14,
-      zoomControl: false, // We'll add clean controls
+      zoomControl: false,
       scrollWheelZoom: true,
     });
 
-    // Clean, understated CartoDB Voyager map tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
-      maxZoom: 19,
+    const activeTile = TILE_PROVIDERS[tileStyle];
+    const tileLayer = L.tileLayer(activeTile.url, {
+      attribution: activeTile.attribution,
+      maxZoom: activeTile.maxZoom,
     }).addTo(map);
 
+    tileLayerRef.current = tileLayer;
+
+    // Zoom control at bottom right
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     mapInstanceRef.current = map;
@@ -59,12 +110,30 @@ export const MapView: React.FC<MapViewProps> = ({
     };
   }, []);
 
-  // Update markers when spots or filter change
+  // Switch Tile Style
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    markersRef.current.forEach((marker) => marker.remove());
+    if (tileLayerRef.current) {
+      map.removeLayer(tileLayerRef.current);
+    }
+
+    const activeTile = TILE_PROVIDERS[tileStyle];
+    const newLayer = L.tileLayer(activeTile.url, {
+      attribution: activeTile.attribution,
+      maxZoom: activeTile.maxZoom,
+    }).addTo(map);
+
+    tileLayerRef.current = newLayer;
+  }, [tileStyle]);
+
+  // Update Markers when spots, filter, or activeSpot change
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
     const visibleSpots = spots.filter((s) => {
@@ -75,37 +144,50 @@ export const MapView: React.FC<MapViewProps> = ({
     visibleSpots.forEach((spot) => {
       const isCleaned = spot.status === 'cleaned';
       const isSelected = activeSpot?.id === spot.id;
-      const bgColor = isCleaned ? '#2D513B' : '#BA4A2B';
-      const symbol = isCleaned ? '✓' : '!';
+
+      const markerHtml = isCleaned
+        ? `
+          <div class="map-marker-pin" style="
+            width: ${isSelected ? '44px' : '36px'};
+            height: ${isSelected ? '44px' : '36px'};
+            background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+            transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'};
+          ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+          </div>
+        `
+        : `
+          <div class="map-marker-pin" style="
+            width: ${isSelected ? '44px' : '36px'};
+            height: ${isSelected ? '44px' : '36px'};
+            background: linear-gradient(135deg, #FF5722 0%, #EF4444 100%);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45);
+            transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'};
+          ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+        `;
 
       const customIcon = L.divIcon({
         className: 'custom-spot-marker',
-        html: `
-          <div style="
-            background-color: ${bgColor};
-            color: white;
-            width: ${isSelected ? '38px' : '32px'};
-            height: ${isSelected ? '38px' : '32px'};
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: ${isSelected ? '16px' : '13px'};
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform: ${isSelected ? 'scale(1.15)' : 'scale(1)'};
-          ">
-            ${symbol}
-          </div>
-        `,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
+        html: markerHtml,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
       });
 
-      const marker = L.marker([spot.location.lat, spot.location.lng], { icon: customIcon }).addTo(map);
+      const marker = L.marker([spot.location.lat, spot.location.lng], {
+        icon: customIcon,
+        zIndexOffset: isSelected ? 1000 : 100,
+      }).addTo(map);
 
       marker.on('click', () => {
         setActiveSpot(spot);
@@ -121,100 +203,274 @@ export const MapView: React.FC<MapViewProps> = ({
     }
   }, [spots, activeSpot, mapFilter, onSelectSpot]);
 
-  const handleLocateMe = () => {
+  // Handle Search Input with Debounce
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+    if (!query.trim() || query.length < 2) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    setShowSearchDropdown(true);
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const results = await searchLocations(query);
+        setSearchResults(results);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+  };
+
+  const handleSelectSearchResult = (place: GeocodeSearchResult) => {
+    setSearchQuery(place.display_name.split(',').slice(0, 2).join(', '));
+    setShowSearchDropdown(false);
+
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.flyTo([place.lat, place.lng], 15, {
+        animate: true,
+        duration: 1.5,
+      });
+    }
+  };
+
+  const handleLocateMe = useCallback(() => {
     if (!navigator.geolocation || !mapInstanceRef.current) return;
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        mapInstanceRef.current?.setView([pos.coords.latitude, pos.coords.longitude], 15, {
-          animate: true,
+        const { latitude, longitude } = pos.coords;
+        const map = mapInstanceRef.current;
+        if (!map) return;
+
+        if (userMarkerRef.current) {
+          userMarkerRef.current.remove();
+        }
+
+        const userIcon = L.divIcon({
+          className: 'custom-spot-marker',
+          html: `
+            <div class="user-location-marker">
+              <div class="user-location-pulse"></div>
+              <div class="user-location-dot"></div>
+            </div>
+          `,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
         });
+
+        userMarkerRef.current = L.marker([latitude, longitude], {
+          icon: userIcon,
+          zIndexOffset: 2000,
+        }).addTo(map);
+
+        map.flyTo([latitude, longitude], 15, { animate: true, duration: 1.2 });
       },
-      (err) => console.warn(err),
+      (err) => console.warn('Geolocation error:', err),
       { enableHighAccuracy: true }
     );
+  }, []);
+
+  const handleFitAllSpots = () => {
+    const map = mapInstanceRef.current;
+    if (!map || spots.length === 0) return;
+
+    const bounds = L.latLngBounds(spots.map((s) => [s.location.lat, s.location.lng]));
+    map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-140px)] min-h-[500px] rounded-xl border border-[#E3E3DC] overflow-hidden shadow-xs">
-      {/* Map Element */}
+    <div className="relative w-full h-[calc(100vh-140px)] min-h-[550px] rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-slate-100">
+      {/* Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Top Floating Filter Bar */}
-      <div className="absolute top-3.5 left-3.5 z-10 flex items-center gap-1 bg-white/95 p-1 rounded-lg border border-[#E3E3DC] shadow-xs">
-        <button
-          type="button"
-          onClick={() => setMapFilter('all')}
-          className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${
-            mapFilter === 'all'
-              ? 'bg-[#181A19] text-white'
-              : 'text-[#535A55] hover:text-[#181A19]'
-          }`}
-        >
-          All ({spots.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setMapFilter('needs_cleaning')}
-          className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors flex items-center gap-1 ${
-            mapFilter === 'needs_cleaning'
-              ? 'bg-[#BA4A2B] text-white'
-              : 'text-[#842D18] hover:bg-[#FDF7F5]'
-          }`}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-current" />
-          Needs Clean ({spots.filter((s) => s.status === 'needs_cleaning').length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setMapFilter('cleaned')}
-          className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors flex items-center gap-1 ${
-            mapFilter === 'cleaned'
-              ? 'bg-[#2D513B] text-white'
-              : 'text-[#233F2E] hover:bg-[#F2F7F4]'
-          }`}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-current" />
-          Restored ({spots.filter((s) => s.status === 'cleaned').length})
-        </button>
+      {/* TOP FLOATING CONTROLS BAR */}
+      <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
+        {/* Left: Filter Buttons & Search Input */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
+          {/* Status Filters */}
+          <div className="bg-white/95 backdrop-blur-md p-1 rounded-xl border border-slate-200/90 shadow-md flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setMapFilter('all')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                mapFilter === 'all'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              All ({spots.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapFilter('needs_cleaning')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                mapFilter === 'needs_cleaning'
+                  ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-btn-orange'
+                  : 'text-orange-600 hover:bg-orange-50'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+              Needs Clean ({spots.filter((s) => s.status === 'needs_cleaning').length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapFilter('cleaned')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                mapFilter === 'cleaned'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm'
+                  : 'text-purple-700 hover:bg-purple-50'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-current" />
+              Restored ({spots.filter((s) => s.status === 'cleaned').length})
+            </button>
+          </div>
+
+          {/* Place Search Bar */}
+          <div className="relative min-w-[240px] sm:w-72">
+            <div className="bg-white/95 backdrop-blur-md flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-md">
+              {isSearching ? (
+                <Loader2 className="w-4 h-4 text-violet-600 animate-spin flex-shrink-0" />
+              ) : (
+                <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
+              )}
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => {
+                  if (searchResults.length > 0) setShowSearchDropdown(true);
+                }}
+                placeholder="Search any place or city..."
+                className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchResults([]);
+                    setShowSearchDropdown(false);
+                  }}
+                  className="text-slate-400 hover:text-slate-700"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Dropdown search results */}
+            {showSearchDropdown && searchResults.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl border border-slate-200 shadow-modal overflow-hidden z-30 max-h-60 overflow-y-auto">
+                {searchResults.map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleSelectSearchResult(item)}
+                    className="w-full text-left px-3.5 py-2.5 text-xs text-slate-700 hover:bg-purple-50 hover:text-purple-900 border-b border-slate-100 last:border-b-0 flex items-start gap-2 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <span className="truncate">{item.display_name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Map Layers & Utility Dock */}
+        <div className="flex items-center gap-2 self-end sm:self-auto pointer-events-auto">
+          {/* Map Layer Switcher */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowLayerMenu(!showLayerMenu)}
+              className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-bold"
+              title="Change Map Style"
+            >
+              <Layers className="w-4 h-4 text-violet-600" />
+              <span className="hidden sm:inline">{TILE_PROVIDERS[tileStyle].name}</span>
+            </button>
+
+            {showLayerMenu && (
+              <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl border border-slate-200 shadow-modal p-1.5 z-30">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-2 py-1 block">
+                  Map View Style
+                </span>
+                {(['voyager', 'satellite', 'dark'] as MapTileStyle[]).map((style) => (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => {
+                      setTileStyle(style);
+                      setShowLayerMenu(false);
+                    }}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
+                      tileStyle === style
+                        ? 'bg-purple-50 text-purple-700 font-bold'
+                        : 'text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{TILE_PROVIDERS[style].name}</span>
+                    {tileStyle === style && <span className="text-xs">✓</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Fit all spots */}
+          <button
+            type="button"
+            onClick={handleFitAllSpots}
+            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            title="Fit All Spots on Screen"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+
+          {/* GPS Locate Me Button */}
+          <button
+            type="button"
+            onClick={handleLocateMe}
+            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-violet-600 hover:bg-slate-50 transition-colors"
+            title="Center on My Live Location"
+          >
+            <Crosshair className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* GPS Locate Me Button */}
-      <button
-        type="button"
-        onClick={handleLocateMe}
-        className="absolute top-3.5 right-3.5 z-10 p-2.5 rounded-lg bg-white border border-[#E3E3DC] shadow-xs text-[#535A55] hover:text-[#181A19] hover:bg-[#F9F9F6] transition-colors"
-        title="Find My Location on Map"
-      >
-        <Crosshair className="w-4 h-4 text-[#2D513B]" />
-      </button>
-
-      {/* Empty State Callout */}
-      {spots.length === 0 && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10 bg-white border border-[#E3E3DC] rounded-full px-4 py-2 shadow-sm text-xs text-[#535A55] flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#2D513B] animate-pulse"></span>
-          <span>No spots pinned yet. Click <strong>"+ Report Spot at Location"</strong> above to pin one!</span>
-        </div>
-      )}
-
-      {/* Active Spot Card Overlay (Bottom Drawer) */}
+      {/* Floating Active Spot Preview Drawer (Bottom Left) */}
       {activeSpot && (
-        <div className="absolute bottom-5 left-4 right-4 sm:left-6 sm:right-auto sm:w-[420px] z-20 bg-white rounded-xl border-2 border-[#E3E3DC] shadow-2xl p-4.5 animate-in fade-in slide-in-from-bottom-3">
+        <div className="absolute bottom-5 left-4 right-4 sm:left-6 sm:right-auto sm:w-[420px] z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-modal p-4.5 animate-in fade-in slide-in-from-bottom-4 text-slate-900">
           <div className="flex items-start justify-between gap-2 mb-2.5">
             <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase ${
                 activeSpot.status === 'cleaned'
-                  ? 'bg-[#E7EFEA] text-[#14231A] border border-[#2D513B]/20'
-                  : 'bg-[#FDEEEA] text-[#842D18] border border-[#C24A2C]/20'
+                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                  : 'bg-orange-50 text-orange-700 border border-orange-200'
               }`}
             >
               {activeSpot.status === 'cleaned' ? (
                 <>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#2D513B]" />
-                  Cleaned & Restored
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" />
+                  Transformed & Cleaned
                 </>
               ) : (
                 <>
-                  <AlertTriangle className="w-3.5 h-3.5 text-[#BA4A2B]" />
+                  <AlertTriangle className="w-3.5 h-3.5 text-orange-600" />
                   Open Bounty: +{activeSpot.rewardPoints} pts
                 </>
               )}
@@ -222,52 +478,57 @@ export const MapView: React.FC<MapViewProps> = ({
             <button
               type="button"
               onClick={() => setActiveSpot(null)}
-              className="p-1 text-[#7E8681] hover:text-[#181A19] rounded hover:bg-[#F2F2EC]"
+              className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           <div className="flex gap-3.5 items-center mb-3.5">
-            <img
-              src={
-                activeSpot.status === 'cleaned' && activeSpot.verification
-                  ? activeSpot.verification.afterPhotoUrl
-                  : activeSpot.beforePhotoUrl
-              }
-              alt={activeSpot.title}
-              className="w-20 h-20 rounded-lg object-cover border border-[#E3E3DC] flex-shrink-0 shadow-xs"
-            />
+            <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 shadow-xs bg-slate-100">
+              <img
+                src={
+                  activeSpot.status === 'cleaned' && activeSpot.verification
+                    ? activeSpot.verification.afterPhotoUrl
+                    : activeSpot.beforePhotoUrl
+                }
+                alt={activeSpot.title}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-1 right-1 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-black/80 text-white font-mono">
+                {activeSpot.status === 'cleaned' ? 'Restored' : 'Littered'}
+              </span>
+            </div>
             <div className="min-w-0">
-              <h4 className="font-bold text-sm text-[#181A19] truncate">{activeSpot.title}</h4>
-              <p className="text-xs text-[#535A55] line-clamp-2 mt-0.5 leading-relaxed">
+              <h4 className="font-bold text-sm text-slate-900 truncate">{activeSpot.title}</h4>
+              <p className="text-xs text-slate-600 line-clamp-2 mt-0.5 leading-relaxed">
                 {activeSpot.description}
               </p>
-              <p className="text-[11px] text-[#7E8681] flex items-center gap-1 mt-1 truncate font-mono">
-                <MapPin className="w-3 h-3 text-[#2D513B] flex-shrink-0" />
+              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1 truncate">
+                <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
                 <span className="truncate">{activeSpot.location.address}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2.5 border-t border-[#F0EFEA]">
+          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => onSelectSpot(activeSpot)}
-              className="text-xs font-semibold text-[#2D513B] hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-violet-700 hover:text-violet-900 flex items-center gap-1 transition-colors"
             >
-              <span>View Full Report</span>
-              <ArrowRight className="w-3 h-3" />
+              <span>View Full Card</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             {activeSpot.status === 'needs_cleaning' && (
               <button
                 type="button"
                 onClick={() => onCleanSpot(activeSpot)}
-                className="px-3.5 py-1.5 text-xs font-bold bg-[#2D513B] text-white rounded-md hover:bg-[#233F2E] flex items-center gap-1.5 shadow-xs hover:scale-105 transition-all"
+                className="px-4 py-1.5 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex items-center gap-1.5 shadow-btn-orange hover:scale-105 active:scale-95 transition-all"
               >
-                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-                <span>I Cleaned This</span>
+                <Sparkles className="w-3.5 h-3.5 text-white" />
+                <span>I Cleaned This Spot</span>
               </button>
             )}
           </div>

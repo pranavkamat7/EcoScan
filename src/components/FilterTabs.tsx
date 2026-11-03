@@ -1,6 +1,6 @@
 import React from 'react';
 import { FeedFilter } from '../types';
-import { Sparkles, AlertTriangle, CheckCircle2, Navigation } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Navigation, Layers } from 'lucide-react';
 
 interface FilterTabsProps {
   currentFilter: FeedFilter;
@@ -18,58 +18,89 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
   counts,
 }) => {
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
+    <div className="inline-flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+      {/* All Tab */}
       <button
         type="button"
         onClick={() => onFilterChange('all')}
-        className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors border ${
+        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
           currentFilter === 'all'
-            ? 'bg-[#181A19] text-white border-[#181A19]'
-            : 'bg-white text-[#535A55] border-[#E3E3DC] hover:text-[#181A19] hover:bg-[#F9F9F6]'
+            ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white shadow-sm scale-[1.02]'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
       >
-        All Updates ({counts.all})
+        <Layers className="w-3.5 h-3.5" />
+        <span>All</span>
+        <span
+          className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
+            currentFilter === 'all'
+              ? 'bg-black/20 text-white'
+              : 'bg-slate-100 text-slate-600'
+          }`}
+        >
+          {counts.all}
+        </span>
       </button>
 
+      {/* Restored Tab */}
       <button
         type="button"
         onClick={() => onFilterChange('cleaned')}
-        className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 border ${
+        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
           currentFilter === 'cleaned'
-            ? 'bg-[#2D513B] text-white border-[#2D513B]'
-            : 'bg-white text-[#233F2E] border-[#E3E3DC] hover:bg-[#F2F7F4]'
+            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm scale-[1.02]'
+            : 'text-purple-700 hover:bg-purple-50'
         }`}
       >
-        <CheckCircle2 className="w-3.5 h-3.5" />
-        <span>Transformed ({counts.cleaned})</span>
+        <CheckCircle2 className="w-3.5 h-3.5 text-current" />
+        <span>Restored</span>
+        <span
+          className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
+            currentFilter === 'cleaned'
+              ? 'bg-black/20 text-white'
+              : 'bg-purple-100 text-purple-700'
+          }`}
+        >
+          {counts.cleaned}
+        </span>
       </button>
 
+      {/* Needs Cleaning Tab */}
       <button
         type="button"
         onClick={() => onFilterChange('needs_cleaning')}
-        className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 border ${
+        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
           currentFilter === 'needs_cleaning'
-            ? 'bg-[#BA4A2B] text-white border-[#BA4A2B]'
-            : 'bg-white text-[#842D18] border-[#E3E3DC] hover:bg-[#FDF7F5]'
+            ? 'bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 text-white shadow-btn-orange scale-[1.02]'
+            : 'text-orange-600 hover:bg-orange-50'
         }`}
       >
-        <AlertTriangle className="w-3.5 h-3.5" />
-        <span>Needs Cleaning ({counts.needsCleaning})</span>
+        <AlertTriangle className="w-3.5 h-3.5 text-current" />
+        <span>Needs Clean</span>
+        <span
+          className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
+            currentFilter === 'needs_cleaning'
+              ? 'bg-black/20 text-white'
+              : 'bg-orange-100 text-orange-700'
+          }`}
+        >
+          {counts.needsCleaning}
+        </span>
       </button>
 
+      {/* Nearby Tab */}
       <button
         type="button"
         onClick={() => onFilterChange('nearby')}
-        className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 border ${
+        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
           currentFilter === 'nearby'
-            ? 'bg-[#181A19] text-white border-[#181A19]'
-            : 'bg-white text-[#535A55] border-[#E3E3DC] hover:text-[#181A19] hover:bg-[#F9F9F6]'
+            ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm scale-[1.02]'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
       >
-        <Navigation className="w-3.5 h-3.5 text-[#2D513B]" />
-        <span>Nearby Me</span>
+        <Navigation className="w-3.5 h-3.5 text-violet-600" />
+        <span>Nearby</span>
       </button>
     </div>
   );
 };
-

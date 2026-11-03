@@ -19,22 +19,16 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const formatFirebaseError = (err: any): string => {
     const msg = err?.code || err?.message || '';
     if (msg.includes('auth/configuration-not-found')) {
-      return 'Authentication is not turned on yet in your Firebase Console. Go to Firebase Console > Build > Authentication, click "Get started", and enable Email/Password and Google under "Sign-in method".';
-    }
-    if (msg.includes('auth/unauthorized-domain')) {
-      return 'Domain not authorized. Go to Firebase Console > Authentication > Settings > Authorized domains, and add "garbagemedia.onrender.com".';
+      return 'Authentication is not turned on yet in your Firebase Console. Enable Email/Password or Google under Sign-in method.';
     }
     if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
-      return 'Invalid email or password. If you do not have an account, click "Register" above.';
+      return 'Invalid email or password.';
     }
     if (msg.includes('auth/email-already-in-use')) {
-      return 'An account already exists with this email. Please click "Sign In" above.';
+      return 'An account already exists with this email. Please sign in.';
     }
     if (msg.includes('auth/weak-password')) {
-      return 'Password must be at least 6 characters long.';
-    }
-    if (msg.includes('auth/popup-closed-by-user')) {
-      return 'Google sign-in popup was closed before completing.';
+      return 'Password must be at least 6 characters.';
     }
     return err?.message || 'Authentication error. Please try again.';
   };
@@ -83,22 +77,22 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F9F6] text-[#181A19] flex flex-col justify-between">
-      {/* Top Simple Header */}
-      <header className="border-b border-[#E3E3DC] bg-white px-6 py-4">
+    <div className="min-h-screen bg-[#0A0B14] text-slate-100 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+      {/* Top Header */}
+      <header className="border-b border-[#232845] glass-nav-dark px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#2D513B] text-white flex items-center justify-center font-bold text-base shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center font-bold text-xl shadow-glow-purple">
               🌱
             </div>
-            <span className="font-bold text-lg text-[#181A19] tracking-tight">
-              GarbageMedia
+            <span className="font-extrabold text-xl text-white tracking-tight">
+              Garbage<span className="bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">Media</span>
             </span>
           </div>
           <button
             type="button"
             onClick={handleGuest}
-            className="text-xs font-medium text-[#535A55] hover:text-[#181A19] underline"
+            className="text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 px-4 py-2 rounded-xl transition-all shadow-glow-orange hover:scale-105 active:scale-95"
           >
             Explore as Guest →
           </button>
@@ -110,51 +104,52 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full">
           {/* Left Hero Civic Overview */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E7EFEA] text-[#233F2E] text-xs font-semibold border border-[#2D513B]/20">
-              <Sparkles className="w-3.5 h-3.5 text-[#2D513B]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/15 text-violet-300 text-xs font-bold border border-violet-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
               Community Spot Cleanups & Proofs
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#181A19] leading-tight">
-              Clean your neighborhood. <br className="hidden sm:block" />
-              Capture proof. Earn rewards.
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+              Clean your community. <br className="hidden sm:block" />
+              <span className="bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                Capture proof. Earn rewards.
+              </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-[#535A55] leading-relaxed max-w-xl">
-              Found a littered park, dirty street corner, or alleyway? Snap a photo with live GPS.
-              When anyone cleans it up and takes the after photo on-site, our app automatically
-              generates the before & after comparison and awards civic points.
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+              Found a littered park, dirty street corner, or shoreline? Snap a photo with live GPS.
+              When volunteers clean it up, our app automatically generates verified Before & After comparison sliders and awards civic bounty points.
             </p>
 
             {/* 3 Step Features */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-[#2D513B] text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+            <div className="space-y-3.5 pt-2">
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
                   1
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-[#181A19]">Spot a dirty area</h4>
-                  <p className="text-xs text-[#535A55]">Upload photo with automatic live GPS location coordinates.</p>
+                  <h4 className="text-sm font-bold text-white">Pin a dirty area on the map</h4>
+                  <p className="text-xs text-slate-400">Take a photo with live GPS and place search powered by accurate OpenStreetMap.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-[#2D513B] text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
                   2
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-[#181A19]">Clean & verify on-site</h4>
-                  <p className="text-xs text-[#535A55]">Clean the area, take the after photo. Location matches to confirm proof.</p>
+                  <h4 className="text-sm font-bold text-white">Clean & verify on-site</h4>
+                  <p className="text-xs text-slate-400">Volunteers submit the after photo. Haversine GPS matching checks proximity.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-[#2D513B] text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
                   3
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-[#181A19]">Interactive proof & points</h4>
-                  <p className="text-xs text-[#535A55]">Generate a split slider comparison and earn civic points on the community leaderboard.</p>
+                  <h4 className="text-sm font-bold text-white">Interactive proof & community rewards</h4>
+                  <p className="text-xs text-slate-400">Before & After slider is published to the feed, and points are added to the civic leaderboard.</p>
                 </div>
               </div>
             </div>
@@ -162,44 +157,38 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
           {/* Right Login / Signup Card */}
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-xl border border-[#E3E3DC] shadow-card p-6 sm:p-7 space-y-5">
+            <div className="bg-[#121424] rounded-2xl border border-[#232845] shadow-modal-dark p-6 sm:p-7 space-y-5">
               {/* Card Tabs */}
-              <div className="flex items-center justify-between pb-3 border-b border-[#F0EFEA]">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#232845]">
                 <div>
-                  <h2 className="text-base font-bold text-[#181A19]">
+                  <h2 className="text-base font-extrabold text-white">
                     {mode === 'signin' ? 'Welcome Back' : 'Create an Account'}
                   </h2>
-                  <p className="text-xs text-[#7E8681]">
+                  <p className="text-xs text-slate-400">
                     {mode === 'signin'
                       ? 'Sign in to access your civic profile'
                       : 'Join the community cleanup registry'}
                   </p>
                 </div>
-                <div className="flex items-center gap-1 bg-[#F2F2EC] p-0.5 rounded-md text-xs">
+                <div className="flex items-center gap-1 bg-[#0E101D] p-1 rounded-xl text-xs border border-[#232845]">
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('signin');
-                      setError(null);
-                    }}
-                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                    onClick={() => setMode('signin')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       mode === 'signin'
-                        ? 'bg-white text-[#181A19] shadow-sm'
-                        : 'text-[#535A55]'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     Sign In
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('signup');
-                      setError(null);
-                    }}
-                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                    onClick={() => setMode('signup')}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       mode === 'signup'
-                        ? 'bg-white text-[#181A19] shadow-sm'
-                        : 'text-[#535A55]'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     Register
@@ -207,20 +196,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 </div>
               </div>
 
-              {/* Error Alert */}
               {error && (
-                <div className="p-3 rounded-md bg-[#FDEEEA] border border-[#C24A2C]/30 text-xs text-[#842D18] flex items-start gap-2">
+                <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
 
-              {/* Google 1-Click Sign-In */}
+              {/* Google Button */}
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full py-2.5 px-4 rounded-md border border-[#E3E3DC] bg-white hover:bg-[#F9F9F6] text-[#181A19] text-xs font-semibold flex items-center justify-center gap-2.5 transition-colors shadow-sm disabled:opacity-50"
+                className="w-full py-2.5 px-4 rounded-xl border border-[#232845] bg-[#0E101D] hover:bg-[#181C33] text-slate-200 text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-sm disabled:opacity-50"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -243,58 +231,57 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <span>Continue with Google</span>
               </button>
 
-              {/* Divider */}
               <div className="relative flex items-center justify-center">
-                <div className="border-t border-[#E3E3DC] w-full"></div>
-                <span className="bg-white px-2.5 text-[10px] uppercase font-mono tracking-wider text-[#7E8681] absolute">
-                  or with email
+                <div className="border-t border-[#232845] w-full"></div>
+                <span className="bg-[#121424] px-2.5 text-[10px] uppercase font-mono tracking-wider text-slate-500 absolute">
+                  or email
                 </span>
               </div>
 
-              {/* Email Form */}
-              <form onSubmit={handleEmailAuth} className="space-y-3">
+              {/* Form */}
+              <form onSubmit={handleEmailAuth} className="space-y-3.5">
                 {mode === 'signup' && (
                   <div>
-                    <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                       Full Name
                     </label>
                     <div className="relative">
-                      <UserIcon className="w-4 h-4 text-[#7E8681] absolute left-3 top-2.5" />
+                      <UserIcon className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                       <input
                         type="text"
                         required
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
-                        placeholder="e.g., Sarah Jenkins"
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-md bg-white border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#2D513B]"
+                        placeholder="e.g. Jordan Vance"
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
                       />
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-[#7E8681] absolute left-3 top-2.5" />
+                    <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="scout@example.com"
-                      className="w-full pl-9 pr-3 py-2 text-xs rounded-md bg-white border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#2D513B]"
+                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#2C302D] uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-[#7E8681] absolute left-3 top-2.5" />
+                    <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                     <input
                       type="password"
                       required
@@ -302,7 +289,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-3 py-2 text-xs rounded-md bg-white border border-[#E3E3DC] focus:outline-none focus:ring-1 focus:ring-[#2D513B]"
+                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
                     />
                   </div>
                 </div>
@@ -310,21 +297,21 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-md bg-[#2D513B] text-white text-xs font-semibold hover:bg-[#233F2E] transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-xs font-bold shadow-glow-orange transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95"
                 >
                   {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{mode === 'signin' ? 'Sign In to App' : 'Create Account'}</span>
+                  <span>{mode === 'signin' ? 'Sign In to Account' : 'Register Account'}</span>
                 </button>
               </form>
 
-              {/* Bottom Guest Option */}
-              <div className="text-center pt-2 border-t border-[#F0EFEA]">
+              {/* Guest Enter */}
+              <div className="pt-2 text-center">
                 <button
                   type="button"
                   onClick={handleGuest}
-                  className="text-xs text-[#535A55] hover:text-[#181A19] underline font-medium"
+                  className="text-xs font-bold text-violet-400 hover:text-violet-300 hover:underline"
                 >
-                  Skip for now, continue as Guest Volunteer
+                  Skip login and explore as Guest →
                 </button>
               </div>
             </div>
@@ -333,10 +320,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#E3E3DC] bg-white py-4 text-center text-xs text-[#7E8681]">
-        GarbageMedia — Community Cleanups & Verified Proofs
+      <footer className="border-t border-[#232845] bg-[#0E101D] py-4 text-center text-xs text-slate-500">
+        GarbageMedia • Civic Community Cleanups & Verified Photographic Proofs
       </footer>
     </div>
   );
 };
-

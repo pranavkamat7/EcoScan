@@ -13,6 +13,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Scale,
+  Share2,
 } from 'lucide-react';
 import type { Spot, UserProfile } from '../types';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
@@ -38,6 +39,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [likeAnimating, setLikeAnimating] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
 
   const isCleaned = spot.status === 'cleaned' && spot.verification;
   const isNeedsCleaning = spot.status === 'needs_cleaning';
@@ -55,6 +57,12 @@ export const SpotCard: React.FC<SpotCardProps> = ({
     setCommentText('');
   };
 
+  const handleShare = () => {
+    navigator.clipboard?.writeText?.(window.location.href);
+    setCopiedShare(true);
+    setTimeout(() => setCopiedShare(false), 2000);
+  };
+
   const formattedDate = new Date(spot.createdAt).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -62,38 +70,55 @@ export const SpotCard: React.FC<SpotCardProps> = ({
   });
 
   return (
-    <article className="bg-white rounded-xl border border-[#E3E3DC] shadow-xs hover:shadow-card transition-all overflow-hidden mb-6">
-      {/* Top Header: Reporter & Status */}
-      <div className="p-4 sm:p-5 pb-3.5 border-b border-[#F0EFEA] flex items-start justify-between gap-3">
+    <article className="relative bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
+      {/* Top Accent Gradient Line: Violet-Purple for Cleaned, Fiery Sunset Orange-Red for Open */}
+      <div
+        className={`h-1 w-full ${
+          isCleaned
+            ? 'bg-gradient-to-r from-violet-600 via-purple-500 to-indigo-600'
+            : 'bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 shadow-sm'
+        }`}
+      />
+
+      {/* Top Header: Reporter & Mission Status */}
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-white flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <img
-            src={spot.reporterAvatar}
-            alt={spot.reporterName}
-            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs flex-shrink-0 ring-1 ring-[#E3E3DC]"
-          />
+          <div className="relative flex-shrink-0">
+            <img
+              src={spot.reporterAvatar}
+              alt={spot.reporterName}
+              className="w-10 h-10 rounded-full object-cover border-2 border-violet-400 shadow-xs"
+            />
+            <span
+              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                isCleaned ? 'bg-violet-600' : 'bg-orange-500'
+              }`}
+            />
+          </div>
+
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm text-[#181A19] truncate">
+              <span className="font-extrabold text-sm text-slate-900 truncate">
                 {spot.reporterName}
               </span>
-              <span className="text-[11px] text-[#7E8681] hidden sm:inline font-mono">
-                • scout report
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-bold">
+                Scout
               </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-[#7E8681] mt-0.5">
-              <span className="flex items-center gap-1 font-mono text-[11px]">
-                <Calendar className="w-3 h-3 text-[#7E8681]" />
+            <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 flex-wrap">
+              <span className="flex items-center gap-1 text-[11px] font-mono">
+                <Calendar className="w-3 h-3 text-slate-400" />
                 {formattedDate}
               </span>
               <span>•</span>
               <button
                 type="button"
                 onClick={() => onOpenMap(spot)}
-                className="flex items-center gap-1 hover:text-[#2D513B] cursor-pointer truncate transition-colors text-left group"
+                className="flex items-center gap-1 text-slate-600 hover:text-violet-700 cursor-pointer transition-colors text-left group"
                 title={spot.location.address || 'View on map'}
               >
-                <MapPin className="w-3 h-3 text-[#2D513B] flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="truncate max-w-[140px] sm:max-w-[220px]">
+                <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <span className="truncate max-w-[200px] sm:max-w-[320px]">
                   {spot.location.address || `${spot.location.lat.toFixed(4)}, ${spot.location.lng.toFixed(4)}`}
                 </span>
               </button>
@@ -101,54 +126,58 @@ export const SpotCard: React.FC<SpotCardProps> = ({
           </div>
         </div>
 
-        {/* Status Badge */}
-        <div className="flex flex-col items-end flex-shrink-0">
+        {/* Distinct Status & Bounty Pill */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {isCleaned ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-[#E7EFEA] text-[#14231A] border border-[#2D513B]/25 shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#2D513B]" />
-              Transformed
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-full bg-purple-50 text-purple-700 border border-purple-200 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" />
+              Restored & Verified
             </span>
           ) : (
-            <div className="flex flex-col items-end gap-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-[#FDEEEA] text-[#842D18] border border-[#C24A2C]/25 shadow-xs">
-                <AlertTriangle className="w-3.5 h-3.5 text-[#C24A2C]" />
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-full bg-orange-50 text-orange-700 border border-orange-200 shadow-xs">
+                <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
                 Needs Cleaning
               </span>
-              <span className="text-[11px] font-mono font-bold text-[#A4391F]">
-                +{spot.rewardPoints} pts bounty
+              <span className="text-xs font-mono font-black text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 px-2.5 py-1 rounded-xl shadow-btn-orange">
+                +{spot.rewardPoints} pts
               </span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Main Visual Comparison / Photo Area */}
-      <div className="bg-[#181A19]">
+      {/* Main Visual Display: Interactive Slider or Open Mission Photo */}
+      <div className="bg-slate-950">
         {isCleaned ? (
           <BeforeAfterSlider
             beforeImage={spot.beforePhotoUrl}
             afterImage={spot.verification!.afterPhotoUrl}
           />
         ) : (
-          <div className="relative aspect-[16/10] overflow-hidden bg-[#ECECE5] group">
+          <div className="relative aspect-[16/10] overflow-hidden group">
             <img
               src={spot.beforePhotoUrl}
               alt={spot.title}
-              className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />
-            <div className="absolute top-3.5 left-3.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-[#842D18]/90 text-white rounded border border-white/20 shadow-sm backdrop-blur-xs">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
+
+            <div className="absolute top-4 left-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold uppercase tracking-wider bg-red-600 text-white rounded-full border border-white/20 shadow-md backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                 Littered Spot Reported
               </span>
             </div>
-            <div className="absolute bottom-3.5 right-3.5">
+
+            <div className="absolute bottom-4 right-4">
               <button
                 type="button"
                 onClick={() => onCleanSpot(spot)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider bg-[#2D513B] text-white rounded-md shadow-md hover:bg-[#233F2E] transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl shadow-btn-orange hover:scale-105 active:scale-95 transition-all"
               >
-                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                <Sparkles className="w-4 h-4 text-white" />
                 I Cleaned This Spot
               </button>
             </div>
@@ -156,38 +185,40 @@ export const SpotCard: React.FC<SpotCardProps> = ({
         )}
       </div>
 
-      {/* Card Details */}
-      <div className="p-4 sm:p-5">
-        <h3 className="font-bold text-base sm:text-lg text-[#181A19] leading-snug mb-2">
-          {spot.title}
-        </h3>
-        <p className="text-xs sm:text-sm text-[#535A55] leading-relaxed mb-4">
-          {spot.description}
-        </p>
+      {/* Card Body Details */}
+      <div className="p-5 sm:p-6 space-y-4">
+        <div>
+          <h3 className="font-extrabold text-lg sm:text-xl text-slate-900 leading-snug mb-1.5">
+            {spot.title}
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            {spot.description}
+          </p>
+        </div>
 
-        {/* Tags & Impact Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
+        {/* Tags & Metadata Badges */}
+        <div className="flex flex-wrap items-center gap-2">
           {spot.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2.5 py-1 text-xs font-medium rounded-md bg-[#F2F2EC] text-[#535A55] border border-[#E3E3DC]"
+              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-purple-50 text-purple-700 border border-purple-200"
             >
               #{tag}
             </span>
           ))}
           {spot.estimatedWasteKg && (
-            <span className="px-2.5 py-1 text-xs rounded-md bg-[#F2F2EC] text-[#181A19] font-mono border border-[#E3E3DC] inline-flex items-center gap-1">
-              <Scale className="w-3 h-3 text-[#7E8681]" />
+            <span className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 font-mono border border-slate-200 inline-flex items-center gap-1.5 font-bold">
+              <Scale className="w-3.5 h-3.5 text-indigo-600" />
               ~{spot.estimatedWasteKg} kg waste
             </span>
           )}
           <span
-            className={`px-2.5 py-1 text-xs rounded-md font-semibold ${
+            className={`px-2.5 py-1 text-xs rounded-lg font-bold ${
               spot.severity === 'high'
-                ? 'bg-rose-50 text-[#842D18] border border-rose-200'
+                ? 'bg-rose-50 text-rose-700 border border-rose-200'
                 : spot.severity === 'medium'
-                ? 'bg-amber-50 text-amber-900 border border-amber-200'
-                : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-orange-50 text-orange-700 border border-orange-200'
+                : 'bg-purple-50 text-purple-700 border border-purple-200'
             }`}
           >
             {spot.severity.toUpperCase()} Priority
@@ -196,67 +227,64 @@ export const SpotCard: React.FC<SpotCardProps> = ({
 
         {/* Verified Cleanup Certificate Seal (If Cleaned) */}
         {isCleaned && spot.verification && (
-          <div className="bg-[#F2F7F4] border-2 border-[#4D8262]/30 rounded-lg p-4 mb-4 relative overflow-hidden">
-            {/* Subtle background seal badge */}
-            <div className="flex items-center justify-between gap-2 mb-2.5">
-              <div className="flex items-center gap-2.5">
+          <div className="bg-purple-50/60 border border-purple-200/80 rounded-xl p-4.5 space-y-3">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
                 <img
                   src={spot.verification.cleanerAvatar}
                   alt={spot.verification.cleanerName}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-[#2D513B] shadow-xs"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-violet-500 shadow-sm"
                 />
                 <div>
-                  <span className="text-xs font-bold text-[#14231A] block">
-                    Cleaned by {spot.verification.cleanerName}
+                  <span className="text-xs font-extrabold text-slate-900 block">
+                    Restored by {spot.verification.cleanerName}
                   </span>
-                  <span className="text-[10px] text-[#535A55] font-mono">
-                    Restored {new Date(spot.verification.cleanedAt).toLocaleDateString()}
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    Completed on {new Date(spot.verification.cleanedAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold bg-[#2D513B] text-white shadow-xs">
-                <Award className="w-3.5 h-3.5 text-yellow-300" />
-                +{spot.verification.pointsEarned} pts awarded
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm">
+                <Award className="w-4 h-4 text-amber-300" />
+                +{spot.verification.pointsEarned} pts rewarded
               </div>
             </div>
 
             {spot.verification.notes && (
-              <p className="text-xs text-[#2C302D] italic bg-white p-2.5 rounded-md border border-[#E3E3DC] mb-2.5 leading-relaxed">
+              <p className="text-xs text-slate-700 italic bg-white p-3 rounded-lg border border-purple-100 leading-relaxed">
                 "{spot.verification.notes}"
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#535A55] font-mono">
-              <span className="inline-flex items-center gap-1 text-[#2D513B] font-bold">
-                <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="flex flex-wrap items-center gap-2 text-[11px] text-purple-800 font-mono pt-1">
+              <span className="inline-flex items-center gap-1 font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
                 GPS Verified: {formatDistance(spot.verification.distanceFromOriginMeters)} proximity
               </span>
               <span>•</span>
-              <span className="text-[#7E8681]">On-site photographic proof confirmed</span>
+              <span className="text-slate-500">On-site photographic proof confirmed</span>
             </div>
           </div>
         )}
 
-        {/* Action Bar */}
-        <div className="flex items-center justify-between pt-3.5 border-t border-[#F0EFEA]">
+        {/* Social Action Footer */}
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 flex-wrap gap-3">
           <div className="flex items-center gap-2.5">
             {/* Respect (Like) Button */}
             <button
               type="button"
               onClick={handleLikeClick}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all border ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
                 spot.hasLiked
-                  ? 'bg-[#FDEEEA] text-[#842D18] border-[#C24A2C]/30 shadow-xs'
-                  : 'bg-white text-[#535A55] border-[#E3E3DC] hover:bg-[#F9F9F6] hover:text-[#181A19]'
+                  ? 'bg-rose-50 text-rose-600 border-rose-200 shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
               <Heart
-                className={`w-3.5 h-3.5 transition-transform ${
-                  spot.hasLiked
-                    ? 'fill-[#C24A2C] text-[#C24A2C]'
-                    : 'text-[#7E8681]'
-                } ${likeAnimating ? 'scale-130' : 'scale-100'}`}
+                className={`w-4 h-4 transition-transform ${
+                  spot.hasLiked ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
+                } ${likeAnimating ? 'scale-125' : 'scale-100'}`}
               />
               <span>{spot.likesCount} Respect</span>
             </button>
@@ -265,10 +293,21 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-[#535A55] bg-white border border-[#E3E3DC] hover:bg-[#F9F9F6] hover:text-[#181A19] transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#7E8681]" />
+              <MessageSquare className="w-4 h-4 text-violet-600" />
               <span>{spot.comments.length} Comments</span>
+            </button>
+
+            {/* Share button */}
+            <button
+              type="button"
+              onClick={handleShare}
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-colors flex items-center gap-1 text-xs"
+              title="Copy Link to Spot"
+            >
+              <Share2 className="w-4 h-4" />
+              {copiedShare && <span className="text-violet-600 text-[10px] font-bold">Copied!</span>}
             </button>
           </div>
 
@@ -277,9 +316,9 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => onCleanSpot(spot)}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-bold bg-[#2D513B] text-white hover:bg-[#233F2E] shadow-sm transition-all hover:scale-105"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-btn-orange hover:scale-105 active:scale-95 transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+              <Sparkles className="w-4 h-4" />
               <span>I Cleaned This</span>
               <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
             </button>
@@ -287,17 +326,17 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => onOpenMap(spot)}
-              className="flex items-center gap-1 text-xs font-semibold text-[#535A55] hover:text-[#2D513B] transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-violet-700 hover:text-violet-900 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition-all"
             >
-              <span>View On Map</span>
-              <ExternalLink className="w-3 h-3" />
+              <span>Explore on Map</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
 
-        {/* Comments Section */}
+        {/* Expandable Comments Drawer */}
         {showComments && (
-          <div className="mt-4 pt-4 border-t border-[#F0EFEA] space-y-3">
+          <div className="mt-4 pt-4 border-t border-slate-100 space-y-3 animate-in fade-in slide-in-from-top-2">
             {spot.comments.length > 0 ? (
               <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
                 {spot.comments.map((comment) => (
@@ -305,25 +344,25 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                     <img
                       src={comment.authorAvatar}
                       alt={comment.authorName}
-                      className="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5 border border-[#E3E3DC]"
+                      className="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5 border border-slate-200"
                     />
-                    <div className="bg-[#F9F9F6] rounded-lg p-2.5 flex-1 border border-[#E3E3DC]">
+                    <div className="bg-slate-50 rounded-xl p-3 flex-1 border border-slate-200">
                       <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="font-bold text-[#181A19]">
+                        <span className="font-bold text-slate-900">
                           {comment.authorName}
                         </span>
-                        <span className="text-[10px] text-[#7E8681] font-mono">
+                        <span className="text-[10px] text-slate-400 font-mono">
                           {new Date(comment.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      <p className="text-[#535A55] leading-relaxed">{comment.text}</p>
+                      <p className="text-slate-600 leading-relaxed">{comment.text}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#7E8681] italic">
-                No comments yet. Write an encouraging message to the cleaner!
+              <p className="text-xs text-slate-400 italic py-1">
+                No comments yet. Write an encouraging word for the community!
               </p>
             )}
 
@@ -332,19 +371,19 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               <img
                 src={currentUser.avatar}
                 alt={currentUser.name}
-                className="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-[#E3E3DC]"
+                className="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-200"
               />
               <input
                 type="text"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Write a message of civic respect..."
-                className="flex-1 px-3.5 py-2 text-xs rounded-lg bg-[#F9F9F6] border border-[#E3E3DC] text-[#181A19] focus:outline-none focus:ring-1 focus:ring-[#2D513B] focus:bg-white placeholder:text-[#7E8681]"
+                placeholder="Write an encouraging message..."
+                className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 placeholder:text-slate-400"
               />
               <button
                 type="submit"
                 disabled={!commentText.trim()}
-                className="p-2 rounded-lg bg-[#2D513B] text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#233F2E] transition-all"
+                className="p-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:from-violet-500 hover:to-indigo-500 transition-all shadow-sm"
                 title="Send Comment"
               >
                 <Send className="w-3.5 h-3.5" />
