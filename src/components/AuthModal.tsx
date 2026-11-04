@@ -108,27 +108,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden my-6 animate-in fade-in zoom-in-95 text-[#17171F]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-md bg-[#1A1A24] rounded-3xl border border-white/[0.1] shadow-2xl overflow-hidden my-6 animate-in fade-in zoom-in-95 text-white">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-100 bg-slate-50/80">
+        <div className="flex items-center justify-between px-6 py-4.5 border-b border-white/[0.08] bg-[#121217]/60">
           <div className="flex items-center gap-2.5">
             <img
-              src="/logo.png"
+              src="/logo-icon-dark.png"
               alt="GarbageMedia"
               className="w-9 h-9 object-contain rounded-xl shadow-xs"
             />
             <div>
-              <h2 className="text-base font-black text-[#17171F]">
+              <h2 className="text-base font-black text-white">
                 {mode === 'signin' ? 'Sign In to GarbageMedia' : 'Create Civic Account'}
               </h2>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span
                   className={`w-2 h-2 rounded-full ${
-                    isFirebaseActive ? 'bg-[#16A34A]' : 'bg-amber-500'
+                    isFirebaseActive ? 'bg-emerald-500' : 'bg-amber-500'
                   }`}
                 />
-                <span className="text-[10px] text-slate-500 font-medium">
+                <span className="text-[10px] text-slate-400 font-medium">
                   {isFirebaseActive ? 'Firebase Active' : 'Guest Mode'}
                 </span>
               </div>
@@ -137,7 +137,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#17171F] hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -145,8 +145,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         <div className="p-5 sm:p-6 space-y-4">
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2.5 leading-relaxed">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
+            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-xs text-red-400 flex items-start gap-2.5 leading-relaxed">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
               <span>{error}</span>
             </div>
           )}
@@ -156,7 +156,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#17171F] text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-xs disabled:opacity-50 min-h-[44px]"
+            className="w-full py-2.5 px-4 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] text-white text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-xs disabled:opacity-50 min-h-[44px]"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -181,8 +181,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Divider */}
           <div className="relative flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full"></div>
-            <span className="bg-white px-2.5 text-[10px] uppercase font-mono tracking-wider text-slate-400 absolute">
+            <div className="border-t border-white/10 w-full"></div>
+            <span className="bg-[#1A1A24] px-2.5 text-[10px] uppercase font-mono tracking-wider text-slate-500 absolute">
               or email
             </span>
           </div>
@@ -191,7 +191,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <form onSubmit={handleEmailAuth} className="space-y-3.5">
             {mode === 'signup' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                   Full Name
                 </label>
                 <div className="relative">
@@ -202,14 +202,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="e.g., Sarah Jenkins"
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-emerald-500 text-white placeholder:text-slate-500 min-h-[42px]"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                 Email Address
               </label>
               <div className="relative">
@@ -220,13 +220,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="scout@example.com"
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-emerald-500 text-white placeholder:text-slate-500 min-h-[42px]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
                 Password
               </label>
               <div className="relative">
@@ -238,7 +238,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 focus:bg-white/[0.08] focus:outline-none focus:ring-1 focus:ring-emerald-500 text-white placeholder:text-slate-500 min-h-[42px]"
                 />
               </div>
             </div>
@@ -254,14 +254,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </form>
 
           {/* Switch Mode */}
-          <div className="text-center text-xs text-slate-500 pt-1">
+          <div className="text-center text-xs text-slate-400 pt-1">
             {mode === 'signin' ? (
               <p>
                 Don't have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setMode('signup')}
-                  className="text-emerald-600 font-bold hover:underline"
+                  className="text-emerald-400 font-bold hover:underline"
                 >
                   Sign up
                 </button>
@@ -272,7 +272,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setMode('signin')}
-                  className="text-emerald-600 font-bold hover:underline"
+                  className="text-emerald-400 font-bold hover:underline"
                 >
                   Sign in
                 </button>
@@ -281,11 +281,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
 
           {/* Quick guest option */}
-          <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
+          <div className="pt-2 border-t border-white/[0.08] flex justify-between items-center text-[11px]">
             <button
               type="button"
               onClick={handleGuestLogin}
-              className="text-slate-500 hover:text-[#17171F] underline"
+              className="text-slate-400 hover:text-white underline"
             >
               Continue as Guest
             </button>
@@ -294,7 +294,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="button"
                 onClick={onOpenFirebaseConfig}
-                className="text-[#16A34A] hover:underline font-mono font-medium"
+                className="text-emerald-400 hover:underline font-mono font-medium"
               >
                 ⚙️ Configure Firebase
               </button>

@@ -116,9 +116,9 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           />
 
           {/* After Badge: Top Right */}
-          <div className="absolute top-3.5 right-14 sm:right-16 z-10 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-extrabold tracking-wider uppercase bg-black/75 text-green-300 rounded-full border border-green-500/40 shadow-md backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+          <div className="absolute top-3 right-14 sm:right-16 z-10 pointer-events-none">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-extrabold tracking-wider uppercase bg-black/80 text-emerald-300 rounded-full border border-emerald-500/40 shadow-md backdrop-blur-md">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
               {afterLabel}
             </span>
           </div>
@@ -141,9 +141,9 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           </div>
 
           {/* Before Badge: Top Left */}
-          <div className="absolute top-3.5 left-3.5 z-10 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-extrabold tracking-wider uppercase bg-black/75 text-orange-200 rounded-full border border-orange-400/40 shadow-md backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+          <div className="absolute top-3 left-3 z-10 pointer-events-none">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-extrabold tracking-wider uppercase bg-black/80 text-orange-200 rounded-full border border-orange-400/40 shadow-md backdrop-blur-md">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-orange-500 animate-pulse" />
               {beforeLabel}
             </span>
           </div>
