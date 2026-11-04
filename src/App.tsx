@@ -226,7 +226,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
   };
 
   return (
-    <div className="min-h-screen text-slate-900 pb-20 md:pb-12 selection:bg-rose-500 selection:text-white">
+    <div className="min-h-screen text-slate-900 pb-20 md:pb-12 bg-slate-50 selection:bg-rose-500 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
@@ -240,104 +240,104 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         onRequireAuth={onRequireAuth}
       />
 
-      {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-7">
+      {/* Main Container - Full responsive width with comfortable mobile padding */}
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-6 sm:space-y-8">
         {/* VIEW 1: Community Feed */}
         {currentTab === 'feed' && (
-          <div className="space-y-7">
+          <div className="space-y-6 sm:space-y-8">
             {/* Impact Metric Cards Bar */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Card 1: Spots Restored (Royal Violet / Purple) */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-purple-300 shadow-sm hover:shadow-md transition-all group">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] uppercase tracking-wider text-purple-700 font-mono font-extrabold">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {/* Card 1: Spots Restored */}
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-purple-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-purple-700 font-mono font-extrabold truncate">
                     Spots Restored
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center shadow-xs">
-                    <CheckCircle2 className="w-4 h-4 text-purple-600" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center shadow-xs flex-shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-slate-900">
                     {stats.cleanedCount}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">locations cleaned</span>
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">cleaned</span>
                 </div>
               </div>
 
-              {/* Card 2: Open Bounties (Fiery Orange-Red) */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-orange-300 shadow-sm hover:shadow-md transition-all group">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] uppercase tracking-wider text-orange-600 font-mono font-extrabold">
+              {/* Card 2: Open Bounties */}
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-orange-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-orange-600 font-mono font-extrabold truncate">
                     Open Bounties
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shadow-xs">
-                    <AlertTriangle className="w-4 h-4" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shadow-xs flex-shrink-0">
+                    <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-orange-600">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-orange-600">
                     {stats.pendingCount}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">active missions</span>
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">active</span>
                 </div>
               </div>
 
-              {/* Card 3: Waste Removed (Deep Indigo & Violet) */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all group">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] uppercase tracking-wider text-indigo-700 font-mono font-extrabold">
+              {/* Card 3: Waste Removed */}
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-indigo-700 font-mono font-extrabold truncate">
                     Waste Removed
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shadow-xs">
-                    <Scale className="w-4 h-4 text-indigo-600" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shadow-xs flex-shrink-0">
+                    <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-slate-900">
                     {stats.totalWasteKg}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">kg collected</span>
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">kg collected</span>
                 </div>
               </div>
 
-              {/* Card 4: Civic Rewards (Fiery Sunset Amber & Rose) */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-rose-300 shadow-sm hover:shadow-md transition-all group">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[11px] uppercase tracking-wider text-rose-600 font-mono font-extrabold">
+              {/* Card 4: Civic Rewards */}
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-rose-300 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-600 font-mono font-extrabold truncate">
                     Civic Rewards
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shadow-xs">
-                    <Sparkles className="w-4 h-4 text-rose-600" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shadow-xs flex-shrink-0">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-600" />
                   </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-extrabold font-mono text-amber-600">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-amber-600">
                     +{stats.totalPointsAwarded}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">pts awarded</span>
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">pts awarded</span>
                 </div>
               </div>
             </div>
 
             {/* Layout: Feed + Civic Missions Sidebar */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
               {/* Left Column: Posts Feed */}
               <div className="lg:col-span-8 space-y-6">
                 {/* Filter Controls Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200">
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                      <span>Community Transformation Feed</span>
+                    <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                      <span>Community Feed</span>
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-200">
                         Live
                       </span>
                     </h2>
-                    <p className="text-xs text-slate-500 mt-1">
-                      Real before & after comparisons verified on-site by community volunteers.
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Before & After comparisons verified on-site by community volunteers.
                     </p>
                   </div>
-                  <div className="flex-shrink-0 pt-1 sm:pt-0">
+                  <div className="overflow-x-auto pb-1 sm:pb-0">
                     <FilterTabs
                       currentFilter={feedFilter}
                       onFilterChange={setFeedFilter}
@@ -366,39 +366,39 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                     ))}
                   </div>
                 ) : spots.length === 0 ? (
-                  <div className="bg-white p-10 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
-                    <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+                  <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 text-center space-y-4 shadow-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-3xl shadow-xs">
                       🌱
                     </div>
-                    <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base font-bold text-slate-900">No cleanup spots posted yet</h3>
-                      <p className="text-xs text-slate-500">
+                    <div className="max-w-md mx-auto space-y-1.5">
+                      <h3 className="text-lg font-black text-slate-900">No cleanup spots posted yet</h3>
+                      <p className="text-xs sm:text-sm text-slate-500">
                         Be the first volunteer to report a littered street, park, or public space in your community!
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsReportModalOpen(true)}
-                      className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded-xl transition-all shadow-btn-orange hover:scale-105 active:scale-95"
+                      className="px-6 py-3 text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded-xl transition-all shadow-btn-orange hover:scale-105 active:scale-95"
                     >
                       + Report First Dirty Spot
                     </button>
                   </div>
                 ) : (
-                  <div className="bg-white p-10 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
-                    <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+                  <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 text-center space-y-4 shadow-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-3xl shadow-xs">
                       🔍
                     </div>
-                    <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base font-bold text-slate-900">No spots in this filter</h3>
-                      <p className="text-xs text-slate-500">
+                    <div className="max-w-md mx-auto space-y-1.5">
+                      <h3 className="text-lg font-black text-slate-900">No spots in this filter</h3>
+                      <p className="text-xs sm:text-sm text-slate-500">
                         Try switching to "All" to view all active community cleanup posts.
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setFeedFilter('all')}
-                      className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-xl transition-all shadow-sm"
+                      className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-xl transition-all shadow-sm"
                     >
                       Show All Posts
                     </button>
@@ -420,7 +420,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                         1
                       </span>
                       <span>
-                        <strong className="text-slate-900">Pin a dirty spot:</strong> Snap a photo and select the location on the live interactive map.
+                        <strong className="text-slate-900">Pin a dirty spot:</strong> Snap a photo and select the location on the live map.
                       </span>
                     </li>
                     <li className="flex gap-3 items-start">
@@ -565,19 +565,19 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         {/* VIEW 2: Interactive Map View */}
         {currentTab === 'map' && (
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#232845]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
               <div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                   Interactive Civic Clean Map
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Search locations, switch between Dark Matter, satellite, and street tiles, and discover dirty spots or restored proofs.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsReportModalOpen(true)}
-                className="px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-glow-orange hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 self-start sm:self-auto"
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-btn-orange hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 self-start sm:self-auto"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Report Spot at Location
@@ -633,11 +633,11 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0B14] flex flex-col items-center justify-center space-y-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center text-2xl font-bold animate-pulse shadow-glow-purple">
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-3">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center text-2xl font-bold animate-pulse shadow-md">
           🌱
         </div>
-        <p className="text-xs text-slate-400 font-mono">Initializing GarbageMedia...</p>
+        <p className="text-xs text-slate-500 font-mono font-medium">Connecting to GarbageMedia...</p>
       </div>
     );
   }

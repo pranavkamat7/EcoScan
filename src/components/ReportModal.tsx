@@ -103,7 +103,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           scrollWheelZoom: true,
         });
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; OpenStreetMap &copy; CARTO',
           maxZoom: 19,
         }).addTo(map);
@@ -285,16 +285,16 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-2xl border border-slate-200 shadow-modal overflow-hidden my-6 animate-in fade-in zoom-in-95 text-slate-900">
+      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-100 bg-slate-50/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 border border-orange-200 flex items-center justify-center font-bold text-lg shadow-xs">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-100 text-orange-600 border border-orange-200 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
               📍
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Report a Dirty Spot</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900">Report a Dirty Spot</h2>
+              <p className="text-[11px] sm:text-xs text-slate-500">
                 Pin the dirty spot on the live map and upload photographic proof.
               </p>
             </div>
@@ -309,7 +309,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
           {/* Photo Capture Section */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
@@ -333,14 +333,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             ) : (
               <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 hover:border-violet-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-purple-50/30 transition-all group">
+                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-violet-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-purple-50/30 transition-all group">
                   <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
                     <Camera className="w-5 h-5 text-violet-600" />
                   </div>
-                  <span className="text-xs font-bold text-slate-900">
+                  <span className="text-xs font-bold text-slate-900 text-center">
                     Snap with Camera or Upload Image
                   </span>
-                  <span className="text-[11px] text-slate-500 mt-0.5">
+                  <span className="text-[11px] text-slate-500 mt-0.5 text-center">
                     Supports JPG, PNG, WebP from mobile or desktop
                   </span>
                   <input
@@ -372,7 +372,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                         <img
                           src={preset.url}
                           alt={preset.name}
-                          className="w-full h-14 object-cover rounded-lg mb-1"
+                          className="w-full h-12 sm:h-14 object-cover rounded-lg mb-1"
                         />
                         <span className="text-[11px] font-bold text-slate-700 block truncate">
                           {preset.name}
@@ -386,8 +386,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           </div>
 
           {/* INTERACTIVE LOCATION PICKER MAP */}
-          <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between gap-2">
+          <div className="bg-slate-50 p-3.5 sm:p-4.5 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
               <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                 <MapPin className="w-4 h-4 text-rose-500" />
                 Select Precise Location on Map
@@ -448,7 +448,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             {/* Interactive Leaflet Picker Map */}
-            <div className="relative w-full h-48 rounded-xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100">
+            <div className="relative w-full h-44 sm:h-48 rounded-xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100">
               <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
               <div className="absolute top-2 left-2 z-10 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-slate-200 text-[10px] font-bold text-slate-700 shadow-xs flex items-center gap-1">
                 <span>📍 Drag or click map to move pin</span>
@@ -507,7 +507,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Park Walkway Plastic Litter"
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400 min-h-[42px]"
               />
             </div>
 
@@ -520,7 +520,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe what kind of trash is there, hazards, or cleanup tips..."
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400 resize-none"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
               />
             </div>
           </div>
@@ -537,7 +537,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                     key={level}
                     type="button"
                     onClick={() => setSeverity(level)}
-                    className={`py-2 px-1 text-xs font-bold rounded-xl border capitalize transition-all ${
+                    className={`py-2 px-1 text-xs font-bold rounded-xl border capitalize transition-all min-h-[38px] ${
                       severity === level
                         ? level === 'high'
                           ? 'bg-rose-500 text-white border-rose-500 shadow-sm'
@@ -563,15 +563,15 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 max={500}
                 value={estimatedKg}
                 onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white min-h-[38px]"
               />
             </div>
           </div>
 
           {/* Community Bounty Preview Callout */}
-          <div className="bg-orange-50/80 p-4 rounded-xl border border-orange-200 flex items-center justify-between">
+          <div className="bg-orange-50/80 p-4 rounded-xl border border-orange-200 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-orange-600" />
+              <Sparkles className="w-4 h-4 text-orange-600 flex-shrink-0" />
               <div>
                 <span className="text-xs font-bold text-orange-900 block">
                   Automatic Community Bounty
@@ -581,24 +581,24 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 </span>
               </div>
             </div>
-            <span className="text-lg font-black font-mono text-orange-600">
+            <span className="text-lg font-black font-mono text-orange-600 flex-shrink-0">
               +{calculateBounty()} pts
             </span>
           </div>
 
           {/* Submit Action */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 flex-wrap">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors min-h-[42px]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!photoUrl || !title.trim()}
-              className="px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl shadow-btn-orange disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-1.5"
+              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl shadow-btn-orange disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[42px]"
             >
               <CheckCircle className="w-4 h-4" />
               Publish Cleanup Mission

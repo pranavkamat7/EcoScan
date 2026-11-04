@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User as UserIcon, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, AlertCircle, Loader2, Sparkles, MapPin, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useAuth } from '../firebase/authContext';
 
 interface AuthScreenProps {
@@ -22,10 +22,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       return 'Firebase Authentication is not activated in your Firebase Console. Please go to Firebase Console > Authentication > Sign-in method, and click "Enable" on Email/Password and Google.';
     }
     if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
-      return 'Invalid email or password. If you do not have an account yet, switch to "Register" above.';
+      return 'Invalid email or password. If you do not have an account yet, click "Register" above.';
     }
     if (msg.includes('auth/email-already-in-use')) {
-      return 'An account already exists with this email address. Please switch to "Sign In".';
+      return 'An account already exists with this email address. Please click "Sign In".';
     }
     if (msg.includes('auth/weak-password')) {
       return 'Password must be at least 6 characters.';
@@ -87,110 +87,128 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0B14] text-slate-100 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
       {/* Top Header */}
-      <header className="border-b border-[#232845] glass-nav-dark px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3.5 shadow-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center font-bold text-xl shadow-glow-purple">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 via-purple-600 to-rose-500 text-white flex items-center justify-center font-bold text-xl shadow-btn-purple">
               🌱
             </div>
-            <span className="font-extrabold text-xl text-white tracking-tight">
-              Garbage<span className="bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">Media</span>
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-xl text-slate-900 tracking-tight leading-none block">
+                  Garbage<span className="bg-gradient-to-r from-violet-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">Media</span>
+                </span>
+                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200 hidden sm:inline">
+                  Civic Proof
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-500 hidden sm:block font-medium mt-0.5">
+                Community Spot Cleanups & Verified Proofs
+              </span>
+            </div>
           </div>
+
           <button
             type="button"
             onClick={handleGuest}
-            className="text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 px-4 py-2 rounded-xl transition-all shadow-glow-orange hover:scale-105 active:scale-95"
+            className="text-xs font-bold text-slate-700 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-3.5 sm:px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
           >
-            Explore as Guest →
+            <span>Explore as Guest</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </header>
 
-      {/* Main Content: Split Grid */}
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10 flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full">
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
           {/* Left Hero Civic Overview */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/15 text-violet-300 text-xs font-bold border border-violet-500/30">
-              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200">
+              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
               Community Spot Cleanups & Proofs
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-              Clean your community. <br className="hidden sm:block" />
-              <span className="bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.15]">
+              Clean your community. <br />
+              <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-rose-500 bg-clip-text text-transparent">
                 Capture proof. Earn rewards.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
               Found a littered park, dirty street corner, or shoreline? Snap a photo with live GPS.
               When volunteers clean it up, our app automatically generates verified Before & After comparison sliders and awards civic bounty points.
             </p>
 
             {/* 3 Step Features */}
             <div className="space-y-3.5 pt-2">
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-4 hover:border-purple-300 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-sm font-black shadow-btn-purple">
                   1
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">Pin a dirty area on the map</h4>
-                  <p className="text-xs text-slate-400">Take a photo with live GPS and place search powered by accurate OpenStreetMap.</p>
+                  <h4 className="text-sm font-extrabold text-slate-900">Pin a dirty area on the map</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Take a photo with live GPS and place search powered by OpenStreetMap reverse geocoding.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-4 hover:border-purple-300 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-sm font-black shadow-btn-purple">
                   2
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">Clean & verify on-site</h4>
-                  <p className="text-xs text-slate-400">Volunteers submit the after photo. Haversine GPS matching checks proximity.</p>
+                  <h4 className="text-sm font-extrabold text-slate-900">Clean & verify on-site</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Volunteers clean the area and submit the after photo. Haversine GPS matching confirms proof.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-extrabold shadow-glow-purple">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-4 hover:border-purple-300 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 text-sm font-black shadow-btn-purple">
                   3
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">Interactive proof & community rewards</h4>
-                  <p className="text-xs text-slate-400">Before & After slider is published to the feed, and points are added to the civic leaderboard.</p>
+                  <h4 className="text-sm font-extrabold text-slate-900">Interactive proof & civic rewards</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    A Before & After split slider is published live, and reward points are credited to your profile.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right Login / Signup Card */}
-          <div className="lg:col-span-5">
-            <div className="bg-[#121424] rounded-2xl border border-[#232845] shadow-modal-dark p-6 sm:p-7 space-y-5">
+          <div className="lg:col-span-5 w-full">
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-modal p-6 sm:p-8 space-y-6">
               {/* Card Tabs */}
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#232845]">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 gap-2">
                 <div>
-                  <h2 className="text-base font-extrabold text-white">
-                    {mode === 'signin' ? 'Welcome Back' : 'Create an Account'}
+                  <h2 className="text-lg font-black text-slate-900">
+                    {mode === 'signin' ? 'Welcome Back' : 'Create Civic Account'}
                   </h2>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {mode === 'signin'
-                      ? 'Sign in to access your civic profile'
+                      ? 'Sign in to access your personal profile'
                       : 'Join the community cleanup registry'}
                   </p>
                 </div>
-                <div className="flex items-center gap-1 bg-[#0E101D] p-1 rounded-xl text-xs border border-[#232845]">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs border border-slate-200/80 flex-shrink-0">
                   <button
                     type="button"
                     onClick={() => {
                       setMode('signin');
                       setError(null);
                     }}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signin'
-                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     Sign In
@@ -201,10 +219,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       setMode('signup');
                       setError(null);
                     }}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signup'
-                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     Register
@@ -213,8 +231,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
               </div>
 
               {error && (
-                <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300 flex items-start gap-2.5 leading-relaxed">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2.5 leading-relaxed">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-600" />
                   <span>{error}</span>
                 </div>
               )}
@@ -224,7 +242,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full py-2.5 px-4 rounded-xl border border-[#232845] bg-[#0E101D] hover:bg-[#181C33] text-slate-200 text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-sm disabled:opacity-50"
+                className="w-full py-3 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center justify-center gap-3 transition-all shadow-xs disabled:opacity-50 hover:border-slate-300 active:scale-95 min-h-[46px]"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -248,56 +266,56 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
               </button>
 
               <div className="relative flex items-center justify-center">
-                <div className="border-t border-[#232845] w-full"></div>
-                <span className="bg-[#121424] px-2.5 text-[10px] uppercase font-mono tracking-wider text-slate-500 absolute">
-                  or email
+                <div className="border-t border-slate-200 w-full"></div>
+                <span className="bg-white px-3 text-[10px] uppercase font-mono tracking-wider text-slate-400 absolute">
+                  or with email
                 </span>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleEmailAuth} className="space-y-3.5">
+              <form onSubmit={handleEmailAuth} className="space-y-4">
                 {mode === 'signup' && (
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       Full Name
                     </label>
                     <div className="relative">
-                      <UserIcon className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                      <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                       <input
                         type="text"
                         required
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="e.g. Jordan Vance"
-                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
+                        className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 text-slate-900 placeholder:text-slate-400 min-h-[44px]"
                       />
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="scout@example.com"
-                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
+                      className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 text-slate-900 placeholder:text-slate-400 min-h-[44px]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
                       type="password"
                       required
@@ -305,7 +323,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-[#0E101D] border border-[#232845] focus:outline-none focus:ring-1 focus:ring-violet-500 text-white placeholder:text-slate-600"
+                      className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 text-slate-900 placeholder:text-slate-400 min-h-[44px]"
                     />
                   </div>
                 </div>
@@ -313,21 +331,22 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-xs font-bold shadow-glow-orange transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-xs font-extrabold shadow-btn-orange transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 min-h-[46px]"
                 >
-                  {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span>{mode === 'signin' ? 'Sign In to Account' : 'Register Account'}</span>
                 </button>
               </form>
 
               {/* Guest Enter */}
-              <div className="pt-2 text-center">
+              <div className="pt-2 text-center border-t border-slate-100">
                 <button
                   type="button"
                   onClick={handleGuest}
-                  className="text-xs font-bold text-violet-400 hover:text-violet-300 hover:underline"
+                  className="w-full py-2.5 px-3 text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50/70 hover:bg-purple-100/70 border border-purple-200/80 rounded-xl transition-colors flex items-center justify-center gap-1.5"
                 >
-                  Skip login and explore as Guest →
+                  <span>Skip for now, continue as Guest Volunteer</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -336,7 +355,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#232845] bg-[#0E101D] py-4 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 px-4">
         GarbageMedia • Civic Community Cleanups & Verified Photographic Proofs
       </footer>
     </div>

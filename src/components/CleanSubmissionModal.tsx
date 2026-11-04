@@ -147,16 +147,16 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-2xl border border-slate-200 shadow-modal overflow-hidden my-6 animate-in fade-in zoom-in-95 text-slate-900">
+      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-100 bg-slate-50/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center font-bold text-lg shadow-xs">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
               ✨
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Submit Cleanup Proof</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900">Submit Cleanup Proof</h2>
+              <p className="text-[11px] sm:text-xs text-slate-500">
                 Upload your 'After' photo and verify proximity to claim bounty points.
               </p>
             </div>
@@ -171,7 +171,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
           {/* Target Spot Summary Header */}
           <div className="flex items-center gap-3.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
             <img
@@ -214,14 +214,14 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               </div>
             ) : (
               <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 hover:border-violet-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-purple-50/30 transition-all group">
+                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-violet-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-purple-50/30 transition-all group">
                   <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
                     <Camera className="w-5 h-5 text-violet-600" />
                   </div>
-                  <span className="text-xs font-bold text-slate-900">
+                  <span className="text-xs font-bold text-slate-900 text-center">
                     Snap 'After' Photo with Camera
                   </span>
-                  <span className="text-[11px] text-slate-500 mt-0.5">
+                  <span className="text-[11px] text-slate-500 mt-0.5 text-center">
                     or choose a cleaned photo from file
                   </span>
                   <input
@@ -252,7 +252,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                         <img
                           src={preset.url}
                           alt={preset.name}
-                          className="w-full h-14 object-cover rounded-lg mb-1"
+                          className="w-full h-12 sm:h-14 object-cover rounded-lg mb-1"
                         />
                         <span className="text-[11px] font-bold text-slate-700 block truncate">
                           {preset.name}
@@ -267,13 +267,13 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
           {/* Proximity Verification Box */}
           <div
-            className={`p-4 rounded-xl border transition-all ${
+            className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
               isLocationVerified
                 ? 'bg-purple-50/70 border-purple-200'
                 : 'bg-orange-50/70 border-orange-200'
             }`}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
               <div className="flex items-center gap-2.5">
                 {isLocationVerified ? (
                   <ShieldCheck className="w-5 h-5 text-purple-600 flex-shrink-0" />
@@ -296,7 +296,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               <button
                 type="button"
                 onClick={handleSimulateOnSite}
-                className="text-[11px] font-bold text-purple-700 bg-white px-2.5 py-1 rounded-lg border border-purple-200 shadow-xs hover:bg-purple-50 flex items-center gap-1"
+                className="text-[11px] font-bold text-purple-700 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 shadow-xs hover:bg-purple-50 flex items-center gap-1 flex-shrink-0"
                 title="Simulate standing right next to the spot"
               >
                 <Navigation className="w-3 h-3 text-purple-600" />
@@ -315,14 +315,14 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               value={cleanerNotes}
               onChange={(e) => setCleanerNotes(e.target.value)}
               placeholder="e.g. Collected 2 large bags of cans, sorted recyclables, swept pathway..."
-              className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400 resize-none"
+              className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
             />
           </div>
 
           {/* Rewards Calculation Pill */}
-          <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-4.5 rounded-xl text-white flex items-center justify-between shadow-sm">
+          <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-4 sm:p-4.5 rounded-xl text-white flex items-center justify-between shadow-sm gap-3">
             <div className="flex items-center gap-3">
-              <Award className="w-5 h-5 text-amber-300" />
+              <Award className="w-5 h-5 text-amber-300 flex-shrink-0" />
               <div>
                 <span className="text-xs font-extrabold block">Reward Points Earned</span>
                 <span className="text-[11px] text-violet-100">
@@ -330,24 +330,24 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                 </span>
               </div>
             </div>
-            <span className="text-xl font-black font-mono text-amber-300">
+            <span className="text-xl font-black font-mono text-amber-300 flex-shrink-0">
               +{pointsCalc.totalPoints} pts
             </span>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 flex-wrap">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition-colors min-h-[42px]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!afterPhotoUrl}
-              className="px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl shadow-btn-orange disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-1.5"
+              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl shadow-btn-orange disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[42px]"
             >
               <Sparkles className="w-4 h-4" />
               Submit Proof & Claim Bounty
