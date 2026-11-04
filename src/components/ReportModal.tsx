@@ -278,17 +278,17 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-[#1A1A24] rounded-3xl border border-white/[0.1] shadow-2xl overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-white/[0.08] bg-[#121217]/60">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-500/15 text-red-400 border border-red-500/25 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
               📍
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-white">Report Dirty Spot</h2>
-              <p className="text-[11px] sm:text-xs text-slate-400">
+              <h2 className="text-sm sm:text-base font-black text-slate-900">Report Dirty Spot</h2>
+              <p className="text-[11px] sm:text-xs text-slate-500">
                 Pin an area needing cleanup and set a community bounty.
               </p>
             </div>
@@ -296,7 +296,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -306,31 +306,31 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
           {/* Photo Upload */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-              Photo of Dirty Area <span className="text-rose-400">*</span>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+              Photo of Dirty Area <span className="text-rose-500">*</span>
             </label>
 
             {photoUrl ? (
-              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-[#121217] shadow-xs">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-xs">
                 <img src={photoUrl} alt="Reported spot" className="w-full h-full object-cover" />
                 <button
                   type="button"
                   onClick={() => setPhotoUrl('')}
-                  className="absolute top-2.5 right-2.5 px-3 py-1.5 text-xs bg-black/80 hover:bg-black text-white rounded-xl font-medium backdrop-blur-xs transition-colors border border-white/10"
+                  className="absolute top-2.5 right-2.5 px-3 py-1.5 text-xs bg-black/75 hover:bg-black/90 text-white rounded-xl font-medium backdrop-blur-xs transition-colors"
                 >
                   Change Photo
                 </button>
               </div>
             ) : (
               <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-white/20 hover:border-emerald-500 rounded-2xl cursor-pointer bg-white/[0.03] hover:bg-emerald-500/10 transition-all group">
-                  <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5 text-emerald-400" />
+                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl cursor-pointer bg-slate-50 hover:bg-emerald-50/30 transition-all group">
+                  <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
+                    <Camera className="w-5 h-5 text-emerald-600" />
                   </div>
-                  <span className="text-xs font-bold text-white text-center">
+                  <span className="text-xs font-bold text-slate-900 text-center">
                     Snap Photo with Camera
                   </span>
-                  <span className="text-[11px] text-slate-400 mt-0.5 text-center">
+                  <span className="text-[11px] text-slate-500 mt-0.5 text-center">
                     or choose an image from device
                   </span>
                   <input
@@ -344,7 +344,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
                 {/* Sample mess presets */}
                 <div className="pt-1">
-                  <span className="text-[11px] font-medium text-slate-400 block mb-1.5">
+                  <span className="text-[11px] font-medium text-slate-500 block mb-1.5">
                     Or select a sample dirty spot for testing:
                   </span>
                   <div className="grid grid-cols-3 gap-2">
@@ -357,14 +357,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                           setTitle(preset.title);
                           setSeverity(preset.severity);
                         }}
-                        className="text-left p-1.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all text-xs"
+                        className="text-left p-1.5 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-emerald-50/60 hover:border-emerald-300 transition-all text-xs"
                       >
                         <img
                           src={preset.url}
                           alt={preset.name}
                           className="w-full h-12 sm:h-14 object-cover rounded-lg mb-1"
                         />
-                        <span className="text-[11px] font-bold text-slate-300 block truncate">
+                        <span className="text-[11px] font-bold text-slate-700 block truncate">
                           {preset.name}
                         </span>
                       </button>
@@ -376,17 +376,17 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           </div>
 
           {/* Interactive Map Picker & GPS Section */}
-          <div className="space-y-3 bg-[#121217] p-3.5 sm:p-4 rounded-2xl border border-white/[0.08]">
+          <div className="space-y-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-emerald-400" />
-                Spot Location <span className="text-rose-400">*</span>
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-[#16A34A]" />
+                Spot Location <span className="text-rose-500">*</span>
               </label>
               <button
                 type="button"
                 onClick={handleGetLiveLocation}
                 disabled={isLocating}
-                className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 bg-emerald-500/15 px-2.5 py-1 rounded-lg border border-emerald-500/25 shadow-xs"
+                className="text-[11px] font-bold text-[#16A34A] hover:text-[#15803D] flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-green-200 shadow-xs"
               >
                 {isLocating ? (
                   <>
@@ -395,7 +395,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <Crosshair className="w-3.5 h-3.5 text-emerald-400" />
+                    <Crosshair className="w-3.5 h-3.5 text-[#16A34A]" />
                     Use Live GPS
                   </>
                 )}
@@ -404,9 +404,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
             {/* Place Search Bar */}
             <div className="relative">
-              <div className="flex items-center gap-2 bg-white/[0.05] px-3 py-2 rounded-xl border border-white/10 text-xs shadow-xs">
+              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-xs">
                 {isSearchingPlace ? (
-                  <Loader2 className="w-3.5 h-3.5 text-emerald-400 animate-spin flex-shrink-0" />
+                  <Loader2 className="w-3.5 h-3.5 text-[#16A34A] animate-spin flex-shrink-0" />
                 ) : (
                   <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                 )}
@@ -415,19 +415,19 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   value={placeQuery}
                   onChange={handlePlaceSearch}
                   placeholder="Type an address or city to search..."
-                  className="w-full text-xs bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                  className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
 
               {/* Autocomplete dropdown */}
               {showDropdown && searchResults.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-[#1A1A24] rounded-2xl border border-white/10 shadow-2xl overflow-hidden z-30 max-h-48 overflow-y-auto">
+                <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl border border-slate-200 shadow-modal overflow-hidden z-30 max-h-48 overflow-y-auto">
                   {searchResults.map((item, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handleSelectPlace(item)}
-                      className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:bg-emerald-500/15 hover:text-emerald-400 border-b border-white/[0.06] last:border-b-0 flex items-center gap-2 transition-colors"
+                      className="w-full text-left px-3.5 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-[#16A34A] border-b border-slate-100 last:border-b-0 flex items-center gap-2 transition-colors"
                     >
                       <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
                       <span className="truncate">{item.display_name}</span>
@@ -438,25 +438,25 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             {/* Interactive Leaflet Picker Map */}
-            <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden border border-white/10 shadow-xs bg-[#121217]">
+            <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100">
               <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
-              <div className="absolute top-2 left-2 z-10 bg-[#1A1A24]/90 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-300 shadow-xs flex items-center gap-1">
+              <div className="absolute top-2 left-2 z-10 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-slate-200 text-[10px] font-bold text-slate-700 shadow-xs flex items-center gap-1">
                 <span>📍 Drag or click map to move pin</span>
               </div>
             </div>
 
             {/* Selected Address Display */}
-            <div className="bg-white/[0.04] p-3 rounded-xl border border-white/10 text-xs">
-              <p className="font-bold text-white truncate">
+            <div className="bg-white p-3 rounded-xl border border-slate-200 text-xs">
+              <p className="font-bold text-slate-900 truncate">
                 {location.address || 'Locating address...'}
               </p>
-              <p className="font-mono text-[11px] text-slate-400 mt-0.5">
+              <p className="font-mono text-[11px] text-slate-500 mt-0.5">
                 Lat: {location.lat.toFixed(5)}, Lng: {location.lng.toFixed(5)}
               </p>
             </div>
 
             {locationError && (
-              <p className="text-xs text-rose-400 flex items-center gap-1 font-medium">
+              <p className="text-xs text-rose-600 flex items-center gap-1 font-medium">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 {locationError}
               </p>
@@ -464,7 +464,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
             {/* Quick city switcher presets */}
             <div className="flex items-center gap-1.5 flex-wrap pt-1">
-              <span className="text-[11px] text-slate-400 font-bold">Quick Presets:</span>
+              <span className="text-[11px] text-slate-500 font-bold">Quick Presets:</span>
               {SAMPLE_CITIES.slice(0, 4).map((city) => (
                 <button
                   type="button"
@@ -477,7 +477,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                       accuracyMeters: 5,
                     })
                   }
-                  className="text-[11px] px-2.5 py-0.5 rounded-lg bg-white/[0.06] border border-white/10 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors shadow-xs"
+                  className="text-[11px] px-2.5 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-[#16A34A] hover:border-green-300 transition-colors shadow-xs"
                 >
                   {city.name.split(',')[0]}
                 </button>
@@ -488,8 +488,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           {/* Title & Description */}
           <div className="space-y-3.5">
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
-                Spot Title <span className="text-rose-400">*</span>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Spot Title <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -497,12 +497,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Broken glass & food wrappers beside playground"
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white/[0.08] placeholder:text-slate-500 min-h-[42px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 min-h-[42px]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Description / Context
               </label>
               <textarea
@@ -510,7 +510,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Details on waste types, accessibility, gloves recommended, etc."
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white/[0.08] placeholder:text-slate-500 resize-none min-h-[56px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
               />
             </div>
           </div>
@@ -518,7 +518,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           {/* Severity and Est. Waste */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Severity Level
               </label>
               <div className="grid grid-cols-3 gap-1.5">
@@ -534,7 +534,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                           : level === 'medium'
                           ? 'bg-amber-500 text-white border-amber-600 shadow-xs'
                           : 'bg-emerald-600 text-white border-emerald-700 shadow-xs'
-                        : 'bg-white/[0.05] text-slate-400 border-white/10 hover:bg-white/[0.08] hover:text-white'
+                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     {level}
@@ -544,7 +544,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Est. Waste (Kg)
               </label>
               <input
@@ -553,35 +553,35 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 max={500}
                 value={estimatedKg}
                 onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white/[0.05] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white/[0.08] min-h-[40px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white min-h-[40px]"
               />
             </div>
           </div>
 
           {/* Community Bounty Preview Callout */}
-          <div className="bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/25 flex items-center justify-between gap-3">
+          <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200/90 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <div>
-                <span className="text-xs font-bold text-white block">
+                <span className="text-xs font-bold text-slate-900 block">
                   Automatic Community Bounty
                 </span>
-                <span className="text-[11px] text-emerald-400">
+                <span className="text-[11px] text-emerald-700">
                   Awarded to the volunteer who submits verified proof of cleaning this spot
                 </span>
               </div>
             </div>
-            <span className="text-lg font-black font-mono text-emerald-400 flex-shrink-0">
+            <span className="text-lg font-black font-mono text-emerald-600 flex-shrink-0">
               +{calculateBounty()} pts
             </span>
           </div>
 
           {/* Submit Action */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/[0.08] flex-wrap">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 flex-wrap">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] transition-colors min-h-[44px]"
+              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
             >
               Cancel
             </button>
