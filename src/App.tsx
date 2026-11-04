@@ -226,7 +226,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
   };
 
   return (
-    <div className="min-h-screen text-[#17171F] pb-20 md:pb-12 bg-[#E5ECE7] selection:bg-[#16A34A] selection:text-white">
+    <div className="min-h-screen text-slate-900 pb-20 md:pb-12 bg-slate-50/70 selection:bg-emerald-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
@@ -248,17 +248,17 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
             {/* Impact Metric Cards Bar */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
               {/* Card 1: Spots Restored (Rich Emerald) */}
-              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-emerald-300 shadow-card hover:shadow-card-hover transition-all group">
+              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-400 shadow-card hover:shadow-card-hover transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-emerald-700 font-mono font-extrabold truncate">
                     Spots Restored
                   </span>
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shadow-xs flex-shrink-0">
-                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-[#17171F]">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight">
                     {stats.cleanedCount}
                   </span>
                   <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">cleaned</span>
@@ -266,53 +266,53 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
               </div>
 
               {/* Card 2: Open Bounties (Warm Amber-Orange) */}
-              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-orange-300 shadow-card hover:shadow-card-hover transition-all group">
+              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-amber-400 shadow-card hover:shadow-card-hover transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-orange-600 font-mono font-extrabold truncate">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-700 font-mono font-extrabold truncate">
                     Open Bounties
                   </span>
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shadow-xs flex-shrink-0">
-                    <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-orange-600">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-amber-600 tracking-tight">
                     {stats.pendingCount}
                   </span>
                   <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">active</span>
                 </div>
               </div>
 
-              {/* Card 3: Waste Removed (Charcoal Black) */}
-              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-slate-400 shadow-card hover:shadow-card-hover transition-all group">
+              {/* Card 3: Waste Removed (Slate & Charcoal) */}
+              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-slate-400 shadow-card hover:shadow-card-hover transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#17171F] font-mono font-extrabold truncate">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-700 font-mono font-extrabold truncate">
                     Waste Removed
                   </span>
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 text-[#17171F] border border-slate-200 flex items-center justify-center shadow-xs flex-shrink-0">
-                    <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#17171F]" />
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/80 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Scale className="w-4 h-4 text-slate-700" />
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-[#17171F]">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-slate-900 tracking-tight">
                     {stats.totalWasteKg}
                   </span>
                   <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">kg collected</span>
                 </div>
               </div>
 
-              {/* Card 4: Civic Rewards (Rich Emerald Accent) */}
-              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-emerald-300 shadow-card hover:shadow-card-hover transition-all group">
+              {/* Card 4: Civic Rewards (Rich Mint & Emerald) */}
+              <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-400 shadow-card hover:shadow-card-hover transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-emerald-700 font-mono font-extrabold truncate">
                     Civic Rewards
                   </span>
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shadow-xs flex-shrink-0">
-                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+                  <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-4 h-4 text-emerald-600" />
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-emerald-600">
+                  <span className="text-xl sm:text-3xl font-extrabold font-mono text-emerald-600 tracking-tight">
                     +{stats.totalPointsAwarded}
                   </span>
                   <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate">pts awarded</span>
@@ -325,11 +325,11 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
               {/* Left Column: Posts Feed */}
               <div className="lg:col-span-8 space-y-5">
                 {/* Filter Controls Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-300/70">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-200/80">
                   <div>
-                    <h2 className="text-lg sm:text-xl font-black text-[#17171F] tracking-tight flex items-center gap-2">
+                    <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
                       <span>Community Feed</span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
                         Live
                       </span>
                     </h2>
@@ -366,14 +366,14 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                     ))}
                   </div>
                 ) : spots.length === 0 ? (
-                  <div className="bg-white p-8 sm:p-10 rounded-2xl border border-slate-200 text-center space-y-3.5 shadow-sm">
+                  <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200/80 text-center space-y-4 shadow-card">
                     <img
-                      src="/logo.png"
+                      src="/logo-icon.png"
                       alt="GarbageMedia"
-                      className="w-14 h-14 mx-auto object-contain rounded-2xl shadow-xs"
+                      className="w-16 h-16 mx-auto object-contain drop-shadow-sm"
                     />
                     <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base sm:text-lg font-black text-[#17171F]">No cleanup spots posted yet</h3>
+                      <h3 className="text-base sm:text-lg font-black text-slate-900">No cleanup spots posted yet</h3>
                       <p className="text-xs text-slate-500">
                         Be the first volunteer to report a littered street, park, or public space in your community!
                       </p>
@@ -387,12 +387,12 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                     </button>
                   </div>
                 ) : (
-                  <div className="bg-white p-8 sm:p-10 rounded-2xl border border-slate-200 text-center space-y-3.5 shadow-sm">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+                  <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200/80 text-center space-y-4 shadow-card">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center mx-auto text-2xl shadow-xs">
                       🔍
                     </div>
                     <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base font-black text-[#17171F]">No spots in this filter</h3>
+                      <h3 className="text-base font-black text-slate-900">No spots in this filter</h3>
                       <p className="text-xs text-slate-500">
                         Try switching to "All" to view all active community cleanup posts.
                       </p>
@@ -422,7 +422,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                         1
                       </span>
                       <span>
-                        <strong className="text-[#17171F]">Pin a dirty spot:</strong> Snap a photo and select the location on the map.
+                        <strong className="text-slate-900">Pin a dirty spot:</strong> Snap a photo and select the location on the map.
                       </span>
                     </li>
                     <li className="flex gap-2.5 items-start">
@@ -430,7 +430,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                         2
                       </span>
                       <span>
-                        <strong className="text-[#17171F]">Clean & verify on-site:</strong> Volunteers clean it and submit photo proof with GPS matching.
+                        <strong className="text-slate-900">Clean & verify on-site:</strong> Volunteers clean it and submit photo proof with GPS matching.
                       </span>
                     </li>
                     <li className="flex gap-2.5 items-start">
@@ -438,20 +438,20 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                         3
                       </span>
                       <span>
-                        <strong className="text-[#17171F]">Before & After Slider:</strong> Split proof is published and reward points are credited!
+                        <strong className="text-slate-900">Before & After Slider:</strong> Split proof is published and reward points are credited!
                       </span>
                     </li>
                   </ol>
                 </div>
 
                 {/* Open Cleanup Missions Spotlight */}
-                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-card space-y-3.5">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-card space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-extrabold text-xs uppercase tracking-wider text-orange-600 flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-orange-600" />
+                    <h3 className="font-extrabold text-xs uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-600" />
                       Active Missions
                     </h3>
-                    <span className="font-mono text-xs font-bold text-orange-700 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">
+                    <span className="font-mono text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-lg border border-amber-200/80">
                       {stats.pendingCount} open
                     </span>
                   </div>
@@ -464,17 +464,17 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
                         .map((spot) => (
                           <div
                             key={spot.id}
-                            className="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/70 space-y-2 hover:border-orange-300 transition-colors shadow-xs"
+                            className="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/60 space-y-2 hover:border-amber-300 transition-colors shadow-xs"
                           >
                             <div className="flex items-center justify-between gap-2">
-                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-700 bg-orange-100/70 border border-orange-200 px-2 py-0.5 rounded-md">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-100/70 border border-amber-200/80 px-2 py-0.5 rounded-md">
                                 Bounty Mission
                               </span>
-                              <span className="text-xs font-mono font-black text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 px-2.5 py-0.5 rounded-lg shadow-sm flex-shrink-0">
+                              <span className="text-xs font-mono font-black text-white bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 px-2.5 py-0.5 rounded-lg shadow-sm flex-shrink-0">
                                 +{spot.rewardPoints} pts
                               </span>
                             </div>
-                            <h4 className="text-xs font-extrabold text-[#17171F] leading-snug break-words">
+                            <h4 className="text-xs font-extrabold text-slate-900 leading-snug break-words">
                               {spot.title}
                             </h4>
                             <p className="text-[11px] text-slate-500 flex items-start gap-1.5">

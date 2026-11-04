@@ -4,43 +4,43 @@
 
 @layer base {
   body {
-    background-color: #E5ECE7;
-    color: #17171F;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.011em;
+    letter-spacing: -0.015em;
     background-image: 
-      radial-gradient(circle at 12% 18%, rgba(22, 163, 74, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 88% 12%, rgba(22, 163, 74, 0.05) 0%, transparent 35%),
-      radial-gradient(circle at 50% 80%, rgba(23, 23, 31, 0.03) 0%, transparent 50%);
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(16, 185, 129, 0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 0%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 50% 100%, rgba(15, 23, 42, 0.02) 0%, transparent 60%);
     background-attachment: fixed;
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: #17171F;
+    color: #0F172A;
     letter-spacing: -0.025em;
   }
 }
 
 /* Glass & Card helpers for Modern Civic UI */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .card-elevated {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
 }
 
 .card-elevated:hover {
   border-color: #CBD5E1;
-  box-shadow: 0 4px 16px -2px rgba(23, 23, 31, 0.06), 0 2px 6px -1px rgba(23, 23, 31, 0.04);
+  box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(16, 185, 129, 0.04);
 }
 
 /* Clean subtle scrollbars */
@@ -49,7 +49,7 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #E5ECE7;
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
@@ -63,28 +63,28 @@
 .leaflet-container {
   font-family: inherit !important;
   z-index: 10 !important;
-  background-color: #E5ECE7 !important;
+  background-color: #F1F5F9 !important;
   border-radius: inherit;
 }
 
 .leaflet-bar {
   background: #FFFFFF !important;
   border: 1px solid #E2E8F0 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
   border-radius: 12px !important;
   overflow: hidden;
 }
 
 .leaflet-bar a {
   background-color: #FFFFFF !important;
-  color: #17171F !important;
+  color: #0F172A !important;
   border-bottom: 1px solid #F1F5F9 !important;
   transition: all 0.2s ease;
 }
 
 .leaflet-bar a:hover {
-  background-color: #E5ECE7 !important;
-  color: #16A34A !important;
+  background-color: #F8FAFC !important;
+  color: #059669 !important;
 }
 
 /* Custom map marker styles */

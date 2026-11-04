@@ -295,8 +295,8 @@ export const MapView: React.FC<MapViewProps> = ({
               onClick={() => setMapFilter('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                 mapFilter === 'all'
-                  ? 'bg-[#17171F] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-[#17171F] hover:bg-slate-100'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               All ({spots.length})
@@ -343,7 +343,7 @@ export const MapView: React.FC<MapViewProps> = ({
                   if (searchResults.length > 0) setShowSearchDropdown(true);
                 }}
                 placeholder="Search any place or city..."
-                className="w-full text-xs bg-transparent text-[#17171F] placeholder:text-slate-400 focus:outline-none"
+                className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
               />
               {searchQuery && (
                 <button
@@ -386,10 +386,10 @@ export const MapView: React.FC<MapViewProps> = ({
             <button
               type="button"
               onClick={() => setShowLayerMenu(!showLayerMenu)}
-              className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-[#17171F] hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-bold min-h-[38px]"
+              className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-bold min-h-[38px]"
               title="Change Map Style"
             >
-              <Layers className="w-4 h-4 text-[#16A34A]" />
+              <Layers className="w-4 h-4 text-emerald-600" />
               <span className="hidden sm:inline">{TILE_PROVIDERS[tileStyle].name}</span>
             </button>
 
@@ -424,7 +424,7 @@ export const MapView: React.FC<MapViewProps> = ({
           <button
             type="button"
             onClick={handleFitAllSpots}
-            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-[#17171F] hover:bg-slate-50 transition-colors min-h-[38px]"
+            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors min-h-[38px]"
             title="Fit All Spots on Screen"
           >
             <RotateCcw className="w-4 h-4" />
@@ -434,7 +434,7 @@ export const MapView: React.FC<MapViewProps> = ({
           <button
             type="button"
             onClick={handleLocateMe}
-            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-[#16A34A] hover:bg-slate-50 transition-colors min-h-[38px]"
+            className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl border border-slate-200/90 shadow-md text-emerald-600 hover:bg-slate-50 transition-colors min-h-[38px]"
             title="Center on My Live Location"
           >
             <Crosshair className="w-4 h-4" />
@@ -444,23 +444,23 @@ export const MapView: React.FC<MapViewProps> = ({
 
       {/* Floating Active Spot Preview Drawer (Bottom Left) */}
       {activeSpot && (
-        <div className="absolute bottom-5 left-4 right-4 sm:left-6 sm:right-auto sm:w-[420px] z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-modal p-4 sm:p-4.5 animate-in fade-in slide-in-from-bottom-4 text-[#17171F]">
+        <div className="absolute bottom-5 left-4 right-4 sm:left-6 sm:right-auto sm:w-[420px] z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-modal p-4 sm:p-4.5 animate-in fade-in slide-in-from-bottom-4 text-slate-900">
           <div className="flex items-start justify-between gap-2 mb-2.5">
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase ${
                 activeSpot.status === 'cleaned'
-                  ? 'bg-green-50 text-[#16A34A] border border-green-200'
-                  : 'bg-orange-50 text-orange-700 border border-orange-200'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-700 border border-amber-200'
               }`}
             >
               {activeSpot.status === 'cleaned' ? (
                 <>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                   Transformed & Cleaned
                 </>
               ) : (
                 <>
-                  <AlertTriangle className="w-3.5 h-3.5 text-orange-600" />
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
                   Open Bounty: +{activeSpot.rewardPoints} pts
                 </>
               )}
@@ -468,7 +468,7 @@ export const MapView: React.FC<MapViewProps> = ({
             <button
               type="button"
               onClick={() => setActiveSpot(null)}
-              className="p-1 text-slate-400 hover:text-[#17171F] rounded-lg hover:bg-slate-100 transition-colors"
+              className="p-1 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -490,7 +490,7 @@ export const MapView: React.FC<MapViewProps> = ({
               </span>
             </div>
             <div className="min-w-0">
-              <h4 className="font-bold text-sm text-[#17171F] truncate">{activeSpot.title}</h4>
+              <h4 className="font-bold text-sm text-slate-900 truncate">{activeSpot.title}</h4>
               <p className="text-xs text-slate-600 line-clamp-2 mt-0.5 leading-relaxed">
                 {activeSpot.description}
               </p>

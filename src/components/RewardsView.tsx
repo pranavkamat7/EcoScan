@@ -63,7 +63,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-black text-[#17171F] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   Level {levelInfo.levelNumber}: {levelInfo.levelTitle}
                 </h2>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-bold">
@@ -90,7 +90,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
         <div className="space-y-2 pt-4 border-t border-slate-100">
           <div className="flex justify-between text-xs text-slate-500 font-mono">
             <span>Next Civic Tier: Level {levelInfo.levelNumber + 1}</span>
-            <span className="font-bold text-[#17171F]">
+            <span className="font-bold text-slate-900">
               {currentUser.points} / {levelInfo.nextLevelPoints} pts ({levelInfo.progressPercent}%)
             </span>
           </div>
@@ -108,7 +108,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-emerald-600" />
-            <h3 className="font-extrabold text-base text-[#17171F]">
+            <h3 className="font-extrabold text-base text-slate-900">
               Earned Badges ({currentUser.badges.length})
             </h3>
           </div>
@@ -127,7 +127,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
                 {badge.icon}
               </div>
               <div className="min-w-0">
-                <span className="text-xs font-bold text-[#17171F] block truncate">
+                <span className="text-xs font-bold text-slate-900 block truncate">
                   {badge.title}
                 </span>
                 <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">

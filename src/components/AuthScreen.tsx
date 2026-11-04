@@ -87,35 +87,22 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   };
 
   return (
-    <div className="min-h-screen bg-[#E5ECE7] text-[#17171F] flex flex-col justify-between selection:bg-[#16A34A] selection:text-white">
+    <div className="min-h-screen bg-slate-50/70 text-slate-900 flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-300/70 px-4 sm:px-8 py-4 shadow-xs">
+      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-xl border-b border-slate-200/70 px-4 sm:px-8 py-4 shadow-[0_1px_8px_rgba(15,23,42,0.03)]">
         <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <img
-              src="/logo.png"
+              src="/logo-horizontal.png"
               alt="GarbageMedia"
-              className="w-11 h-11 object-contain rounded-2xl shadow-xs"
+              className="h-9 sm:h-11 w-auto max-w-[190px] sm:max-w-none object-contain"
             />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-xl text-[#17171F] tracking-tight leading-none block">
-                  Garbage<span className="text-emerald-600">Media</span>
-                </span>
-                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline">
-                  Civic Proof
-                </span>
-              </div>
-              <span className="text-[11px] text-slate-500 hidden sm:block font-medium mt-0.5">
-                Community Cleanups & Verified Proofs
-              </span>
-            </div>
           </div>
 
           <button
             type="button"
             onClick={handleGuest}
-            className="text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-300/80 px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-2"
+            className="text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200/90 px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-2"
           >
             <span>Explore as Guest</span>
             <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
@@ -128,55 +115,55 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center w-full">
           {/* Left Hero Civic Overview */}
           <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-emerald-700 text-xs font-bold border border-emerald-300/80 shadow-xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-emerald-700 text-xs font-bold border border-emerald-200/80 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               Community Spot Cleanups & Proofs
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#17171F] leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
               Clean your community. <br />
-              <span className="text-emerald-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600">
                 Capture proof. Earn rewards.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-lg">
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-lg">
               Found a littered park, dirty street corner, or shoreline? Snap a photo with live GPS.
               When volunteers clean it up, our app automatically generates verified Before & After comparison sliders and awards civic bounty points.
             </p>
 
             {/* 3 Step Features */}
             <div className="space-y-3 pt-1">
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-card hover:shadow-card-hover hover:border-emerald-300 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   1
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Pin a dirty area on the map</h4>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-slate-900">Pin a dirty area on the map</h4>
                   <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     Take a photo with live GPS and place search powered by OpenStreetMap geocoding.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-card hover:shadow-card-hover hover:border-emerald-300 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   2
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Clean & verify on-site</h4>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-slate-900">Clean & verify on-site</h4>
                   <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     Volunteers clean the area and submit the after photo. Haversine GPS matching confirms proof.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-card hover:shadow-card-hover hover:border-emerald-300 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   3
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Interactive proof & civic rewards</h4>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-slate-900">Interactive proof & civic rewards</h4>
                   <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     A Before & After split slider is published live, and reward points are credited to your profile.
                   </p>
@@ -187,11 +174,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
           {/* Right Login / Signup Card */}
           <div className="lg:col-span-5 w-full">
-            <div className="bg-white rounded-3xl border border-slate-300/80 shadow-xl p-6 sm:p-7 space-y-5">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xl p-6 sm:p-7 space-y-5">
               {/* Card Tabs */}
               <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 gap-2">
                 <div>
-                  <h2 className="text-base sm:text-lg font-black text-[#17171F]">
+                  <h2 className="text-base sm:text-lg font-black text-slate-900">
                     {mode === 'signin' ? 'Welcome Back' : 'Create Civic Account'}
                   </h2>
                   <p className="text-xs text-slate-500 mt-0.5">
@@ -210,7 +197,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signin'
                         ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-[#17171F]'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     Sign In
@@ -224,7 +211,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signup'
                         ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-[#17171F]'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     Register
@@ -244,7 +231,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#17171F] text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-xs disabled:opacity-50 hover:border-slate-300 active:scale-95 min-h-[44px]"
+                className="w-full py-2.5 px-4 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center justify-center gap-2.5 transition-all shadow-xs disabled:opacity-50 hover:border-slate-300 active:scale-95 min-h-[44px]"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -289,7 +276,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="e.g. Jordan Vance"
-                        className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                        className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder:text-slate-400 min-h-[42px]"
                       />
                     </div>
                   </div>
@@ -307,7 +294,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="scout@example.com"
-                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder:text-slate-400 min-h-[42px]"
                     />
                   </div>
                 </div>
@@ -325,7 +312,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder:text-slate-400 min-h-[42px]"
                     />
                   </div>
                 </div>
@@ -357,7 +344,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-300/70 bg-white/70 backdrop-blur-xs py-4 text-center text-xs text-slate-600 px-4">
+      <footer className="border-t border-slate-200/80 bg-white/70 backdrop-blur-xs py-4 text-center text-xs text-slate-500 px-4">
         GarbageMedia • Civic Community Cleanups & Verified Photographic Proofs
       </footer>
     </div>

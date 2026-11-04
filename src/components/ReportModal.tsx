@@ -279,7 +279,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-[#17171F]">
+      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -287,7 +287,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               📍
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-[#17171F]">Report Dirty Spot</h2>
+              <h2 className="text-sm sm:text-base font-black text-slate-900">Report Dirty Spot</h2>
               <p className="text-[11px] sm:text-xs text-slate-500">
                 Pin an area needing cleanup and set a community bounty.
               </p>
@@ -296,7 +296,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#17171F] hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -323,11 +323,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             ) : (
               <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-[#16A34A] rounded-xl cursor-pointer bg-slate-50 hover:bg-green-50/30 transition-all group">
+                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-emerald-50/30 transition-all group">
                   <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5 text-[#16A34A]" />
+                    <Camera className="w-5 h-5 text-emerald-600" />
                   </div>
-                  <span className="text-xs font-bold text-[#17171F] text-center">
+                  <span className="text-xs font-bold text-slate-900 text-center">
                     Snap Photo with Camera
                   </span>
                   <span className="text-[11px] text-slate-500 mt-0.5 text-center">
@@ -415,7 +415,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   value={placeQuery}
                   onChange={handlePlaceSearch}
                   placeholder="Type an address or city to search..."
-                  className="w-full text-xs bg-transparent text-[#17171F] placeholder:text-slate-400 focus:outline-none"
+                  className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
 
@@ -447,7 +447,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
             {/* Selected Address Display */}
             <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs">
-              <p className="font-bold text-[#17171F] truncate">
+              <p className="font-bold text-slate-900 truncate">
                 {location.address || 'Locating address...'}
               </p>
               <p className="font-mono text-[11px] text-slate-500 mt-0.5">
@@ -497,7 +497,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Broken glass & food wrappers beside playground"
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-1 focus:ring-[#16A34A] focus:bg-white placeholder:text-slate-400 min-h-[42px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 min-h-[42px]"
               />
             </div>
 
@@ -510,7 +510,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Details on waste types, accessibility, gloves recommended, etc."
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-1 focus:ring-[#16A34A] focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
               />
             </div>
           </div>
@@ -532,8 +532,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                         ? level === 'high'
                           ? 'bg-rose-500 text-white border-rose-600 shadow-xs'
                           : level === 'medium'
-                          ? 'bg-orange-500 text-white border-orange-600 shadow-xs'
-                          : 'bg-[#16A34A] text-white border-green-700 shadow-xs'
+                          ? 'bg-amber-500 text-white border-amber-600 shadow-xs'
+                          : 'bg-emerald-600 text-white border-emerald-700 shadow-xs'
                         : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                     }`}
                   >
@@ -553,25 +553,25 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 max={500}
                 value={estimatedKg}
                 onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-1 focus:ring-[#16A34A] focus:bg-white min-h-[40px]"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white min-h-[40px]"
               />
             </div>
           </div>
 
           {/* Community Bounty Preview Callout */}
-          <div className="bg-green-50/80 p-4 rounded-xl border border-green-200 flex items-center justify-between gap-3">
+          <div className="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200/90 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
+              <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <div>
-                <span className="text-xs font-bold text-[#17171F] block">
+                <span className="text-xs font-bold text-slate-900 block">
                   Automatic Community Bounty
                 </span>
-                <span className="text-[11px] text-green-700">
+                <span className="text-[11px] text-emerald-700">
                   Awarded to the volunteer who submits verified proof of cleaning this spot
                 </span>
               </div>
             </div>
-            <span className="text-lg font-black font-mono text-[#16A34A] flex-shrink-0">
+            <span className="text-lg font-black font-mono text-emerald-600 flex-shrink-0">
               +{calculateBounty()} pts
             </span>
           </div>
@@ -581,7 +581,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-[#17171F] rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
+              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
             >
               Cancel
             </button>

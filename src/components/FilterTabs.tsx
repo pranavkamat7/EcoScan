@@ -18,15 +18,15 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
   counts,
 }) => {
   return (
-    <div className="inline-flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+    <div className="inline-flex flex-wrap items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
       {/* All Tab */}
       <button
         type="button"
         onClick={() => onFilterChange('all')}
         className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'all'
-            ? 'bg-[#17171F] text-white shadow-xs scale-[1.02]'
-            : 'text-slate-600 hover:text-[#17171F] hover:bg-slate-100'
+            ? 'bg-slate-900 text-white shadow-xs scale-[1.02]'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
       >
         <Layers className="w-3.5 h-3.5" />
@@ -71,8 +71,8 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
         onClick={() => onFilterChange('needs_cleaning')}
         className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'needs_cleaning'
-            ? 'bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 text-white shadow-btn-orange scale-[1.02]'
-            : 'text-orange-600 hover:bg-orange-50'
+            ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 text-white shadow-xs scale-[1.02]'
+            : 'text-amber-700 hover:bg-amber-50'
         }`}
       >
         <AlertTriangle className="w-3.5 h-3.5 text-current" />
@@ -81,7 +81,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
           className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
             currentFilter === 'needs_cleaning'
               ? 'bg-black/20 text-white'
-              : 'bg-orange-100 text-orange-700'
+              : 'bg-amber-100 text-amber-700'
           }`}
         >
           {counts.needsCleaning}
@@ -94,8 +94,8 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
         onClick={() => onFilterChange('nearby')}
         className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'nearby'
-            ? 'bg-[#17171F] text-white shadow-xs scale-[1.02]'
-            : 'text-slate-600 hover:text-[#17171F] hover:bg-slate-100'
+            ? 'bg-slate-900 text-white shadow-xs scale-[1.02]'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
         }`}
       >
         <Navigation className="w-3.5 h-3.5" />

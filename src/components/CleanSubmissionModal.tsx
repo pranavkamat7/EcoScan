@@ -147,15 +147,15 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-[#17171F]">
+      <div className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-modal overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-green-50 text-[#16A34A] border border-green-200 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/80 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
               ✨
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-[#17171F]">Submit Cleanup Proof</h2>
+              <h2 className="text-sm sm:text-base font-black text-slate-900">Submit Cleanup Proof</h2>
               <p className="text-[11px] sm:text-xs text-slate-500">
                 Upload your 'After' photo and verify proximity to claim bounty points.
               </p>
@@ -164,7 +164,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-[#17171F] hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -173,17 +173,17 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         {/* Modal Body */}
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
           {/* Target Spot Summary Header */}
-          <div className="flex items-center gap-3.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
             <img
               src={spot.beforePhotoUrl}
               alt={spot.title}
               className="w-16 h-16 rounded-lg object-cover border border-slate-200 shadow-xs flex-shrink-0"
             />
             <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-orange-700 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded-full inline-block mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full inline-block mb-1">
                 Mission Spot
               </span>
-              <h4 className="font-bold text-xs sm:text-sm text-[#17171F] truncate">{spot.title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm text-slate-900 truncate">{spot.title}</h4>
               <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate">
                 <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
                 <span className="truncate">{spot.location.address}</span>
@@ -281,13 +281,13 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                   <AlertTriangle className="w-5 h-5 text-orange-500 flex-shrink-0" />
                 )}
                 <div>
-                  <h4 className="text-xs font-bold text-[#17171F]">
+                  <h4 className="text-xs font-bold text-slate-900">
                     {isLocationVerified
                       ? 'On-Site Location Verified (< 250m)'
                       : 'Outside Proximity Threshold'}
                   </h4>
                   <p className="text-[11px] text-slate-600 mt-0.5">
-                    Calculated distance: <strong className="text-[#16A34A] font-mono font-bold">{formatDistance(distanceMeters)}</strong> away from original report spot.
+                    Calculated distance: <strong className="text-emerald-600 font-mono font-bold">{formatDistance(distanceMeters)}</strong> away from original report spot.
                   </p>
                 </div>
               </div>
@@ -296,10 +296,10 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               <button
                 type="button"
                 onClick={handleSimulateOnSite}
-                className="text-[11px] font-bold text-[#16A34A] bg-white px-2.5 py-1.5 rounded-lg border border-green-200 shadow-xs hover:bg-green-50 flex items-center gap-1 flex-shrink-0 min-h-[36px]"
+                className="text-[11px] font-bold text-emerald-700 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 shadow-xs hover:bg-emerald-50 flex items-center gap-1 flex-shrink-0 min-h-[36px]"
                 title="Simulate standing right next to the spot"
               >
-                <Navigation className="w-3 h-3 text-[#16A34A]" />
+                <Navigation className="w-3 h-3 text-emerald-600" />
                 Simulate On-Site
               </button>
             </div>
@@ -315,7 +315,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               value={cleanerNotes}
               onChange={(e) => setCleanerNotes(e.target.value)}
               placeholder="e.g. Collected 2 large bags of cans, sorted recyclables, swept pathway..."
-              className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-1 focus:ring-[#16A34A] focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
+              className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
             />
           </div>
 
@@ -340,7 +340,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-[#17171F] rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
+              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
             >
               Cancel
             </button>

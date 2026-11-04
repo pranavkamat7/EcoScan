@@ -28,7 +28,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-xs">
                 <Trophy className="w-5 h-5 text-emerald-600" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#17171F] tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                 Civic Champions Leaderboard
               </h2>
             </div>
@@ -38,14 +38,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
 
           {/* Timeframe toggle */}
-          <div className="flex items-center bg-slate-100 border border-slate-200 p-1 rounded-xl self-start">
+          <div className="flex items-center bg-slate-100 border border-slate-200/80 p-1 rounded-xl self-start">
             <button
               type="button"
               onClick={() => setTimeframe('all')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                 timeframe === 'all'
-                  ? 'bg-white text-[#17171F] shadow-sm'
-                  : 'text-slate-600 hover:text-[#17171F]'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               All-Time
@@ -55,8 +55,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               onClick={() => setTimeframe('month')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                 timeframe === 'month'
-                  ? 'bg-white text-[#17171F] shadow-sm'
-                  : 'text-slate-600 hover:text-[#17171F]'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               This Month
@@ -78,7 +78,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-extrabold text-[#17171F]">
+                  <span className="text-sm font-extrabold text-slate-900">
                     {currentUser.name} (You)
                   </span>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold">
@@ -161,7 +161,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   )}
                 </div>
 
-                <h3 className="font-extrabold text-sm text-[#17171F] truncate">{item.name}</h3>
+                <h3 className="font-extrabold text-sm text-slate-900 truncate">{item.name}</h3>
                 <p className="text-[11px] text-slate-500 font-mono">{item.handle}</p>
                 <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   {item.badge}
@@ -170,7 +170,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 <div className="mt-4 pt-3 border-t border-slate-100 flex justify-around text-xs">
                   <div>
                     <span className="text-[10px] text-slate-500 block font-bold">Cleanups</span>
-                    <span className="font-mono font-bold text-[#17171F]">
+                    <span className="font-mono font-bold text-slate-900">
                       {item.spotsCleaned}
                     </span>
                   </div>
@@ -187,11 +187,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-8 sm:p-10 text-center space-y-3 shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-8 sm:p-10 text-center space-y-3 shadow-sm">
           <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
             🏆
           </div>
-          <h3 className="text-base font-bold text-[#17171F]">No Cleanups Recorded Yet</h3>
+          <h3 className="text-base font-bold text-slate-900">No Cleanups Recorded Yet</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Be the first volunteer to report a littered spot and submit verified cleanup proof to claim the #1 spot on the leaderboard!
           </p>
@@ -230,7 +230,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs sm:text-sm text-[#17171F] truncate">
+                        <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
                           {user.name}
                         </span>
                         {isUser && (
@@ -251,14 +251,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0 text-right">
                     <div className="hidden sm:block">
                       <span className="text-[10px] text-slate-400 block font-bold">Cleanups</span>
-                      <span className="font-mono text-xs font-bold text-[#17171F]">
+                      <span className="font-mono text-xs font-bold text-slate-900">
                         {user.spotsCleaned}
                       </span>
                     </div>
 
                     <div className="hidden sm:block">
                       <span className="text-[10px] text-slate-400 block font-bold">Waste Cleared</span>
-                      <span className="font-mono text-xs font-bold text-[#17171F]">
+                      <span className="font-mono text-xs font-bold text-slate-900">
                         {user.wasteKg} kg
                       </span>
                     </div>

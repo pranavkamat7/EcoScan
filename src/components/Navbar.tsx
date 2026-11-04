@@ -39,40 +39,33 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/70 shadow-[0_1px_8px_rgba(15,23,42,0.03)]">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-4 lg:gap-8">
-          {/* Brand Logo & Title */}
+          {/* Brand Logo - Official Camera Emblem & Typography */}
           <div className="flex items-center flex-shrink-0">
             <button
               type="button"
               onClick={() => onTabChange('feed')}
-              className="flex items-center gap-3 text-left group focus:outline-none"
+              className="flex items-center group focus:outline-none"
+              title="GarbageMedia — Home"
             >
               <img
-                src="/logo.png"
+                src="/logo-horizontal.png"
                 alt="GarbageMedia"
-                className="w-11 h-11 sm:w-12 sm:h-12 object-contain rounded-2xl shadow-xs group-hover:scale-105 transition-transform flex-shrink-0"
+                className="h-9 sm:h-11 w-auto max-w-[180px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
               />
-              <div className="flex items-center gap-2">
-                <span className="font-black text-xl sm:text-2xl text-[#17171F] tracking-tight leading-none block">
-                  Garbage<span className="text-emerald-600">Media</span>
-                </span>
-                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline">
-                  Civic Proof
-                </span>
-              </div>
             </button>
           </div>
 
-          {/* Desktop Navigation Links - Centered & Spacious */}
-          <nav className="hidden md:flex items-center gap-2 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-xs">
+          {/* Desktop Navigation Links - Centered & Premium Segmented Pill */}
+          <nav className="hidden md:flex items-center gap-1.5 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/70 shadow-xs">
             <button
               type="button"
               onClick={() => onTabChange('feed')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
                 currentTab === 'feed'
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-[#17171F] hover:bg-white/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <Compass className="w-4 h-4" />
@@ -85,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
                 currentTab === 'map'
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-[#17171F] hover:bg-white/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <Map className="w-4 h-4" />
@@ -98,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
                 currentTab === 'leaderboard'
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-[#17171F] hover:bg-white/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <Trophy className="w-4 h-4" />
@@ -111,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
                 currentTab === 'rewards'
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/20 scale-[1.02]'
-                  : 'text-slate-600 hover:text-[#17171F] hover:bg-white/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <Award className="w-4 h-4" />
@@ -126,18 +119,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={onRequireAuth}
-                className="h-11 px-4 text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-2xl transition-all flex items-center gap-1.5 shadow-xs"
+                className="h-11 px-4 text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200/90 rounded-2xl transition-all flex items-center gap-1.5 shadow-xs"
               >
                 <LogIn className="w-4 h-4 text-emerald-600" />
                 <span>Sign In</span>
               </button>
             )}
 
-            {/* CTA Button: Rich Emerald-Teal Gradient */}
+            {/* CTA Button: High-End Emerald Gradient */}
             <button
               type="button"
               onClick={onOpenReportModal}
-              className="h-11 px-4 sm:px-5 text-xs sm:text-sm font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+              className="h-11 px-4 sm:px-5 text-xs sm:text-sm font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl shadow-md shadow-emerald-600/25 hover:shadow-lg hover:shadow-emerald-600/35 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span className="hidden sm:inline">Report Dirty Spot</span>
@@ -162,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <span className="text-xs font-bold text-[#17171F] block leading-none truncate max-w-[105px]">
+                  <span className="text-xs font-bold text-slate-900 block leading-none truncate max-w-[105px]">
                     {currentUser.name}
                   </span>
                   <span className="font-mono text-[10px] text-emerald-600 font-extrabold block leading-tight mt-0.5">
@@ -175,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-200/90 rounded-2xl shadow-modal p-2 z-50 text-xs animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2.5 border-b border-slate-100 mb-1">
-                    <p className="font-bold text-[#17171F] truncate text-sm">{currentUser.name}</p>
+                    <p className="font-bold text-slate-900 truncate text-sm">{currentUser.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{currentUser.handle}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
@@ -193,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onTabChange('rewards');
                       setShowUserMenu(false);
                     }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 hover:text-[#17171F] flex items-center justify-between font-medium transition-colors"
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 hover:text-slate-900 flex items-center justify-between font-medium transition-colors"
                   >
                     <span>My Rewards & Badges</span>
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
