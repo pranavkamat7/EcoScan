@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User as UserIcon, AlertCircle, Loader2, Sparkles, MapPin, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../firebase/authContext';
 
 interface AuthScreenProps {
@@ -19,16 +19,25 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const formatFirebaseError = (err: any): string => {
     const msg = err?.code || err?.message || '';
     if (msg.includes('auth/configuration-not-found')) {
-      return 'Authentication is not turned on yet in your Firebase Console. Enable Email/Password or Google under Sign-in method.';
+      return 'Firebase Authentication is not activated in your Firebase Console. Please go to Firebase Console > Authentication > Sign-in method, and click "Enable" on Email/Password and Google.';
     }
     if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
-      return 'Invalid email or password.';
+      return 'Invalid email or password. If you do not have an account yet, switch to "Register" above.';
     }
     if (msg.includes('auth/email-already-in-use')) {
-      return 'An account already exists with this email. Please sign in.';
+      return 'An account already exists with this email address. Please switch to "Sign In".';
     }
     if (msg.includes('auth/weak-password')) {
       return 'Password must be at least 6 characters.';
+    }
+    if (msg.includes('auth/popup-closed-by-user')) {
+      return 'Google sign-in popup was closed before completing.';
+    }
+    if (msg.includes('auth/unauthorized-domain')) {
+      return 'This domain (onrender.com) is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
+    }
+    if (msg.includes('auth/network-request-failed')) {
+      return 'Network request failed. Please check your internet connection.';
     }
     return err?.message || 'Authentication error. Please try again.';
   };
@@ -67,10 +76,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const handleGuest = async () => {
     setLoading(true);
     try {
+      sessionStorage.setItem('garbagemedia_guest_session', 'true');
       await loginAsGuest('Guest Volunteer');
       if (onContinueAsGuest) onContinueAsGuest();
     } catch (err: any) {
-      setError(err.message);
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -173,7 +183,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <div className="flex items-center gap-1 bg-[#0E101D] p-1 rounded-xl text-xs border border-[#232845]">
                   <button
                     type="button"
-                    onClick={() => setMode('signin')}
+                    onClick={() => {
+                      setMode('signin');
+                      setError(null);
+                    }}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       mode === 'signin'
                         ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
@@ -184,7 +197,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                   </button>
                   <button
                     type="button"
-                    onClick={() => setMode('signup')}
+                    onClick={() => {
+                      setMode('signup');
+                      setError(null);
+                    }}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       mode === 'signup'
                         ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-glow-purple'
@@ -197,8 +213,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
               </div>
 
               {error && (
-                <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 text-xs text-red-300 flex items-start gap-2.5 leading-relaxed">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400" />
                   <span>{error}</span>
                 </div>
               )}

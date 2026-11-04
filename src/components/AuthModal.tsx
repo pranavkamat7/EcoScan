@@ -30,6 +30,29 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
+  const formatFirebaseError = (err: any): string => {
+    const msg = err?.code || err?.message || '';
+    if (msg.includes('auth/configuration-not-found')) {
+      return 'Firebase Authentication is not activated in your Firebase Console. Please go to Firebase Console > Authentication > Sign-in method, and enable "Email/Password" and "Google".';
+    }
+    if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
+      return 'Invalid email or password. If you do not have an account yet, switch to "Sign up" below.';
+    }
+    if (msg.includes('auth/email-already-in-use')) {
+      return 'An account already exists with this email address. Please switch to "Sign in".';
+    }
+    if (msg.includes('auth/weak-password')) {
+      return 'Password must be at least 6 characters.';
+    }
+    if (msg.includes('auth/popup-closed-by-user')) {
+      return 'Google sign-in popup was closed before completing.';
+    }
+    if (msg.includes('auth/unauthorized-domain')) {
+      return 'This domain is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
+    }
+    return err?.message || 'Authentication error. Please try again.';
+  };
+
   const handleGoogleSignIn = async () => {
     setError(null);
     setLoading(true);
@@ -40,7 +63,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await signInWithGoogle();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -66,7 +89,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Authentication error');
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }
@@ -78,7 +101,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await loginAsGuest('Guest Volunteer');
       onClose();
     } catch (err: any) {
-      setError(err.message);
+      setError(formatFirebaseError(err));
     } finally {
       setLoading(false);
     }

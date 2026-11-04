@@ -6,12 +6,13 @@ import {
   Award,
   Plus,
   ChevronDown,
-  RotateCcw,
   Sparkles,
+  LogIn,
+  LogOut,
+  Shield,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
-import { resetToDemoData } from '../utils/storage';
 
 export type NavTab = 'feed' | 'map' | 'leaderboard' | 'rewards';
 
@@ -20,6 +21,8 @@ interface NavbarProps {
   onTabChange: (tab: NavTab) => void;
   onOpenReportModal: () => void;
   currentUser: UserProfile;
+  isGuest?: boolean;
+  onRequireAuth?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -27,16 +30,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onTabChange,
   onOpenReportModal,
   currentUser,
+  isGuest = false,
+  onRequireAuth,
 }) => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
-
-  const handleResetData = () => {
-    if (window.confirm('Reset all demo data back to sample state?')) {
-      resetToDemoData();
-      window.location.reload();
-    }
-  };
+  const isGuestMode = isGuest || !user;
 
   return (
     <>
@@ -125,7 +124,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Actions: User Menu & Report CTA */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {/* If in Guest Mode, show a Sign In Button */}
+            {isGuestMode && onRequireAuth && (
+              <button
+                type="button"
+                onClick={onRequireAuth}
+                className="h-10 px-3.5 text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl transition-all flex items-center gap-1.5 shadow-xs"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
+            )}
+
             {/* CTA Button: High-impact Sunset Orange-Red */}
             <button
               type="button"
@@ -150,7 +161,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     alt={currentUser.name}
                     className="w-7 h-7 rounded-full object-cover border border-violet-400"
                   />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-violet-500 border border-white" />
+                  {!isGuestMode && (
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
+                  )}
                 </div>
                 <div className="text-left hidden sm:block">
                   <span className="text-xs font-bold text-slate-900 block leading-none truncate max-w-[95px]">
@@ -164,13 +177,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-modal p-2 z-50 text-xs animate-in fade-in zoom-in-95">
+                <div className="absolute right-0 mt-2 w-60 bg-white border border-slate-200 rounded-2xl shadow-modal p-2 z-50 text-xs animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2 border-b border-slate-100 mb-1">
                     <p className="font-bold text-slate-900 truncate">{currentUser.name}</p>
                     <p className="text-[11px] text-slate-500 truncate">{currentUser.handle}</p>
                     <div className="flex items-center gap-1.5 mt-1.5">
                       <span className="inline-block px-2 py-0.5 rounded-full text-[10px] bg-purple-50 text-purple-700 border border-purple-200 font-bold">
-                        {currentUser.level}
+                        {isGuestMode ? 'Guest Mode' : currentUser.level}
                       </span>
                       <span className="text-[10px] font-mono text-amber-600 font-bold">
                         {currentUser.points} pts
@@ -190,28 +203,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      handleResetData();
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-500 hover:text-slate-800 flex items-center gap-2"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Reset Demo Data</span>
-                  </button>
-
-                  {user && (
+                  {isGuestMode && onRequireAuth ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onRequireAuth();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-violet-50 text-violet-700 flex items-center gap-2 font-bold"
+                    >
+                      <LogIn className="w-3.5 h-3.5 text-violet-600" />
+                      <span>Sign In or Register</span>
+                    </button>
+                  ) : (
                     <button
                       type="button"
                       onClick={() => {
                         logout();
                         setShowUserMenu(false);
+                        if (onRequireAuth) onRequireAuth();
                       }}
                       className="w-full text-left px-3 py-2 rounded-xl hover:bg-red-50 text-red-600 hover:text-red-700 flex items-center justify-between font-medium"
                     >
                       <span>Sign Out</span>
+                      <LogOut className="w-3.5 h-3.5 text-red-500" />
                     </button>
                   )}
                 </div>

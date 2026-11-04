@@ -14,8 +14,10 @@ import { CleanSubmissionModal } from './components/CleanSubmissionModal';
 import { MapView } from './components/MapView';
 import { Leaderboard } from './components/Leaderboard';
 import { RewardsView } from './components/RewardsView';
+import { AuthScreen } from './components/AuthScreen';
 import { AuthProvider, useAuth } from './firebase/authContext';
 import { subscribeToSpots, saveSpotCloud, saveCleanVerificationCloud } from './firebase/spotsService';
+import { GUEST_USER } from './data/initialSpots';
 import {
   Sparkles,
   AlertTriangle,
@@ -28,8 +30,14 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-function GarbageMediaDashboard() {
-  const { profile: currentUser, awardCleanupReward, recordSpotReported } = useAuth();
+interface GarbageMediaDashboardProps {
+  isGuest?: boolean;
+  onRequireAuth?: () => void;
+}
+
+function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaDashboardProps) {
+  const { profile, awardCleanupReward, recordSpotReported } = useAuth();
+  const currentUser = profile || GUEST_USER;
 
   const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>(() => loadLeaderboard());
@@ -45,17 +53,19 @@ function GarbageMediaDashboard() {
   // Subscribe to real-time Firestore spots (with local fallback)
   useEffect(() => {
     const unsubscribe = subscribeToSpots((updatedSpots) => {
-      if (updatedSpots && updatedSpots.length > 0) {
-        setSpots(updatedSpots);
-      }
+      setSpots(updatedSpots || []);
     });
     return () => unsubscribe();
   }, []);
 
   // Update leaderboard when current user profile changes
   useEffect(() => {
+    if (!currentUser || currentUser.id === 'guest' || !currentUser.name) return;
+
     setLeaderboard((prev: LeaderboardItem[]) => {
-      const updated = prev.map((item: LeaderboardItem) => {
+      const cleanPrev = prev.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
+
+      const updated = cleanPrev.map((item: LeaderboardItem) => {
         if (item.id === currentUser.id || item.isCurrentUser) {
           return {
             ...item,
@@ -74,7 +84,7 @@ function GarbageMediaDashboard() {
       });
 
       const exists = updated.some((i: LeaderboardItem) => i.id === currentUser.id || i.isCurrentUser);
-      if (!exists) {
+      if (!exists && currentUser.points > 0) {
         updated.push({
           rank: updated.length + 1,
           id: currentUser.id,
@@ -226,6 +236,8 @@ function GarbageMediaDashboard() {
         }}
         onOpenReportModal={() => setIsReportModalOpen(true)}
         currentUser={currentUser}
+        isGuest={isGuest}
+        onRequireAuth={onRequireAuth}
       />
 
       {/* Main Container */}
@@ -233,7 +245,7 @@ function GarbageMediaDashboard() {
         {/* VIEW 1: Community Feed */}
         {currentTab === 'feed' && (
           <div className="space-y-7">
-            {/* Impact Metric Cards Bar with Modern Warm / Purple Accents */}
+            {/* Impact Metric Cards Bar */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Card 1: Spots Restored (Royal Violet / Purple) */}
               <div className="bg-white p-5 rounded-2xl border border-slate-200/90 hover:border-purple-300 shadow-sm hover:shadow-md transition-all group">
@@ -312,7 +324,7 @@ function GarbageMediaDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* Left Column: Posts Feed */}
               <div className="lg:col-span-8 space-y-6">
-                {/* Filter Controls Header - Generous dedicated responsive layout */}
+                {/* Filter Controls Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
                   <div>
                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -353,15 +365,34 @@ function GarbageMediaDashboard() {
                       />
                     ))}
                   </div>
-                ) : (
+                ) : spots.length === 0 ? (
                   <div className="bg-white p-10 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
                     <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
                       🌱
                     </div>
                     <div className="max-w-md mx-auto space-y-1">
-                      <h3 className="text-base font-bold text-slate-900">No spots in this view</h3>
+                      <h3 className="text-base font-bold text-slate-900">No cleanup spots posted yet</h3>
                       <p className="text-xs text-slate-500">
-                        Try switching to "All" or report a new dirty spot in your neighborhood!
+                        Be the first volunteer to report a littered street, park, or public space in your community!
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsReportModalOpen(true)}
+                      className="px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded-xl transition-all shadow-btn-orange hover:scale-105 active:scale-95"
+                    >
+                      + Report First Dirty Spot
+                    </button>
+                  </div>
+                ) : (
+                  <div className="bg-white p-10 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+                      🔍
+                    </div>
+                    <div className="max-w-md mx-auto space-y-1">
+                      <h3 className="text-base font-bold text-slate-900">No spots in this filter</h3>
+                      <p className="text-xs text-slate-500">
+                        Try switching to "All" to view all active community cleanup posts.
                       </p>
                     </div>
                     <button
@@ -411,7 +442,7 @@ function GarbageMediaDashboard() {
                   </ol>
                 </div>
 
-                {/* Open Cleanup Missions Spotlight - Full-width clean text so nothing is cut off */}
+                {/* Open Cleanup Missions Spotlight */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="font-extrabold text-xs uppercase tracking-wider text-orange-600 flex items-center gap-1.5">
@@ -487,34 +518,43 @@ function GarbageMediaDashboard() {
                   </div>
 
                   <div className="space-y-2.5">
-                    {leaderboard.slice(0, 3).map((item, idx) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between gap-2 p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="font-mono font-extrabold text-xs text-slate-400 w-4">
-                            #{idx + 1}
-                          </span>
-                          <img
-                            src={item.avatar}
-                            alt={item.name}
-                            className="w-8 h-8 rounded-full object-cover border border-violet-200 flex-shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <span className="text-xs font-bold text-slate-900 truncate block">
-                              {item.name}
-                            </span>
-                            <span className="text-[10px] text-slate-500 font-mono">
-                              {item.spotsCleaned} cleanups
+                    {leaderboard.filter((u) => u.id !== 'guest' && u.id !== 'user_current').slice(0, 3).length > 0 ? (
+                      leaderboard
+                        .filter((u) => u.id !== 'guest' && u.id !== 'user_current')
+                        .slice(0, 3)
+                        .map((item, idx) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between gap-2 p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="font-mono font-extrabold text-xs text-slate-400 w-4">
+                                #{idx + 1}
+                              </span>
+                              <img
+                                src={item.avatar}
+                                alt={item.name}
+                                className="w-8 h-8 rounded-full object-cover border border-violet-200 flex-shrink-0"
+                              />
+                              <div className="min-w-0">
+                                <span className="text-xs font-bold text-slate-900 truncate block">
+                                  {item.name}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-mono">
+                                  {item.spotsCleaned} cleanups
+                                </span>
+                              </div>
+                            </div>
+                            <span className="font-mono font-extrabold text-xs text-amber-600 flex-shrink-0">
+                              {item.points} pts
                             </span>
                           </div>
-                        </div>
-                        <span className="font-mono font-extrabold text-xs text-amber-600 flex-shrink-0">
-                          {item.points} pts
-                        </span>
-                      </div>
-                    ))}
+                        ))
+                    ) : (
+                      <p className="text-xs text-slate-400 text-center py-2">
+                        No champions yet. Be the first to earn points!
+                      </p>
+                    )}
                   </div>
                 </div>
               </aside>
@@ -565,7 +605,7 @@ function GarbageMediaDashboard() {
         {currentTab === 'rewards' && <RewardsView currentUser={currentUser} />}
       </main>
 
-      {/* MODAL 1: Report Dirty Spot with Interactive Leaflet Location Picker */}
+      {/* MODAL 1: Report Dirty Spot */}
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -573,7 +613,7 @@ function GarbageMediaDashboard() {
         currentUser={currentUser}
       />
 
-      {/* MODAL 2: Clean Submission (Proof + Proximity Match + Confetti Reward) */}
+      {/* MODAL 2: Clean Submission */}
       <CleanSubmissionModal
         spot={activeCleanSpot}
         isOpen={Boolean(activeCleanSpot)}
@@ -586,7 +626,10 @@ function GarbageMediaDashboard() {
 }
 
 function AppContent() {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
+  const [isGuest, setIsGuest] = useState(() => {
+    return sessionStorage.getItem('garbagemedia_guest_session') === 'true';
+  });
 
   if (loading) {
     return (
@@ -599,7 +642,27 @@ function AppContent() {
     );
   }
 
-  return <GarbageMediaDashboard />;
+  // If user is not logged in and has not chosen to continue as guest, show the landing & auth portal
+  if (!user && !isGuest) {
+    return (
+      <AuthScreen
+        onContinueAsGuest={() => {
+          sessionStorage.setItem('garbagemedia_guest_session', 'true');
+          setIsGuest(true);
+        }}
+      />
+    );
+  }
+
+  return (
+    <GarbageMediaDashboard
+      isGuest={!user && isGuest}
+      onRequireAuth={() => {
+        sessionStorage.removeItem('garbagemedia_guest_session');
+        setIsGuest(false);
+      }}
+    />
+  );
 }
 
 export function App() {

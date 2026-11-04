@@ -1,9 +1,26 @@
 import { Spot, UserProfile, LeaderboardItem } from '../types';
-import { INITIAL_SPOTS, INITIAL_USER, INITIAL_LEADERBOARD } from '../data/initialSpots';
+import { INITIAL_SPOTS, INITIAL_LEADERBOARD } from '../data/initialSpots';
 
-const SPOTS_STORAGE_KEY = 'garbagemedia_spots_v2';
-const USER_STORAGE_KEY = 'garbagemedia_user_v2';
-const LEADERBOARD_STORAGE_KEY = 'garbagemedia_leaderboard_v2';
+const SPOTS_STORAGE_KEY = 'garbagemedia_spots_v3';
+const USER_STORAGE_KEY = 'garbagemedia_user_v3';
+const LEADERBOARD_STORAGE_KEY = 'garbagemedia_leaderboard_v3';
+
+// Purge obsolete dummy mock entries from previous sessions
+export function purgeOldDummyStorage(): void {
+  try {
+    localStorage.removeItem('garbagemedia_spots');
+    localStorage.removeItem('garbagemedia_user');
+    localStorage.removeItem('garbagemedia_leaderboard');
+    localStorage.removeItem('garbagemedia_spots_v2');
+    localStorage.removeItem('garbagemedia_user_v2');
+    localStorage.removeItem('garbagemedia_leaderboard_v2');
+  } catch {
+    // Ignore error in restricted environments
+  }
+}
+
+// Clean on module load
+purgeOldDummyStorage();
 
 export function loadSpots(): Spot[] {
   try {
@@ -14,7 +31,6 @@ export function loadSpots(): Spot[] {
   } catch (err) {
     console.error('Failed to load spots from localStorage', err);
   }
-  saveSpots(INITIAL_SPOTS);
   return INITIAL_SPOTS;
 }
 
@@ -26,24 +42,39 @@ export function saveSpots(spots: Spot[]): void {
   }
 }
 
-export function loadUserProfile(): UserProfile {
+export function loadUserProfile(): UserProfile | null {
   try {
     const raw = localStorage.getItem(USER_STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.id && parsed.id !== 'user_current' && parsed.id !== 'guest') {
+        return parsed;
+      }
     }
   } catch (err) {
     console.error('Failed to load user from localStorage', err);
   }
-  saveUserProfile(INITIAL_USER);
-  return INITIAL_USER;
+  return null;
 }
 
-export function saveUserProfile(user: UserProfile): void {
+export function saveUserProfile(user: UserProfile | null): void {
   try {
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    if (!user || user.id === 'guest' || user.id === 'user_current') {
+      localStorage.removeItem(USER_STORAGE_KEY);
+    } else {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    }
   } catch (err) {
     console.error('Failed to save user to localStorage', err);
+  }
+}
+
+export function clearUserProfile(): void {
+  try {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    sessionStorage.removeItem('garbagemedia_guest_session');
+  } catch (err) {
+    console.error('Failed to clear user from localStorage', err);
   }
 }
 
@@ -51,7 +82,8 @@ export function loadLeaderboard(): LeaderboardItem[] {
   try {
     const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed: LeaderboardItem[] = JSON.parse(raw);
+      return parsed.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
     }
   } catch (err) {
     console.error('Failed to load leaderboard', err);
@@ -59,21 +91,19 @@ export function loadLeaderboard(): LeaderboardItem[] {
   return INITIAL_LEADERBOARD;
 }
 
-export function saveLeaderboard(leaderboard: LeaderboardItem[]) {
+export function saveLeaderboard(leaderboard: LeaderboardItem[]): void {
   try {
-    localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(leaderboard));
+    const clean = leaderboard.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
+    localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(clean));
   } catch (err) {
     console.error('Failed to save leaderboard', err);
   }
 }
 
-export function resetToDemoData(): { spots: Spot[]; user: UserProfile; leaderboard: LeaderboardItem[] } {
+export function resetToDemoData(): void {
+  purgeOldDummyStorage();
   localStorage.removeItem(SPOTS_STORAGE_KEY);
   localStorage.removeItem(USER_STORAGE_KEY);
   localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
-  return {
-    spots: INITIAL_SPOTS,
-    user: INITIAL_USER,
-    leaderboard: INITIAL_LEADERBOARD,
-  };
+  sessionStorage.removeItem('garbagemedia_guest_session');
 }

@@ -13,8 +13,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 }) => {
   const [timeframe, setTimeframe] = useState<'all' | 'month'>('all');
 
-  const top3 = leaderboardData.slice(0, 3);
-  const remaining = leaderboardData.slice(3);
+  // Filter out any mock users
+  const cleanData = leaderboardData.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
+  const top3 = cleanData.slice(0, 3);
+  const remaining = cleanData.slice(3);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -63,44 +65,46 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
 
         {/* Current User Quick Summary Bar */}
-        <div className="mt-6 p-4 rounded-xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between flex-wrap gap-4 shadow-xs">
-          <div className="flex items-center gap-3.5">
-            <div className="relative">
-              <img
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-violet-500 shadow-sm"
-              />
-              <span className="absolute -bottom-1 -right-1 text-xs">⭐</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-extrabold text-slate-900">
-                  {currentUser.name} (You)
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 font-bold">
-                  {currentUser.level}
-                </span>
+        {currentUser && currentUser.id !== 'guest' && (
+          <div className="mt-6 p-4 rounded-xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between flex-wrap gap-4 shadow-xs">
+            <div className="flex items-center gap-3.5">
+              <div className="relative">
+                <img
+                  src={currentUser.avatar}
+                  alt={currentUser.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-violet-500 shadow-sm"
+                />
+                <span className="absolute -bottom-1 -right-1 text-xs">⭐</span>
               </div>
-              <p className="text-xs text-slate-600 mt-0.5">
-                {currentUser.spotsCleaned} cleanups completed • {currentUser.wasteClearedKg} kg cleared
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-extrabold text-slate-900">
+                    {currentUser.name} (You)
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 font-bold">
+                    {currentUser.level}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  {currentUser.spotsCleaned} cleanups completed • {currentUser.wasteClearedKg} kg cleared
+                </p>
+              </div>
+            </div>
+
+            <div className="text-left sm:text-right">
+              <span className="text-[11px] text-slate-500 font-mono uppercase tracking-wider block font-bold">
+                Your Civic Balance
+              </span>
+              <span className="font-mono font-black text-xl sm:text-2xl text-amber-600">
+                {currentUser.points.toLocaleString()} pts
+              </span>
             </div>
           </div>
-
-          <div className="text-left sm:text-right">
-            <span className="text-[11px] text-slate-500 font-mono uppercase tracking-wider block font-bold">
-              Your Civic Balance
-            </span>
-            <span className="font-mono font-black text-xl sm:text-2xl text-amber-600">
-              {currentUser.points.toLocaleString()} pts
-            </span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Podium Cards for Top 3 */}
-      {top3.length > 0 && (
+      {top3.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {top3.map((item, idx) => {
             const isFirst = idx === 0;
@@ -182,6 +186,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
             );
           })}
         </div>
+      ) : (
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-10 text-center space-y-3 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+            🏆
+          </div>
+          <h3 className="text-base font-bold text-slate-900">No Cleanups Recorded Yet</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            Be the first volunteer to report a littered spot and submit verified cleanup proof to claim the #1 spot on the leaderboard!
+          </p>
+        </div>
       )}
 
       {/* Remaining Leaderboard Table */}
@@ -193,7 +207,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
           <div className="divide-y divide-slate-100">
             {remaining.map((user) => {
-              const isUser = user.id === currentUser.id || user.isCurrentUser;
+              const isUser = currentUser && (user.id === currentUser.id || user.isCurrentUser);
 
               return (
                 <div
