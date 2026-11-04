@@ -87,9 +87,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#17171F] flex flex-col justify-between selection:bg-[#16A34A] selection:text-white">
+    <div className="min-h-screen bg-[#E5ECE7] text-[#17171F] flex flex-col justify-between selection:bg-[#16A34A] selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 shadow-xs">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-300/70 px-4 sm:px-6 py-3.5 shadow-xs">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
@@ -115,7 +115,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
           <button
             type="button"
             onClick={handleGuest}
-            className="text-xs font-bold text-slate-700 hover:text-[#16A34A] bg-green-50/80 hover:bg-green-100/80 border border-green-200/80 px-3.5 sm:px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+            className="text-xs font-bold text-slate-700 hover:text-[#16A34A] bg-white/90 hover:bg-white border border-slate-300/80 px-3.5 sm:px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
           >
             <span>Explore as Guest</span>
             <ArrowRight className="w-3.5 h-3.5 text-[#16A34A]" />
@@ -128,7 +128,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center w-full">
           {/* Left Hero Civic Overview */}
           <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-[#16A34A] text-xs font-bold border border-green-200">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-[#16A34A] text-xs font-bold border border-green-300/80 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-[#16A34A]" />
               Community Spot Cleanups & Proofs
             </div>
@@ -140,44 +140,44 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-lg">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-lg">
               Found a littered park, dirty street corner, or shoreline? Snap a photo with live GPS.
               When volunteers clean it up, our app automatically generates verified Before & After comparison sliders and awards civic bounty points.
             </p>
 
             {/* 3 Step Features */}
             <div className="space-y-3 pt-1">
-              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-3.5 hover:border-green-300 transition-colors">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   1
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Pin a dirty area on the map</h4>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     Take a photo with live GPS and place search powered by OpenStreetMap geocoding.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-3.5 hover:border-green-300 transition-colors">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   2
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Clean & verify on-site</h4>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     Volunteers clean the area and submit the after photo. Haversine GPS matching confirms proof.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-sm flex items-start gap-3.5 hover:border-green-300 transition-colors">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
                 <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   3
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-extrabold text-[#17171F]">Interactive proof & civic rewards</h4>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                     A Before & After split slider is published live, and reward points are credited to your profile.
                   </p>
                 </div>
@@ -187,7 +187,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
           {/* Right Login / Signup Card */}
           <div className="lg:col-span-5 w-full">
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-modal p-6 sm:p-7 space-y-5">
+            <div className="bg-white rounded-3xl border border-slate-300/80 shadow-xl p-6 sm:p-7 space-y-5">
               {/* Card Tabs */}
               <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 gap-2">
                 <div>
@@ -357,7 +357,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500 px-4">
+      <footer className="border-t border-slate-300/70 bg-white/70 backdrop-blur-xs py-4 text-center text-xs text-slate-600 px-4">
         GarbageMedia • Civic Community Cleanups & Verified Photographic Proofs
       </footer>
     </div>

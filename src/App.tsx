@@ -226,7 +226,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
   };
 
   return (
-    <div className="min-h-screen text-[#17171F] pb-20 md:pb-12 bg-[#F8FAFC] selection:bg-[#16A34A] selection:text-white">
+    <div className="min-h-screen text-[#17171F] pb-20 md:pb-12 bg-[#E5ECE7] selection:bg-[#16A34A] selection:text-white">
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
@@ -635,7 +635,7 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center space-y-3">
+      <div className="min-h-screen bg-[#E5ECE7] flex flex-col items-center justify-center space-y-3">
         <img
           src="/logo.png"
           alt="GarbageMedia"
