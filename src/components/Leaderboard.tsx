@@ -25,8 +25,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
-              <div className="w-10 h-10 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center text-[#16A34A] shadow-xs">
-                <Trophy className="w-5 h-5 text-[#16A34A]" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-xs">
+                <Trophy className="w-5 h-5 text-emerald-600" />
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-[#17171F] tracking-tight">
                 Civic Champions Leaderboard
@@ -66,13 +66,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
         {/* Current User Quick Summary Bar */}
         {currentUser && currentUser.id !== 'guest' && (
-          <div className="mt-6 p-4 rounded-xl bg-green-50/70 border border-green-200/90 flex items-center justify-between flex-wrap gap-4 shadow-xs">
+          <div className="mt-6 p-4 rounded-xl bg-emerald-50/80 border border-emerald-200/90 flex items-center justify-between flex-wrap gap-4 shadow-xs">
             <div className="flex items-center gap-3.5">
               <div className="relative">
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-[#16A34A] shadow-sm"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shadow-sm"
                 />
                 <span className="absolute -bottom-1 -right-1 text-xs">⭐</span>
               </div>
@@ -81,7 +81,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   <span className="text-sm font-extrabold text-[#17171F]">
                     {currentUser.name} (You)
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-green-100 text-[#16A34A] border border-green-200 font-bold">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold">
                     {currentUser.level}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               <span className="text-[11px] text-slate-500 font-mono uppercase tracking-wider block font-bold">
                 Your Civic Balance
               </span>
-              <span className="font-mono font-black text-xl sm:text-2xl text-[#16A34A]">
+              <span className="font-mono font-black text-xl sm:text-2xl text-emerald-600">
                 {currentUser.points.toLocaleString()} pts
               </span>
             </div>
@@ -163,7 +163,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
                 <h3 className="font-extrabold text-sm text-[#17171F] truncate">{item.name}</h3>
                 <p className="text-[11px] text-slate-500 font-mono">{item.handle}</p>
-                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-green-50 text-[#16A34A] border border-green-200">
+                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   {item.badge}
                 </span>
 
@@ -177,7 +177,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   <div className="border-r border-slate-200" />
                   <div>
                     <span className="text-[10px] text-slate-500 block font-bold">Civic Points</span>
-                    <span className="font-mono font-black text-[#16A34A]">
+                    <span className="font-mono font-black text-emerald-600">
                       {item.points.toLocaleString()}
                     </span>
                   </div>
@@ -188,7 +188,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate-200/90 p-8 sm:p-10 text-center space-y-3 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-green-50 text-[#16A34A] border border-green-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
             🏆
           </div>
           <h3 className="text-base font-bold text-[#17171F]">No Cleanups Recorded Yet</h3>
@@ -202,7 +202,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
       {remaining.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="p-4 bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-700 uppercase tracking-wider font-mono flex items-center gap-2">
-            <Medal className="w-4 h-4 text-[#16A34A]" />
+            <Medal className="w-4 h-4 text-emerald-600" />
             <span>Full Community Rankings</span>
           </div>
           <div className="divide-y divide-slate-100">
@@ -213,7 +213,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 <div
                   key={user.id}
                   className={`p-4 flex items-center justify-between gap-3 transition-colors ${
-                    isUser ? 'bg-green-50/70' : 'hover:bg-slate-50'
+                    isUser ? 'bg-emerald-50/70' : 'hover:bg-slate-50'
                   }`}
                 >
                   {/* Left: Rank & Avatar */}
@@ -234,7 +234,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                           {user.name}
                         </span>
                         {isUser && (
-                          <span className="text-[10px] uppercase font-extrabold text-[#16A34A] bg-green-100 border border-green-200 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] uppercase font-extrabold text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full">
                             You
                           </span>
                         )}
@@ -265,7 +265,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
                     <div>
                       <span className="text-[10px] text-slate-400 block font-bold">Points</span>
-                      <span className="font-mono font-black text-sm sm:text-base text-[#16A34A]">
+                      <span className="font-mono font-black text-sm sm:text-base text-emerald-600">
                         {user.points.toLocaleString()} pts
                       </span>
                     </div>

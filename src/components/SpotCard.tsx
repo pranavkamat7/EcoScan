@@ -70,12 +70,12 @@ export const SpotCard: React.FC<SpotCardProps> = ({
   });
 
   return (
-    <article className="relative bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
+    <article className="relative bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 transition-all duration-300 overflow-hidden shadow-card hover:shadow-card-hover">
       {/* Top Accent Line */}
       <div
         className={`h-1.5 w-full ${
           isCleaned
-            ? 'bg-[#16A34A]'
+            ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600'
             : 'bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 shadow-sm'
         }`}
       />
@@ -87,11 +87,11 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <img
               src={spot.reporterAvatar}
               alt={spot.reporterName}
-              className="w-10 h-10 rounded-full object-cover border-2 border-[#16A34A] shadow-xs"
+              className="w-10 h-10 rounded-full object-cover border-2 border-emerald-500 shadow-xs"
             />
             <span
               className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
-                isCleaned ? 'bg-[#16A34A]' : 'bg-orange-500'
+                isCleaned ? 'bg-emerald-500' : 'bg-orange-500'
               }`}
             />
           </div>
@@ -101,7 +101,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               <span className="font-extrabold text-sm text-[#17171F] truncate">
                 {spot.reporterName}
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-green-50 text-[#16A34A] border border-green-200 font-bold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
                 Scout
               </span>
             </div>
@@ -114,7 +114,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenMap(spot)}
-                className="flex items-center gap-1 text-slate-600 hover:text-[#16A34A] cursor-pointer transition-colors text-left group"
+                className="flex items-center gap-1 text-slate-600 hover:text-emerald-700 cursor-pointer transition-colors text-left group"
                 title={spot.location.address || 'View on map'}
               >
                 <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
@@ -129,8 +129,8 @@ export const SpotCard: React.FC<SpotCardProps> = ({
         {/* Distinct Status & Bounty Pill */}
         <div className="flex items-center gap-2 flex-shrink-0">
           {isCleaned ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-full bg-green-50 text-[#16A34A] border border-green-200 shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               Restored & Verified
             </span>
           ) : (
@@ -175,7 +175,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               <button
                 type="button"
                 onClick={() => onCleanSpot(spot)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[44px]"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[44px]"
               >
                 <Sparkles className="w-4 h-4 text-white" />
                 I Cleaned This Spot
@@ -201,14 +201,14 @@ export const SpotCard: React.FC<SpotCardProps> = ({
           {spot.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-green-50 text-[#16A34A] border border-green-200"
+              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200"
             >
               #{tag}
             </span>
           ))}
           {spot.estimatedWasteKg && (
             <span className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 text-[#17171F] font-mono border border-slate-200 inline-flex items-center gap-1.5 font-bold">
-              <Scale className="w-3.5 h-3.5 text-[#16A34A]" />
+              <Scale className="w-3.5 h-3.5 text-emerald-600" />
               ~{spot.estimatedWasteKg} kg waste
             </span>
           )}
@@ -218,7 +218,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                 ? 'bg-rose-50 text-rose-700 border border-rose-200'
                 : spot.severity === 'medium'
                 ? 'bg-orange-50 text-orange-700 border border-orange-200'
-                : 'bg-green-50 text-[#16A34A] border border-green-200'
+                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
             }`}
           >
             {spot.severity.toUpperCase()} Priority
@@ -227,13 +227,13 @@ export const SpotCard: React.FC<SpotCardProps> = ({
 
         {/* Verified Cleanup Certificate Seal (If Cleaned) */}
         {isCleaned && spot.verification && (
-          <div className="bg-green-50/70 border border-green-200/90 rounded-xl p-4 space-y-3">
+          <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-3">
                 <img
                   src={spot.verification.cleanerAvatar}
                   alt={spot.verification.cleanerName}
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#16A34A] shadow-sm"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500 shadow-sm"
                 />
                 <div>
                   <span className="text-xs font-extrabold text-[#17171F] block">
@@ -245,21 +245,21 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                 </div>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#16A34A] text-white shadow-xs">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs">
                 <Award className="w-4 h-4 text-amber-200" />
                 +{spot.verification.pointsEarned} pts rewarded
               </div>
             </div>
 
             {spot.verification.notes && (
-              <p className="text-xs text-[#17171F] italic bg-white p-3 rounded-lg border border-green-200/70 leading-relaxed">
+              <p className="text-xs text-[#17171F] italic bg-white p-3 rounded-lg border border-emerald-200/80 leading-relaxed">
                 "{spot.verification.notes}"
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-green-800 font-mono pt-1">
+            <div className="flex flex-wrap items-center gap-2 text-[11px] text-emerald-800 font-mono pt-1">
               <span className="inline-flex items-center gap-1 font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#16A34A]" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 GPS Verified: {formatDistance(spot.verification.distanceFromOriginMeters)} proximity
               </span>
               <span>•</span>
@@ -295,7 +295,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               onClick={() => setShowComments(!showComments)}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors min-h-[40px]"
             >
-              <MessageSquare className="w-4 h-4 text-[#16A34A]" />
+              <MessageSquare className="w-4 h-4 text-emerald-600" />
               <span>{spot.comments.length} Comments</span>
             </button>
 
@@ -307,7 +307,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               title="Copy Link to Spot"
             >
               <Share2 className="w-4 h-4" />
-              {copiedShare && <span className="text-[#16A34A] text-[10px] font-bold">Copied!</span>}
+              {copiedShare && <span className="text-emerald-600 text-[10px] font-bold">Copied!</span>}
             </button>
           </div>
 
@@ -316,7 +316,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => onCleanSpot(spot)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#16A34A] hover:bg-[#15803D] text-white shadow-btn-green hover:scale-[1.02] active:scale-95 transition-all min-h-[40px]"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-btn-green hover:scale-[1.02] active:scale-95 transition-all min-h-[40px]"
             >
               <Sparkles className="w-4 h-4" />
               <span>I Cleaned This</span>
@@ -326,7 +326,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => onOpenMap(spot)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#16A34A] hover:text-[#15803D] bg-green-50 hover:bg-green-100 border border-green-200 transition-all min-h-[40px]"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all min-h-[40px]"
             >
               <span>Explore on Map</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -378,12 +378,12 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 placeholder="Write an encouraging message..."
-                className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-1 focus:ring-[#16A34A] placeholder:text-slate-400 min-h-[40px]"
+                className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-[#17171F] focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 placeholder:text-slate-400 min-h-[40px]"
               />
               <button
                 type="submit"
                 disabled={!commentText.trim()}
-                className="p-2.5 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center"
+                className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center"
                 title="Send Comment"
               >
                 <Send className="w-3.5 h-3.5" />

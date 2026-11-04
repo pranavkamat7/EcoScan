@@ -89,20 +89,20 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   return (
     <div className="min-h-screen bg-[#E5ECE7] text-[#17171F] flex flex-col justify-between selection:bg-[#16A34A] selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-300/70 px-4 sm:px-6 py-3.5 shadow-xs">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-300/70 px-4 sm:px-8 py-4 shadow-xs">
+        <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src="/logo.png"
               alt="GarbageMedia"
-              className="w-10 h-10 object-contain rounded-xl shadow-xs"
+              className="w-11 h-11 object-contain rounded-2xl shadow-xs"
             />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-black text-xl text-[#17171F] tracking-tight leading-none block">
-                  Garbage<span className="text-[#16A34A]">Media</span>
+                  Garbage<span className="text-emerald-600">Media</span>
                 </span>
-                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-green-50 text-[#16A34A] border border-green-200 hidden sm:inline">
+                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline">
                   Civic Proof
                 </span>
               </div>
@@ -115,10 +115,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
           <button
             type="button"
             onClick={handleGuest}
-            className="text-xs font-bold text-slate-700 hover:text-[#16A34A] bg-white/90 hover:bg-white border border-slate-300/80 px-3.5 sm:px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5"
+            className="text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-300/80 px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-2"
           >
             <span>Explore as Guest</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#16A34A]" />
+            <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
           </button>
         </div>
       </header>
@@ -128,14 +128,14 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center w-full">
           {/* Left Hero Civic Overview */}
           <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-[#16A34A] text-xs font-bold border border-green-300/80 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#16A34A]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-emerald-700 text-xs font-bold border border-emerald-300/80 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               Community Spot Cleanups & Proofs
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#17171F] leading-tight">
               Clean your community. <br />
-              <span className="text-[#16A34A]">
+              <span className="text-emerald-600">
                 Capture proof. Earn rewards.
               </span>
             </h1>
@@ -147,8 +147,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
             {/* 3 Step Features */}
             <div className="space-y-3 pt-1">
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   1
                 </div>
                 <div>
@@ -159,8 +159,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   2
                 </div>
                 <div>
@@ -171,8 +171,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-green-400 transition-all flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-[#16A34A] text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
+              <div className="bg-white/95 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-300/80 shadow-card hover:shadow-card-hover hover:border-emerald-400 transition-all flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-black shadow-xs">
                   3
                 </div>
                 <div>
@@ -209,7 +209,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                     }}
                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signin'
-                        ? 'bg-[#16A34A] text-white shadow-xs'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
                         : 'text-slate-600 hover:text-[#17171F]'
                     }`}
                   >
@@ -223,7 +223,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                     }}
                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                       mode === 'signup'
-                        ? 'bg-[#16A34A] text-white shadow-xs'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
                         : 'text-slate-600 hover:text-[#17171F]'
                     }`}
                   >
@@ -289,7 +289,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="e.g. Jordan Vance"
-                        className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                        className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
                       />
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="scout@example.com"
-                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
                     />
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A] text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
+                      className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[#17171F] placeholder:text-slate-400 min-h-[42px]"
                     />
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-extrabold shadow-btn-green transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 min-h-[44px]"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold shadow-btn-green transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 min-h-[44px]"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span>{mode === 'signin' ? 'Sign In to Account' : 'Register Account'}</span>
@@ -345,10 +345,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 <button
                   type="button"
                   onClick={handleGuest}
-                  className="w-full py-2 px-3 text-xs font-bold text-[#16A34A] hover:text-[#15803D] bg-green-50/70 hover:bg-green-100/70 border border-green-200/80 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 px-3 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50/80 hover:bg-emerald-100/80 border border-emerald-200/80 rounded-xl transition-colors flex items-center justify-center gap-1.5"
                 >
                   <span>Skip for now, continue as Guest Volunteer</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#16A34A]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
                 </button>
               </div>
             </div>

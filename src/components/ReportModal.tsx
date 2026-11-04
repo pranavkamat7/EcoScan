@@ -588,7 +588,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             <button
               type="submit"
               disabled={!photoUrl || !title.trim()}
-              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
+              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
             >
               <CheckCircle className="w-4 h-4" />
               Publish Cleanup Mission

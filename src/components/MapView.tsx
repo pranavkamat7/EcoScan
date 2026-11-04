@@ -318,8 +318,8 @@ export const MapView: React.FC<MapViewProps> = ({
               onClick={() => setMapFilter('cleaned')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 min-h-[36px] ${
                 mapFilter === 'cleaned'
-                  ? 'bg-[#16A34A] text-white shadow-btn-green'
-                  : 'text-[#16A34A] hover:bg-green-50'
+                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/25'
+                  : 'text-emerald-700 hover:bg-emerald-50'
               }`}
             >
               <span className="w-2 h-2 rounded-full bg-current" />
@@ -515,7 +515,7 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => onCleanSpot(activeSpot)}
-                className="px-4 py-2 text-xs font-extrabold bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl flex items-center gap-1.5 shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[36px]"
+                className="px-4 py-2 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl flex items-center gap-1.5 shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[36px]"
               >
                 <Sparkles className="w-3.5 h-3.5 text-white" />
                 <span>I Cleaned This Spot</span>

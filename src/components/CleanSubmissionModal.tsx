@@ -320,12 +320,12 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           </div>
 
           {/* Rewards Calculation Pill */}
-          <div className="bg-[#16A34A] p-4 sm:p-4.5 rounded-xl text-white flex items-center justify-between shadow-xs gap-3">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 sm:p-4.5 rounded-xl text-white flex items-center justify-between shadow-md shadow-emerald-600/20 gap-3">
             <div className="flex items-center gap-3">
               <Award className="w-5 h-5 text-amber-200 flex-shrink-0" />
               <div>
                 <span className="text-xs font-extrabold block">Reward Points Earned</span>
-                <span className="text-[11px] text-green-100">
+                <span className="text-[11px] text-emerald-100">
                   Includes priority bounty, verified GPS proximity & proof bonus
                 </span>
               </div>
@@ -347,7 +347,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
             <button
               type="submit"
               disabled={!afterPhotoUrl}
-              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
+              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
             >
               <Sparkles className="w-4 h-4" />
               Submit Proof & Claim Bounty

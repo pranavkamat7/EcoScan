@@ -246,7 +246,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-bold shadow-btn-green transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 min-h-[44px]"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-btn-green transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 min-h-[44px]"
             >
               {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
@@ -261,7 +261,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setMode('signup')}
-                  className="text-[#16A34A] font-bold hover:underline"
+                  className="text-emerald-600 font-bold hover:underline"
                 >
                   Sign up
                 </button>
@@ -272,7 +272,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setMode('signin')}
-                  className="text-[#16A34A] font-bold hover:underline"
+                  className="text-emerald-600 font-bold hover:underline"
                 >
                   Sign in
                 </button>

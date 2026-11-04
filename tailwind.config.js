@@ -8,9 +8,11 @@ export default {
     extend: {
       colors: {
         brand: {
-          green: '#16A34A',
-          'green-dark': '#15803D',
-          'green-light': '#22C55E',
+          green: '#059669',
+          'green-dark': '#047857',
+          'green-light': '#10B981',
+          'green-glow': '#34D399',
+          teal: '#0D9488',
           charcoal: '#17171F',
           'charcoal-light': '#262633',
           bg: '#E5ECE7',
@@ -38,7 +40,7 @@ export default {
         'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
         'card-hover': '0 10px 25px -5px rgba(23, 23, 31, 0.08), 0 4px 10px -2px rgba(23, 23, 31, 0.04)',
         'modal': '0 25px 50px -12px rgba(23, 23, 31, 0.25)',
-        'btn-green': '0 4px 14px -1px rgba(22, 163, 74, 0.35)',
+        'btn-green': '0 4px 16px -2px rgba(5, 150, 105, 0.35)',
       },
     },
   },

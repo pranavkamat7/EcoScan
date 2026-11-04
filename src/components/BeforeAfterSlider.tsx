@@ -155,9 +155,9 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           >
             <div className="w-[2px] h-full bg-white shadow-md relative">
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white text-[#16A34A] border-2 border-[#16A34A] shadow-md flex items-center justify-center transition-all ${
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white text-emerald-600 border-2 border-emerald-500 shadow-md flex items-center justify-center transition-all ${
                   isDragging
-                    ? 'scale-110 ring-4 ring-[#16A34A]/30 bg-slate-50'
+                    ? 'scale-110 ring-4 ring-emerald-500/30 bg-slate-50'
                     : 'hover:scale-105'
                 }`}
               >
@@ -170,7 +170,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           {!hasInteracted && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-10 animate-bounce">
               <span className="px-3.5 py-1.5 text-xs font-bold tracking-wide bg-black/80 text-white rounded-full border border-white/20 shadow-md flex items-center gap-2 backdrop-blur-md">
-                <MoveHorizontal className="w-3.5 h-3.5 text-[#16A34A]" />
+                <MoveHorizontal className="w-3.5 h-3.5 text-emerald-400" />
                 Drag slider to view cleanup
               </span>
             </div>

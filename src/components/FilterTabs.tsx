@@ -48,8 +48,8 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
         onClick={() => onFilterChange('cleaned')}
         className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'cleaned'
-            ? 'bg-[#16A34A] text-white shadow-btn-green scale-[1.02]'
-            : 'text-[#16A34A] hover:bg-green-50'
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/25 scale-[1.02]'
+            : 'text-emerald-700 hover:bg-emerald-50'
         }`}
       >
         <CheckCircle2 className="w-3.5 h-3.5 text-current" />
@@ -58,7 +58,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
           className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
             currentFilter === 'cleaned'
               ? 'bg-white/20 text-white'
-              : 'bg-green-100 text-[#16A34A]'
+              : 'bg-emerald-100 text-emerald-700'
           }`}
         >
           {counts.cleaned}
