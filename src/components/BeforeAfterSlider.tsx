@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Columns2, SlidersHorizontal, Maximize2, X, MoveHorizontal, Sparkles } from 'lucide-react';
+import { Columns2, SlidersHorizontal, Maximize2, X, MoveHorizontal } from 'lucide-react';
 
 interface BeforeAfterSliderProps {
   beforeImage: string;
@@ -64,89 +64,61 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
   };
 
   const content = (
-    <div className="w-full select-none overflow-hidden bg-slate-950">
-      {/* Control Bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-white">
-        <div className="flex items-center gap-2.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider font-extrabold text-violet-400 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-            Transformation Proof
-          </span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-violet-950/80 border border-violet-500/40 text-violet-300 font-bold">
-            {Math.round(100 - sliderPosition)}% Restored
-          </span>
-        </div>
+    <div className="relative w-full bg-slate-950 select-none overflow-hidden group">
+      {/* View Mode & Fullscreen Controls Bar */}
+      <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
+        <button
+          type="button"
+          onClick={() => setViewMode(viewMode === 'slider' ? 'side-by-side' : 'slider')}
+          className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          title={viewMode === 'slider' ? 'Switch to side-by-side view' : 'Switch to slider view'}
+          aria-label="Toggle comparison view mode"
+        >
+          {viewMode === 'slider' ? (
+            <Columns2 className="w-4 h-4" />
+          ) : (
+            <SlidersHorizontal className="w-4 h-4" />
+          )}
+        </button>
 
-        <div className="flex items-center gap-2">
-          {/* Mode Switcher */}
-          <div className="flex items-center bg-slate-800 p-0.5 rounded-xl border border-slate-700">
-            <button
-              type="button"
-              onClick={() => setViewMode('slider')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1.5 font-bold transition-all ${
-                viewMode === 'slider'
-                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <SlidersHorizontal className="w-3 h-3" />
-              Slider
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('side-by-side')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1.5 font-bold transition-all ${
-                viewMode === 'side-by-side'
-                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Columns2 className="w-3 h-3" />
-              Split
-            </button>
-          </div>
-
-          {/* Fullscreen Expand */}
-          <button
-            type="button"
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
-          >
-            {isFullscreen ? <X className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsFullscreen(!isFullscreen)}
+          className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          title={isFullscreen ? 'Close full screen' : 'Expand full screen'}
+          aria-label="Toggle fullscreen mode"
+        >
+          {isFullscreen ? <X className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+        </button>
       </div>
 
       {viewMode === 'slider' ? (
         <div
           ref={containerRef}
+          tabIndex={0}
           role="slider"
-          aria-valuenow={sliderPosition}
+          aria-valuenow={Math.round(sliderPosition)}
           aria-valuemin={0}
           aria-valuemax={100}
-          tabIndex={0}
+          aria-label="Before and after cleanup comparison slider"
           onKeyDown={handleKeyDown}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          className={`relative w-full ${
-            isFullscreen ? 'h-[75vh]' : aspectRatioClass
-          } overflow-hidden bg-slate-950 cursor-ew-resize select-none touch-none focus:outline-none`}
+          className={`relative w-full ${aspectRatioClass} overflow-hidden cursor-ew-resize touch-none focus:outline-none focus:ring-2 focus:ring-[#16A34A]`}
         >
-          {/* Base Layer: AFTER (Cleaned) Image */}
+          {/* Base Layer: AFTER (Restored) Image */}
           <img
             src={afterImage}
             alt={afterLabel}
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />
 
           {/* After Badge: Top Right */}
-          <div className="absolute top-3.5 right-3.5 z-10 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-extrabold tracking-wider uppercase bg-black/75 text-violet-200 rounded-full border border-violet-400/40 shadow-md backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+          <div className="absolute top-3.5 right-14 sm:right-16 z-10 pointer-events-none">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-extrabold tracking-wider uppercase bg-black/75 text-green-300 rounded-full border border-green-500/40 shadow-md backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
               {afterLabel}
             </span>
           </div>
@@ -183,9 +155,9 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           >
             <div className="w-[2px] h-full bg-white shadow-md relative">
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white text-violet-600 border-2 border-violet-500 shadow-md flex items-center justify-center transition-all ${
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white text-[#16A34A] border-2 border-[#16A34A] shadow-md flex items-center justify-center transition-all ${
                   isDragging
-                    ? 'scale-110 ring-4 ring-violet-500/30 bg-slate-50'
+                    ? 'scale-110 ring-4 ring-[#16A34A]/30 bg-slate-50'
                     : 'hover:scale-105'
                 }`}
               >
@@ -198,7 +170,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           {!hasInteracted && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-10 animate-bounce">
               <span className="px-3.5 py-1.5 text-xs font-bold tracking-wide bg-black/80 text-white rounded-full border border-white/20 shadow-md flex items-center gap-2 backdrop-blur-md">
-                <MoveHorizontal className="w-3.5 h-3.5 text-violet-400" />
+                <MoveHorizontal className="w-3.5 h-3.5 text-[#16A34A]" />
                 Drag slider to view cleanup
               </span>
             </div>
@@ -218,14 +190,14 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
               {beforeLabel}
             </span>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-900 border border-violet-500/30">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-900 border border-green-500/30">
             <img
               src={afterImage}
               alt={afterLabel}
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <span className="absolute top-3 left-3 px-3 py-1 text-[10px] font-extrabold uppercase bg-black/80 text-violet-300 border border-violet-500/40 rounded-full shadow-md backdrop-blur-md">
+            <span className="absolute top-3 left-3 px-3 py-1 text-[10px] font-extrabold uppercase bg-black/80 text-green-300 border border-green-500/40 rounded-full shadow-md backdrop-blur-md">
               {afterLabel}
             </span>
           </div>

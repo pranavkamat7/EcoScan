@@ -23,10 +23,10 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
       <button
         type="button"
         onClick={() => onFilterChange('all')}
-        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'all'
-            ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white shadow-sm scale-[1.02]'
-            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            ? 'bg-[#17171F] text-white shadow-xs scale-[1.02]'
+            : 'text-slate-600 hover:text-[#17171F] hover:bg-slate-100'
         }`}
       >
         <Layers className="w-3.5 h-3.5" />
@@ -34,7 +34,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
         <span
           className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
             currentFilter === 'all'
-              ? 'bg-black/20 text-white'
+              ? 'bg-white/20 text-white'
               : 'bg-slate-100 text-slate-600'
           }`}
         >
@@ -46,10 +46,10 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
       <button
         type="button"
         onClick={() => onFilterChange('cleaned')}
-        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'cleaned'
-            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm scale-[1.02]'
-            : 'text-purple-700 hover:bg-purple-50'
+            ? 'bg-[#16A34A] text-white shadow-btn-green scale-[1.02]'
+            : 'text-[#16A34A] hover:bg-green-50'
         }`}
       >
         <CheckCircle2 className="w-3.5 h-3.5 text-current" />
@@ -57,8 +57,8 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
         <span
           className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-extrabold ${
             currentFilter === 'cleaned'
-              ? 'bg-black/20 text-white'
-              : 'bg-purple-100 text-purple-700'
+              ? 'bg-white/20 text-white'
+              : 'bg-green-100 text-[#16A34A]'
           }`}
         >
           {counts.cleaned}
@@ -69,7 +69,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
       <button
         type="button"
         onClick={() => onFilterChange('needs_cleaning')}
-        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'needs_cleaning'
             ? 'bg-gradient-to-r from-orange-500 via-rose-500 to-red-600 text-white shadow-btn-orange scale-[1.02]'
             : 'text-orange-600 hover:bg-orange-50'
@@ -92,13 +92,13 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
       <button
         type="button"
         onClick={() => onFilterChange('nearby')}
-        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[38px] ${
           currentFilter === 'nearby'
-            ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm scale-[1.02]'
-            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            ? 'bg-[#17171F] text-white shadow-xs scale-[1.02]'
+            : 'text-slate-600 hover:text-[#17171F] hover:bg-slate-100'
         }`}
       >
-        <Navigation className="w-3.5 h-3.5 text-violet-600" />
+        <Navigation className="w-3.5 h-3.5" />
         <span>Nearby</span>
       </button>
     </div>

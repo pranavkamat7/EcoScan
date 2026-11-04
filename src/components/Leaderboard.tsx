@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Sparkles } from 'lucide-react';
+import { Trophy, Medal } from 'lucide-react';
 import type { UserProfile, LeaderboardItem } from '../types';
 
 interface LeaderboardProps {
@@ -21,14 +21,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Top Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5 mb-1.5">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shadow-xs">
-                <Trophy className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center text-[#16A34A] shadow-xs">
+                <Trophy className="w-5 h-5 text-[#16A34A]" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-[#17171F] tracking-tight">
                 Civic Champions Leaderboard
               </h2>
             </div>
@@ -42,10 +42,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
             <button
               type="button"
               onClick={() => setTimeframe('all')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                 timeframe === 'all'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#17171F] shadow-sm'
+                  : 'text-slate-600 hover:text-[#17171F]'
               }`}
             >
               All-Time
@@ -53,10 +53,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
             <button
               type="button"
               onClick={() => setTimeframe('month')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                 timeframe === 'month'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#17171F] shadow-sm'
+                  : 'text-slate-600 hover:text-[#17171F]'
               }`}
             >
               This Month
@@ -66,22 +66,22 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
         {/* Current User Quick Summary Bar */}
         {currentUser && currentUser.id !== 'guest' && (
-          <div className="mt-6 p-4 rounded-xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between flex-wrap gap-4 shadow-xs">
+          <div className="mt-6 p-4 rounded-xl bg-green-50/70 border border-green-200/90 flex items-center justify-between flex-wrap gap-4 shadow-xs">
             <div className="flex items-center gap-3.5">
               <div className="relative">
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-violet-500 shadow-sm"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#16A34A] shadow-sm"
                 />
                 <span className="absolute -bottom-1 -right-1 text-xs">⭐</span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-extrabold text-slate-900">
+                  <span className="text-sm font-extrabold text-[#17171F]">
                     {currentUser.name} (You)
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 font-bold">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-green-100 text-[#16A34A] border border-green-200 font-bold">
                     {currentUser.level}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               <span className="text-[11px] text-slate-500 font-mono uppercase tracking-wider block font-bold">
                 Your Civic Balance
               </span>
-              <span className="font-mono font-black text-xl sm:text-2xl text-amber-600">
+              <span className="font-mono font-black text-xl sm:text-2xl text-[#16A34A]">
                 {currentUser.points.toLocaleString()} pts
               </span>
             </div>
@@ -133,7 +133,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                     isFirst
                       ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500'
                       : isSecond
-                      ? 'bg-gradient-to-r from-slate-300 to-indigo-300'
+                      ? 'bg-gradient-to-r from-slate-300 to-green-300'
                       : 'bg-gradient-to-r from-orange-400 to-rose-500'
                   }`}
                 />
@@ -161,23 +161,23 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   )}
                 </div>
 
-                <h3 className="font-extrabold text-sm text-slate-900 truncate">{item.name}</h3>
+                <h3 className="font-extrabold text-sm text-[#17171F] truncate">{item.name}</h3>
                 <p className="text-[11px] text-slate-500 font-mono">{item.handle}</p>
-                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-green-50 text-[#16A34A] border border-green-200">
                   {item.badge}
                 </span>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 flex justify-around text-xs">
                   <div>
                     <span className="text-[10px] text-slate-500 block font-bold">Cleanups</span>
-                    <span className="font-mono font-bold text-slate-800">
+                    <span className="font-mono font-bold text-[#17171F]">
                       {item.spotsCleaned}
                     </span>
                   </div>
                   <div className="border-r border-slate-200" />
                   <div>
                     <span className="text-[10px] text-slate-500 block font-bold">Civic Points</span>
-                    <span className="font-mono font-black text-amber-600">
+                    <span className="font-mono font-black text-[#16A34A]">
                       {item.points.toLocaleString()}
                     </span>
                   </div>
@@ -187,11 +187,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-10 text-center space-y-3 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-8 sm:p-10 text-center space-y-3 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-green-50 text-[#16A34A] border border-green-200 flex items-center justify-center mx-auto text-2xl shadow-xs">
             🏆
           </div>
-          <h3 className="text-base font-bold text-slate-900">No Cleanups Recorded Yet</h3>
+          <h3 className="text-base font-bold text-[#17171F]">No Cleanups Recorded Yet</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Be the first volunteer to report a littered spot and submit verified cleanup proof to claim the #1 spot on the leaderboard!
           </p>
@@ -202,7 +202,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
       {remaining.length > 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="p-4 bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-700 uppercase tracking-wider font-mono flex items-center gap-2">
-            <Medal className="w-4 h-4 text-violet-600" />
+            <Medal className="w-4 h-4 text-[#16A34A]" />
             <span>Full Community Rankings</span>
           </div>
           <div className="divide-y divide-slate-100">
@@ -213,7 +213,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 <div
                   key={user.id}
                   className={`p-4 flex items-center justify-between gap-3 transition-colors ${
-                    isUser ? 'bg-purple-50/60' : 'hover:bg-slate-50'
+                    isUser ? 'bg-green-50/70' : 'hover:bg-slate-50'
                   }`}
                 >
                   {/* Left: Rank & Avatar */}
@@ -230,11 +230,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                        <span className="font-bold text-xs sm:text-sm text-[#17171F] truncate">
                           {user.name}
                         </span>
                         {isUser && (
-                          <span className="text-[10px] uppercase font-extrabold text-purple-700 bg-purple-100 border border-purple-200 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] uppercase font-extrabold text-[#16A34A] bg-green-100 border border-green-200 px-2 py-0.5 rounded-full">
                             You
                           </span>
                         )}
@@ -251,21 +251,21 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0 text-right">
                     <div className="hidden sm:block">
                       <span className="text-[10px] text-slate-400 block font-bold">Cleanups</span>
-                      <span className="font-mono text-xs font-bold text-slate-700">
+                      <span className="font-mono text-xs font-bold text-[#17171F]">
                         {user.spotsCleaned}
                       </span>
                     </div>
 
                     <div className="hidden sm:block">
                       <span className="text-[10px] text-slate-400 block font-bold">Waste Cleared</span>
-                      <span className="font-mono text-xs font-bold text-slate-700">
+                      <span className="font-mono text-xs font-bold text-[#17171F]">
                         {user.wasteKg} kg
                       </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] text-slate-400 block font-bold">Points</span>
-                      <span className="font-mono font-black text-sm sm:text-base text-amber-600">
+                      <span className="font-mono font-black text-sm sm:text-base text-[#16A34A]">
                         {user.points.toLocaleString()} pts
                       </span>
                     </div>
