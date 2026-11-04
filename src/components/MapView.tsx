@@ -24,26 +24,26 @@ interface MapViewProps {
   currentUser: UserProfile;
 }
 
-type MapTileStyle = 'voyager' | 'dark' | 'satellite';
+type MapTileStyle = 'streets' | 'terrain' | 'satellite';
 
 const TILE_PROVIDERS: Record<MapTileStyle, { url: string; maxZoom: number; attribution: string; name: string }> = {
-  voyager: {
-    name: 'Vibrant Streets',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  streets: {
+    name: 'OpenStreetMap',
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    attribution: '&copy; OpenStreetMap contributors',
+  },
+  terrain: {
+    name: 'Clean Terrain',
+    url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors, HOT',
   },
   satellite: {
     name: 'Satellite Aerial',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     maxZoom: 18,
     attribution: 'Tiles &copy; Esri',
-  },
-  dark: {
-    name: 'Dark Matter',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
   },
 };
 
@@ -61,7 +61,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
   const [activeSpot, setActiveSpot] = useState<Spot | null>(selectedSpot || null);
   const [mapFilter, setMapFilter] = useState<'all' | 'needs_cleaning' | 'cleaned'>('all');
-  const [tileStyle, setTileStyle] = useState<MapTileStyle>('voyager');
+  const [tileStyle, setTileStyle] = useState<MapTileStyle>('streets');
   const [showLayerMenu, setShowLayerMenu] = useState(false);
 
   // Search state
@@ -398,7 +398,7 @@ export const MapView: React.FC<MapViewProps> = ({
                 <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-2 py-1 block">
                   Map View Style
                 </span>
-                {(['voyager', 'satellite', 'dark'] as MapTileStyle[]).map((style) => (
+                {(['streets', 'terrain', 'satellite'] as MapTileStyle[]).map((style) => (
                   <button
                     key={style}
                     type="button"
@@ -408,7 +408,7 @@ export const MapView: React.FC<MapViewProps> = ({
                     }}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
                       tileStyle === style
-                        ? 'bg-green-50 text-[#16A34A] font-bold'
+                        ? 'bg-emerald-50 text-emerald-700 font-bold'
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
