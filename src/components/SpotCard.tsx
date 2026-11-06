@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
 import {
   MapPin,
-  Calendar,
-  Sparkles,
   Heart,
   MessageSquare,
-  Award,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  Send,
-  ExternalLink,
-  ShieldCheck,
-  Scale,
   Share2,
+  Send,
+  Sparkles,
 } from 'lucide-react';
 import type { Spot, UserProfile } from '../types';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
-import { formatDistance } from '../utils/geo';
+import { Avatar } from './Avatar';
 
 interface SpotCardProps {
   spot: Spot;
@@ -38,16 +30,13 @@ export const SpotCard: React.FC<SpotCardProps> = ({
 }) => {
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
-  const [likeAnimating, setLikeAnimating] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
 
   const isCleaned = spot.status === 'cleaned' && spot.verification;
   const isNeedsCleaning = spot.status === 'needs_cleaning';
 
   const handleLikeClick = () => {
-    setLikeAnimating(true);
     onLikeToggle(spot.id);
-    setTimeout(() => setLikeAnimating(false), 300);
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
@@ -63,324 +52,228 @@ export const SpotCard: React.FC<SpotCardProps> = ({
     setTimeout(() => setCopiedShare(false), 2000);
   };
 
-  const formattedDate = new Date(spot.createdAt).toLocaleDateString('en-US', {
-    month: 'short',
+  const formattedDate = new Date(spot.createdAt).toLocaleDateString('en-GB', {
     day: 'numeric',
-    year: 'numeric',
+    month: 'short',
   });
 
+  const primaryAuthor = isCleaned && spot.verification
+    ? {
+        name: spot.verification.cleanerName,
+        avatar: spot.verification.cleanerAvatar,
+        roleText: `Cleaned by ${spot.verification.cleanerName}`,
+      }
+    : {
+        name: spot.reporterName,
+        avatar: spot.reporterAvatar,
+        roleText: `Reported by ${spot.reporterName}`,
+      };
+
   return (
-    <article className="relative bg-white rounded-3xl border border-slate-200/80 hover:border-emerald-300 transition-all duration-300 overflow-hidden shadow-xs hover:shadow-card">
-      {/* Top Accent Line */}
-      <div
-        className={`h-1.5 w-full ${
-          isCleaned
-            ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600'
-            : 'bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 shadow-sm'
-        }`}
-      />
-
-      {/* Top Header: Reporter & Mission Status - Mobile optimized spacing */}
-      <div className="p-3.5 sm:p-5 border-b border-slate-100 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="relative flex-shrink-0">
-            <img
-              src={spot.reporterAvatar}
-              alt={spot.reporterName}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-emerald-500 shadow-xs"
-            />
-            <span
-              className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-2 border-white ${
-                isCleaned ? 'bg-emerald-500' : 'bg-amber-500'
-              }`}
-            />
-          </div>
-
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm text-slate-900 truncate">
-                {spot.reporterName}
-              </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
-                Scout
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 flex-wrap">
-              <span className="flex items-center gap-1 text-[11px] font-mono">
-                <Calendar className="w-3 h-3 text-slate-400" />
-                {formattedDate}
-              </span>
-              <span>•</span>
-              <button
-                type="button"
-                onClick={() => onOpenMap(spot)}
-                className="flex items-center gap-1 text-slate-500 hover:text-emerald-700 cursor-pointer transition-colors text-left group"
-                title={spot.location.address || 'View on map'}
-              >
-                <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="truncate max-w-[170px] sm:max-w-[300px]">
-                  {spot.location.address || `${spot.location.lat.toFixed(4)}, ${spot.location.lng.toFixed(4)}`}
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Distinct Status & Bounty Pill */}
-        <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-auto">
-          {isCleaned ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 text-xs font-extrabold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              Restored & Verified
-            </span>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:py-1.5 text-xs font-extrabold rounded-full bg-amber-50 text-amber-700 border border-amber-200 shadow-xs">
-                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                Needs Cleaning
-              </span>
-              <span className="text-xs font-mono font-black text-white bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 px-2.5 py-1 rounded-xl shadow-xs">
-                +{spot.rewardPoints} pts
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Main Visual Display: Interactive Slider or Open Mission Photo */}
-      <div className="bg-slate-950">
-        {isCleaned ? (
+    <article className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] overflow-hidden transition-colors hover:border-[#D5CEBE]">
+      {/* 1. HERO PHOTO SECTION: Full-width at the top */}
+      <div className="relative w-full">
+        {isCleaned && spot.verification ? (
           <BeforeAfterSlider
             beforeImage={spot.beforePhotoUrl}
-            afterImage={spot.verification!.afterPhotoUrl}
+            afterImage={spot.verification.afterPhotoUrl}
+            aspectRatioClass="aspect-[16/10] sm:aspect-[16/9]"
           />
         ) : (
-          <div className="relative aspect-[16/10] overflow-hidden group">
+          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-[#1C2B24] overflow-hidden">
             <img
               src={spot.beforePhotoUrl}
               alt={spot.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
-
-            <div className="absolute top-4 left-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold uppercase tracking-wider bg-red-600 text-white rounded-full border border-white/20 shadow-md backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                Littered Spot Reported
+            {/* Tags at bottom corners */}
+            <div className="absolute bottom-3 left-3 z-10">
+              <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#B3432E] rounded-[4px] shadow-subtle">
+                Needs clean
               </span>
             </div>
-
-            <div className="absolute bottom-4 right-4">
-              <button
-                type="button"
-                onClick={() => onCleanSpot(spot)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[44px]"
-              >
-                <Sparkles className="w-4 h-4 text-white" />
-                I Cleaned This Spot
-              </button>
-            </div>
+            {spot.rewardPoints > 0 && (
+              <div className="absolute bottom-3 right-3 z-10">
+                <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#D9822B] rounded-[4px] shadow-subtle tabular-nums">
+                  +{spot.rewardPoints} pts bounty
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Card Body Details */}
-      <div className="p-3.5 sm:p-6 space-y-3.5 sm:space-y-4">
-        <div>
-          <h3 className="font-extrabold text-base sm:text-lg text-slate-900 leading-snug mb-1.5">
-            {spot.title}
-          </h3>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            {spot.description}
-          </p>
-        </div>
+      {/* 2. CARD CONTENT: Quiet, editorial, human */}
+      <div className="p-4 sm:p-5 space-y-3">
+        {/* Single clean line: Author avatar + name · location · date · points */}
+        <div className="flex items-center gap-2 text-xs text-[#6B7468] flex-wrap leading-tight">
+          <Avatar
+            src={primaryAuthor.avatar}
+            name={primaryAuthor.name}
+            size="xs"
+            indicator={isCleaned ? 'clean' : 'needs_clean'}
+          />
 
-        {/* Tags & Metadata Badges */}
-        <div className="flex flex-wrap items-center gap-2">
-          {spot.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200"
-            >
-              #{tag}
-            </span>
-          ))}
-          {spot.estimatedWasteKg && (
-            <span className="px-2.5 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 font-mono border border-slate-200 inline-flex items-center gap-1.5 font-bold">
-              <Scale className="w-3.5 h-3.5 text-emerald-600" />
-              ~{spot.estimatedWasteKg} kg waste
-            </span>
-          )}
-          <span
-            className={`px-2.5 py-1 text-xs rounded-lg font-bold ${
-              spot.severity === 'high'
-                ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                : spot.severity === 'medium'
-                ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-            }`}
+          <span className="font-medium text-[#1C2B24]">
+            {primaryAuthor.roleText}
+          </span>
+
+          <span className="text-[#A39E93]">·</span>
+
+          <button
+            type="button"
+            onClick={() => onOpenMap(spot)}
+            className="hover:text-[#1E6B4B] transition-colors truncate max-w-[200px] text-left underline-offset-2 hover:underline"
+            title={spot.location.address || 'View on map'}
           >
-            {spot.severity.toUpperCase()} Priority
+            {spot.location.address || 'Location on map'}
+          </button>
+
+          <span className="text-[#A39E93]">·</span>
+
+          <span className="tabular-nums">{formattedDate}</span>
+
+          <span className="text-[#A39E93]">·</span>
+
+          <span className="font-semibold text-[#1E6B4B] tabular-nums">
+            +{spot.rewardPoints} pts
           </span>
         </div>
 
-        {/* Verified Cleanup Certificate Seal (If Cleaned) */}
-        {isCleaned && spot.verification && (
-          <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3">
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div className="flex items-center gap-3">
-                <img
-                  src={spot.verification.cleanerAvatar}
-                  alt={spot.verification.cleanerName}
-                  className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500 shadow-sm"
-                />
-                <div>
-                  <span className="text-xs font-extrabold text-slate-900 block">
-                    Restored by {spot.verification.cleanerName}
-                  </span>
-                  <span className="text-[10px] text-slate-500 font-mono">
-                    Completed on {new Date(spot.verification.cleanedAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
+        {/* Title & Description */}
+        <div className="space-y-1">
+          <h3 className="font-serif text-lg font-bold text-[#1C2B24] leading-snug">
+            {spot.title}
+          </h3>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs">
-                <Award className="w-4 h-4 text-amber-200" />
-                +{spot.verification.pointsEarned} pts rewarded
-              </div>
-            </div>
+          {spot.description && (
+            <p className="text-xs sm:text-sm text-[#6B7468] leading-relaxed line-clamp-3">
+              {spot.description}
+            </p>
+          )}
 
-            {spot.verification.notes && (
-              <p className="text-xs text-slate-700 italic bg-white p-3 rounded-lg border border-emerald-200/60 leading-relaxed">
+          {/* Cleanup note if verified */}
+          {isCleaned && spot.verification?.notes && (
+            <div className="pt-1">
+              <p className="text-xs text-[#6B7468] italic border-l-2 border-[#2F8F5B] pl-2.5 py-0.5">
                 "{spot.verification.notes}"
               </p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-emerald-700 font-mono pt-1">
-              <span className="inline-flex items-center gap-1 font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                GPS Verified: {formatDistance(spot.verification.distanceFromOriginMeters)} proximity
-              </span>
-              <span>•</span>
-              <span className="text-slate-500">On-site photographic proof confirmed</span>
             </div>
-          </div>
-        )}
-
-        {/* Social Action Footer */}
-        <div className="flex items-center justify-between pt-3.5 border-t border-slate-100 flex-wrap gap-2.5">
-          <div className="flex items-center gap-2">
-            {/* Respect (Like) Button */}
-            <button
-              type="button"
-              onClick={handleLikeClick}
-              className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all border min-h-[40px] ${
-                spot.hasLiked
-                  ? 'bg-rose-50 text-rose-700 border-rose-200 shadow-xs'
-                  : 'bg-slate-50 text-slate-700 border border-slate-200/80 hover:bg-slate-100'
-              }`}
-            >
-              <Heart
-                className={`w-4 h-4 transition-transform ${
-                  spot.hasLiked ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
-                } ${likeAnimating ? 'scale-125' : 'scale-100'}`}
-              />
-              <span>{spot.likesCount} Respect</span>
-            </button>
-
-            {/* Comments Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/80 hover:bg-slate-100 transition-colors min-h-[40px]"
-            >
-              <MessageSquare className="w-4 h-4 text-emerald-600" />
-              <span>{spot.comments.length} Comments</span>
-            </button>
-
-            {/* Share button */}
-            <button
-              type="button"
-              onClick={handleShare}
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-colors flex items-center gap-1 text-xs min-h-[40px]"
-              title="Copy Link to Spot"
-            >
-              <Share2 className="w-4 h-4" />
-              {copiedShare && <span className="text-emerald-600 text-[10px] font-bold">Copied!</span>}
-            </button>
-          </div>
-
-          {/* Action Trigger */}
-          {isNeedsCleaning ? (
-            <button
-              type="button"
-              onClick={() => onCleanSpot(spot)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-btn-green hover:scale-[1.02] active:scale-95 transition-all min-h-[40px]"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>I Cleaned This</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => onOpenMap(spot)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 transition-all min-h-[40px]"
-            >
-              <span>Explore on Map</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
           )}
         </div>
 
-        {/* Expandable Comments Drawer */}
+        {/* 3. CARD ACTIONS ROW: Clean & understated */}
+        <div className="pt-2 border-t border-[#E2DCCD] flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-4 text-[#6B7468]">
+            <button
+              type="button"
+              onClick={handleLikeClick}
+              className={`flex items-center gap-1.5 transition-colors ${
+                spot.hasLiked ? 'text-[#B3432E] font-medium' : 'hover:text-[#1C2B24]'
+              }`}
+              title="Like this restoration"
+            >
+              <Heart
+                className={`w-4 h-4 ${spot.hasLiked ? 'fill-[#B3432E] stroke-[#B3432E]' : ''}`}
+              />
+              <span className="tabular-nums">{spot.likesCount || 0}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowComments(!showComments)}
+              className="flex items-center gap-1.5 hover:text-[#1C2B24] transition-colors"
+              title="View comments"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span className="tabular-nums">{spot.comments?.length || 0}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex items-center gap-1 hover:text-[#1C2B24] transition-colors"
+              title="Share link"
+            >
+              <Share2 className="w-4 h-4" />
+              <span className="hidden sm:inline">
+                {copiedShare ? 'Copied' : 'Share'}
+              </span>
+            </button>
+          </div>
+
+          {/* If spot needs cleaning: clear single action button */}
+          {isNeedsCleaning && (
+            <button
+              type="button"
+              onClick={() => onCleanSpot(spot)}
+              className="bg-[#1E6B4B] hover:bg-[#18553B] text-white text-xs font-medium px-3.5 py-1.5 rounded-[6px] transition-colors flex items-center gap-1.5 shadow-subtle"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Clean this spot</span>
+            </button>
+          )}
+
+          {isCleaned && (
+            <span className="text-[11px] font-medium text-[#2F8F5B] flex items-center gap-1">
+              <span>Restored</span>
+            </span>
+          )}
+        </div>
+
+        {/* 4. EXPANDABLE COMMENTS */}
         {showComments && (
-          <div className="mt-4 pt-4 border-t border-slate-100 space-y-3 animate-in fade-in slide-in-from-top-2">
-            {spot.comments.length > 0 ? (
-              <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+          <div className="pt-3 border-t border-[#E2DCCD] space-y-3">
+            {spot.comments?.length > 0 && (
+              <div className="space-y-2.5 max-h-48 overflow-y-auto pr-1">
                 {spot.comments.map((comment) => (
-                  <div key={comment.id} className="flex items-start gap-2.5 text-xs">
-                    <img
+                  <div key={comment.id} className="flex items-start gap-2 text-xs">
+                    <Avatar
                       src={comment.authorAvatar}
-                      alt={comment.authorName}
-                      className="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5 border border-slate-200"
+                      name={comment.authorName}
+                      size="xs"
                     />
-                    <div className="bg-slate-50 rounded-xl p-3 flex-1 border border-slate-200/80">
-                      <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="font-bold text-slate-900 text-[11px]">{comment.authorName}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {new Date(comment.createdAt).toLocaleDateString()}
+                    <div className="flex-1 bg-[#F4F1EA] p-2.5 rounded-[6px] border border-[#E2DCCD]">
+                      <div className="flex items-center justify-between text-[11px] mb-0.5">
+                        <span className="font-semibold text-[#1C2B24]">
+                          {comment.authorName}
+                        </span>
+                        <span className="text-[#A39E93] text-[10px] tabular-nums">
+                          {new Date(comment.createdAt).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'short',
+                          })}
                         </span>
                       </div>
-                      <p className="text-slate-600 text-xs leading-relaxed">{comment.text}</p>
+                      <p className="text-[#1C2B24] leading-relaxed">
+                        {comment.text}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
-            ) : (
-              <p className="text-xs text-slate-400 italic py-2 text-center">No comments yet. Be the first to cheer!</p>
             )}
 
-            {/* Add Comment Input */}
+            {/* Comment Form */}
             <form onSubmit={handleCommentSubmit} className="flex items-center gap-2 pt-1">
-              <img
+              <Avatar
                 src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-200"
+                name={currentUser.name}
+                size="xs"
               />
               <input
                 type="text"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Write an encouraging message..."
-                className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 placeholder:text-slate-400 min-h-[40px]"
+                placeholder="Write a message to the community..."
+                className="flex-1 px-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
               />
               <button
                 type="submit"
                 disabled={!commentText.trim()}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center"
-                title="Send Comment"
+                className="px-3 py-1.5 bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] text-xs font-medium disabled:opacity-40 transition-colors"
+                title="Send comment"
               >
                 <Send className="w-3.5 h-3.5" />
               </button>

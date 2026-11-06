@@ -280,23 +280,23 @@ export const MapView: React.FC<MapViewProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-140px)] min-h-[550px] rounded-3xl border border-slate-200 overflow-hidden shadow-sm bg-slate-100">
+    <div className="relative w-full h-[calc(100vh-140px)] min-h-[520px] rounded-[12px] border border-[#E2DCCD] overflow-hidden shadow-subtle bg-[#F4F1EA]">
       {/* Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* TOP FLOATING CONTROLS BAR */}
-      <div className="absolute top-4 left-3 right-3 sm:left-4 sm:right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
+      <div className="absolute top-3 left-3 right-3 sm:left-4 sm:right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pointer-events-none">
         {/* Left: Filter Buttons & Search Input */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pointer-events-auto">
           {/* Status Filters */}
-          <div className="bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200/90 shadow-md flex items-center gap-1">
+          <div className="bg-[#FFFDF8] p-1 rounded-[6px] border border-[#E2DCCD] shadow-subtle flex items-center gap-1">
             <button
               type="button"
               onClick={() => setMapFilter('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all min-h-[36px] ${
+              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors ${
                 mapFilter === 'all'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-[#1C2B24] text-white'
+                  : 'text-[#6B7468] hover:text-[#1C2B24]'
               }`}
             >
               All ({spots.length})
@@ -304,36 +304,34 @@ export const MapView: React.FC<MapViewProps> = ({
             <button
               type="button"
               onClick={() => setMapFilter('needs_cleaning')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[36px] ${
+              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors flex items-center gap-1 ${
                 mapFilter === 'needs_cleaning'
-                  ? 'bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-btn-orange'
-                  : 'text-orange-600 hover:bg-orange-50'
+                  ? 'bg-[#B3432E] text-white'
+                  : 'text-[#B3432E] hover:bg-[#F4F1EA]'
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-              Needs Clean ({spots.filter((s) => s.status === 'needs_cleaning').length})
+              Needs clean ({spots.filter((s) => s.status === 'needs_cleaning').length})
             </button>
             <button
               type="button"
               onClick={() => setMapFilter('cleaned')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 min-h-[36px] ${
+              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors flex items-center gap-1 ${
                 mapFilter === 'cleaned'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'text-emerald-700 hover:bg-emerald-50'
+                  ? 'bg-[#2F8F5B] text-white'
+                  : 'text-[#2F8F5B] hover:bg-[#F4F1EA]'
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-current" />
               Restored ({spots.filter((s) => s.status === 'cleaned').length})
             </button>
           </div>
 
           {/* Place Search Bar */}
-          <div className="relative min-w-[240px] sm:w-72">
-            <div className="bg-white/95 backdrop-blur-md flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-slate-200/90 shadow-md min-h-[38px]">
+          <div className="relative min-w-[220px] sm:w-64">
+            <div className="bg-[#FFFDF8] flex items-center gap-2 px-3 py-1.5 rounded-[6px] border border-[#E2DCCD] shadow-subtle">
               {isSearching ? (
-                <Loader2 className="w-4 h-4 text-[#16A34A] animate-spin flex-shrink-0" />
+                <Loader2 className="w-3.5 h-3.5 text-[#1E6B4B] animate-spin flex-shrink-0" />
               ) : (
-                <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <Search className="w-3.5 h-3.5 text-[#6B7468] flex-shrink-0" />
               )}
               <input
                 type="text"
@@ -342,8 +340,8 @@ export const MapView: React.FC<MapViewProps> = ({
                 onFocus={() => {
                   if (searchResults.length > 0) setShowSearchDropdown(true);
                 }}
-                placeholder="Search any place or city..."
-                className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                placeholder="Search any place or town..."
+                className="w-full text-xs bg-transparent text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none"
               />
               {searchQuery && (
                 <button
@@ -353,7 +351,7 @@ export const MapView: React.FC<MapViewProps> = ({
                     setSearchResults([]);
                     setShowSearchDropdown(false);
                   }}
-                  className="text-slate-400 hover:text-slate-700"
+                  className="text-[#6B7468] hover:text-[#1C2B24]"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -362,15 +360,15 @@ export const MapView: React.FC<MapViewProps> = ({
 
             {/* Dropdown search results */}
             {showSearchDropdown && searchResults.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl border border-slate-200 shadow-modal overflow-hidden z-30 max-h-60 overflow-y-auto">
+              <div className="absolute left-0 right-0 top-full mt-1 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown overflow-hidden z-30 max-h-56 overflow-y-auto">
                 {searchResults.map((item, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleSelectSearchResult(item)}
-                    className="w-full text-left px-3.5 py-2.5 text-xs text-slate-700 hover:bg-green-50 hover:text-[#16A34A] border-b border-slate-100 last:border-b-0 flex items-start gap-2 transition-colors"
+                    className="w-full text-left px-3 py-2 text-xs text-[#1C2B24] hover:bg-[#F4F1EA] border-b border-[#E2DCCD] last:border-b-0 flex items-start gap-2 transition-colors"
                   >
-                    <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <MapPin className="w-3.5 h-3.5 text-[#B3432E] flex-shrink-0 mt-0.5" />
                     <span className="truncate">{item.display_name}</span>
                   </button>
                 ))}
@@ -380,23 +378,23 @@ export const MapView: React.FC<MapViewProps> = ({
         </div>
 
         {/* Right: Map Layers & Utility Dock */}
-        <div className="flex items-center gap-2 self-end sm:self-auto pointer-events-auto">
+        <div className="flex items-center gap-1.5 self-end sm:self-auto pointer-events-auto">
           {/* Map Layer Switcher */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setShowLayerMenu(!showLayerMenu)}
-              className="bg-white/95 backdrop-blur-md p-2.5 rounded-2xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-bold min-h-[38px]"
-              title="Change Map Style"
+              className="bg-[#FFFDF8] px-2.5 py-1.5 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1C2B24] hover:bg-[#F4F1EA] transition-colors flex items-center gap-1.5 text-xs font-medium"
+              title="Change map style"
             >
-              <Layers className="w-4 h-4 text-emerald-600" />
+              <Layers className="w-3.5 h-3.5 text-[#1E6B4B]" />
               <span className="hidden sm:inline">{TILE_PROVIDERS[tileStyle].name}</span>
             </button>
 
             {showLayerMenu && (
-              <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-2xl border border-slate-200 shadow-modal p-1.5 z-30">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-2 py-1 block">
-                  Map View Style
+              <div className="absolute right-0 top-full mt-1 w-44 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown p-1 z-30">
+                <span className="text-[11px] text-[#6B7468] px-2 py-1 block">
+                  Map view style
                 </span>
                 {(['streets', 'terrain', 'satellite'] as MapTileStyle[]).map((style) => (
                   <button
@@ -406,10 +404,10 @@ export const MapView: React.FC<MapViewProps> = ({
                       setTileStyle(style);
                       setShowLayerMenu(false);
                     }}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-medium transition-colors flex items-center justify-between ${
+                    className={`w-full text-left px-2.5 py-1.5 rounded-[4px] text-xs font-medium transition-colors flex items-center justify-between ${
                       tileStyle === style
-                        ? 'bg-emerald-50 text-emerald-700 font-bold'
-                        : 'text-slate-700 hover:bg-slate-50'
+                        ? 'bg-[#EAF3EE] text-[#1E6B4B] font-semibold'
+                        : 'text-[#1C2B24] hover:bg-[#F4F1EA]'
                     }`}
                   >
                     <span>{TILE_PROVIDERS[style].name}</span>
@@ -424,58 +422,50 @@ export const MapView: React.FC<MapViewProps> = ({
           <button
             type="button"
             onClick={handleFitAllSpots}
-            className="bg-white/95 backdrop-blur-md p-2.5 rounded-2xl border border-slate-200/90 shadow-md text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors min-h-[38px]"
-            title="Fit All Spots on Screen"
+            className="bg-[#FFFDF8] p-2 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1C2B24] hover:bg-[#F4F1EA] transition-colors"
+            title="Fit all spots on screen"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
 
           {/* GPS Locate Me Button */}
           <button
             type="button"
             onClick={handleLocateMe}
-            className="bg-white/95 backdrop-blur-md p-2.5 rounded-2xl border border-slate-200/90 shadow-md text-emerald-600 hover:bg-slate-50 transition-colors min-h-[38px]"
-            title="Center on My Live Location"
+            className="bg-[#FFFDF8] p-2 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1E6B4B] hover:bg-[#F4F1EA] transition-colors"
+            title="Center on my live location"
           >
-            <Crosshair className="w-4 h-4" />
+            <Crosshair className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
       {/* Floating Active Spot Preview Drawer (Bottom Left) */}
       {activeSpot && (
-        <div className="absolute bottom-5 left-3 right-3 sm:left-6 sm:right-auto sm:w-[420px] z-20 bg-white/95 backdrop-blur-md rounded-3xl border border-slate-200/90 shadow-modal p-4 sm:p-5 animate-in fade-in slide-in-from-bottom-4 text-slate-900">
-          <div className="flex items-start justify-between gap-2 mb-2.5">
+        <div className="absolute bottom-4 left-3 right-3 sm:left-4 sm:right-auto sm:w-[380px] z-20 bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-dropdown p-4 text-[#1C2B24]">
+          <div className="flex items-start justify-between gap-2 mb-2">
             <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase ${
+              className={`inline-block px-2 py-0.5 rounded-[4px] text-[11px] font-semibold ${
                 activeSpot.status === 'cleaned'
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  ? 'bg-[#2F8F5B] text-white'
+                  : 'bg-[#B3432E] text-white'
               }`}
             >
-              {activeSpot.status === 'cleaned' ? (
-                <>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  Transformed & Cleaned
-                </>
-              ) : (
-                <>
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                  Open Bounty: +{activeSpot.rewardPoints} pts
-                </>
-              )}
+              {activeSpot.status === 'cleaned'
+                ? 'Restored'
+                : `Needs clean · +${activeSpot.rewardPoints} pts`}
             </span>
             <button
               type="button"
               onClick={() => setActiveSpot(null)}
-              className="p-1 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              className="p-1 text-[#6B7468] hover:text-[#1C2B24] rounded-[4px] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex gap-3.5 items-center mb-3.5">
-            <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-slate-200 flex-shrink-0 shadow-xs bg-slate-100">
+          <div className="flex gap-3 items-center mb-3">
+            <div className="relative w-16 h-16 rounded-[6px] overflow-hidden border border-[#E2DCCD] flex-shrink-0 bg-[#F4F1EA]">
               <img
                 src={
                   activeSpot.status === 'cleaned' && activeSpot.verification
@@ -485,40 +475,36 @@ export const MapView: React.FC<MapViewProps> = ({
                 alt={activeSpot.title}
                 className="w-full h-full object-cover"
               />
-              <span className="absolute bottom-1 right-1 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-black/80 text-white font-mono">
-                {activeSpot.status === 'cleaned' ? 'Restored' : 'Littered'}
-              </span>
             </div>
             <div className="min-w-0">
-              <h4 className="font-bold text-sm text-slate-900 truncate">{activeSpot.title}</h4>
-              <p className="text-xs text-slate-600 line-clamp-2 mt-0.5 leading-relaxed">
+              <h4 className="font-semibold text-xs text-[#1C2B24] truncate">{activeSpot.title}</h4>
+              <p className="text-[11px] text-[#6B7468] line-clamp-2 mt-0.5">
                 {activeSpot.description}
               </p>
-              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1 truncate">
-                <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
+              <p className="text-[11px] text-[#6B7468] flex items-center gap-1 mt-0.5 truncate">
+                <MapPin className="w-3 h-3 text-[#B3432E] flex-shrink-0" />
                 <span className="truncate">{activeSpot.location.address}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-2 border-t border-[#E2DCCD]">
             <button
               type="button"
               onClick={() => onSelectSpot(activeSpot)}
-              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 transition-colors min-h-[36px]"
+              className="text-xs font-medium text-[#1E6B4B] hover:underline flex items-center gap-1 transition-colors"
             >
-              <span>View Full Card</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>View full card</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
 
             {activeSpot.status === 'needs_cleaning' && (
               <button
                 type="button"
                 onClick={() => onCleanSpot(activeSpot)}
-                className="px-4 py-2 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl flex items-center gap-1.5 shadow-btn-green hover:scale-105 active:scale-95 transition-all min-h-[36px]"
+                className="px-3 py-1.5 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] transition-colors shadow-subtle"
               >
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-                <span>I Cleaned This Spot</span>
+                Clean this spot
               </button>
             )}
           </div>

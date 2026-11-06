@@ -278,60 +278,58 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1C2B24]/60 backdrop-blur-xs overflow-y-auto">
+      <div className="relative w-full max-w-xl bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-modal overflow-hidden my-4 sm:my-6 text-[#1C2B24]">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/80">
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[#E2DCCD] bg-[#F4F1EA]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-[6px] bg-[#B3432E] text-white flex items-center justify-center font-bold text-sm shadow-subtle flex-shrink-0">
               📍
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-slate-900">Report Dirty Spot</h2>
-              <p className="text-[11px] sm:text-xs text-slate-500">
-                Pin an area needing cleanup and set a community bounty.
+              <h2 className="font-serif text-base font-bold text-[#1C2B24]">Report a dirty spot</h2>
+              <p className="text-xs text-[#6B7468]">
+                Pin a littered area needing cleanup and set a community bounty.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-[4px] text-[#6B7468] hover:text-[#1C2B24] hover:bg-[#E2DCCD] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 max-h-[82vh] overflow-y-auto">
           {/* Photo Upload */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Photo of Dirty Area <span className="text-rose-500">*</span>
+            <label className="block text-xs font-semibold text-[#1C2B24] mb-1.5">
+              Photo of dirty area <span className="text-[#B3432E]">*</span>
             </label>
 
             {photoUrl ? (
-              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-xs">
+              <div className="relative aspect-[16/10] rounded-[6px] overflow-hidden border border-[#E2DCCD] bg-[#F4F1EA]">
                 <img src={photoUrl} alt="Reported spot" className="w-full h-full object-cover" />
                 <button
                   type="button"
                   onClick={() => setPhotoUrl('')}
-                  className="absolute top-2.5 right-2.5 px-3 py-1.5 text-xs bg-black/75 hover:bg-black/90 text-white rounded-xl font-medium backdrop-blur-xs transition-colors"
+                  className="absolute top-2.5 right-2.5 px-2.5 py-1 text-xs bg-[#1C2B24]/80 hover:bg-[#1C2B24] text-white rounded-[4px] font-medium transition-colors"
                 >
-                  Change Photo
+                  Change photo
                 </button>
               </div>
             ) : (
-              <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl cursor-pointer bg-slate-50 hover:bg-emerald-50/30 transition-all group">
-                  <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 text-center">
-                    Snap Photo with Camera
+              <div className="space-y-2">
+                <label className="flex flex-col items-center justify-center p-5 border border-dashed border-[#D5CEBE] hover:border-[#1E6B4B] rounded-[6px] cursor-pointer bg-[#F4F1EA]/50 hover:bg-[#EAF3EE] transition-colors group">
+                  <Camera className="w-5 h-5 text-[#1E6B4B] mb-1.5" />
+                  <span className="text-xs font-semibold text-[#1C2B24] text-center">
+                    Take photo with camera
                   </span>
-                  <span className="text-[11px] text-slate-500 mt-0.5 text-center">
-                    or choose an image from device
+                  <span className="text-[11px] text-[#6B7468] text-center">
+                    or select an image from your device
                   </span>
                   <input
                     type="file"
@@ -344,7 +342,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
                 {/* Sample mess presets */}
                 <div className="pt-1">
-                  <span className="text-[11px] font-medium text-slate-500 block mb-1.5">
+                  <span className="text-[11px] text-[#6B7468] block mb-1">
                     Or select a sample dirty spot for testing:
                   </span>
                   <div className="grid grid-cols-3 gap-2">
@@ -357,14 +355,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                           setTitle(preset.title);
                           setSeverity(preset.severity);
                         }}
-                        className="text-left p-1.5 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-emerald-50/60 hover:border-emerald-300 transition-all text-xs"
+                        className="text-left p-1.5 rounded-[6px] border border-[#E2DCCD] bg-[#FFFDF8] hover:border-[#1E6B4B] transition-colors text-xs"
                       >
                         <img
                           src={preset.url}
                           alt={preset.name}
-                          className="w-full h-12 sm:h-14 object-cover rounded-lg mb-1"
+                          className="w-full h-12 object-cover rounded-[4px] mb-1"
                         />
-                        <span className="text-[11px] font-bold text-slate-700 block truncate">
+                        <span className="text-[11px] font-medium text-[#1C2B24] block truncate">
                           {preset.name}
                         </span>
                       </button>
@@ -376,27 +374,27 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           </div>
 
           {/* Interactive Map Picker & GPS Section */}
-          <div className="space-y-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
+          <div className="space-y-2.5 bg-[#F4F1EA] p-3.5 rounded-[6px] border border-[#E2DCCD]">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-[#16A34A]" />
-                Spot Location <span className="text-rose-500">*</span>
+              <label className="text-xs font-semibold text-[#1C2B24] flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#1E6B4B]" />
+                Spot location <span className="text-[#B3432E]">*</span>
               </label>
               <button
                 type="button"
                 onClick={handleGetLiveLocation}
                 disabled={isLocating}
-                className="text-[11px] font-bold text-[#16A34A] hover:text-[#15803D] flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-green-200 shadow-xs"
+                className="text-[11px] font-medium text-[#1E6B4B] hover:underline flex items-center gap-1"
               >
                 {isLocating ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    Acquiring GPS...
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    Finding GPS...
                   </>
                 ) : (
                   <>
-                    <Crosshair className="w-3.5 h-3.5 text-[#16A34A]" />
-                    Use Live GPS
+                    <Crosshair className="w-3 h-3 text-[#1E6B4B]" />
+                    Use live GPS
                   </>
                 )}
               </button>
@@ -404,32 +402,32 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
             {/* Place Search Bar */}
             <div className="relative">
-              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-xs">
+              <div className="flex items-center gap-2 bg-[#FFFDF8] px-3 py-1.5 rounded-[6px] border border-[#E2DCCD] text-xs">
                 {isSearchingPlace ? (
-                  <Loader2 className="w-3.5 h-3.5 text-[#16A34A] animate-spin flex-shrink-0" />
+                  <Loader2 className="w-3.5 h-3.5 text-[#1E6B4B] animate-spin flex-shrink-0" />
                 ) : (
-                  <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                  <Search className="w-3.5 h-3.5 text-[#6B7468] flex-shrink-0" />
                 )}
                 <input
                   type="text"
                   value={placeQuery}
                   onChange={handlePlaceSearch}
                   placeholder="Type an address or city to search..."
-                  className="w-full text-xs bg-transparent text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                  className="w-full text-xs bg-transparent text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none"
                 />
               </div>
 
               {/* Autocomplete dropdown */}
               {showDropdown && searchResults.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl border border-slate-200 shadow-modal overflow-hidden z-30 max-h-48 overflow-y-auto">
+                <div className="absolute left-0 right-0 top-full mt-1 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown overflow-hidden z-30 max-h-48 overflow-y-auto">
                   {searchResults.map((item, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handleSelectPlace(item)}
-                      className="w-full text-left px-3.5 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-[#16A34A] border-b border-slate-100 last:border-b-0 flex items-center gap-2 transition-colors"
+                      className="w-full text-left px-3 py-2 text-xs text-[#1C2B24] hover:bg-[#F4F1EA] border-b border-[#E2DCCD] last:border-b-0 flex items-center gap-2 transition-colors"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-[#B3432E] flex-shrink-0" />
                       <span className="truncate">{item.display_name}</span>
                     </button>
                   ))}
@@ -438,33 +436,33 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             {/* Interactive Leaflet Picker Map */}
-            <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100">
+            <div className="relative w-full h-40 rounded-[6px] overflow-hidden border border-[#E2DCCD] bg-[#FFFDF8]">
               <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
-              <div className="absolute top-2 left-2 z-10 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-slate-200 text-[10px] font-bold text-slate-700 shadow-xs flex items-center gap-1">
-                <span>📍 Drag or click map to move pin</span>
+              <div className="absolute top-2 left-2 z-10 bg-[#FFFDF8]/90 px-2 py-0.5 rounded-[4px] border border-[#E2DCCD] text-[10px] text-[#1C2B24]">
+                📍 Drag or click map to move pin
               </div>
             </div>
 
             {/* Selected Address Display */}
-            <div className="bg-white p-3 rounded-xl border border-slate-200 text-xs">
-              <p className="font-bold text-slate-900 truncate">
+            <div className="bg-[#FFFDF8] p-2.5 rounded-[6px] border border-[#E2DCCD] text-xs">
+              <p className="font-medium text-[#1C2B24] truncate">
                 {location.address || 'Locating address...'}
               </p>
-              <p className="font-mono text-[11px] text-slate-500 mt-0.5">
+              <p className="text-[11px] text-[#6B7468] tabular-nums mt-0.5">
                 Lat: {location.lat.toFixed(5)}, Lng: {location.lng.toFixed(5)}
               </p>
             </div>
 
             {locationError && (
-              <p className="text-xs text-rose-600 flex items-center gap-1 font-medium">
+              <p className="text-xs text-[#B3432E] flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 {locationError}
               </p>
             )}
 
             {/* Quick city switcher presets */}
-            <div className="flex items-center gap-1.5 flex-wrap pt-1">
-              <span className="text-[11px] text-slate-500 font-bold">Quick Presets:</span>
+            <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+              <span className="text-[11px] text-[#6B7468]">Sample cities:</span>
               {SAMPLE_CITIES.slice(0, 4).map((city) => (
                 <button
                   type="button"
@@ -477,7 +475,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                       accuracyMeters: 5,
                     })
                   }
-                  className="text-[11px] px-2.5 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-[#16A34A] hover:border-green-300 transition-colors shadow-xs"
+                  className="text-[11px] px-2 py-0.5 rounded-[4px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] hover:border-[#1E6B4B] transition-colors"
                 >
                   {city.name.split(',')[0]}
                 </button>
@@ -486,40 +484,40 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           </div>
 
           {/* Title & Description */}
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Spot Title <span className="text-rose-500">*</span>
+              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
+                Spot title <span className="text-[#B3432E]">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Broken glass & food wrappers beside playground"
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 min-h-[42px]"
+                placeholder="e.g. Broken glass & wrappers beside riverside path"
+                className="w-full px-3 py-2 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Description / Context
+              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
+                Description / Details
               </label>
               <textarea
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Details on waste types, accessibility, gloves recommended, etc."
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
+                placeholder="Details on types of litter, gloves recommended, accessibility..."
+                className="w-full px-3 py-2 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B] resize-none"
               />
             </div>
           </div>
 
           {/* Severity and Est. Waste */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Severity Level
+              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
+                Severity level
               </label>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['low', 'medium', 'high'] as SeverityLevel[]).map((level) => (
@@ -527,14 +525,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                     key={level}
                     type="button"
                     onClick={() => setSeverity(level)}
-                    className={`py-2 px-2 text-xs font-bold rounded-xl uppercase tracking-wider transition-all border min-h-[40px] ${
+                    className={`py-1.5 px-2 text-xs font-medium rounded-[4px] capitalize transition-colors border ${
                       severity === level
                         ? level === 'high'
-                          ? 'bg-rose-500 text-white border-rose-600 shadow-xs'
+                          ? 'bg-[#B3432E] text-white border-[#B3432E]'
                           : level === 'medium'
-                          ? 'bg-amber-500 text-white border-amber-600 shadow-xs'
-                          : 'bg-emerald-600 text-white border-emerald-700 shadow-xs'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[#D9822B] text-white border-[#D9822B]'
+                          : 'bg-[#1E6B4B] text-white border-[#1E6B4B]'
+                        : 'bg-[#FFFDF8] text-[#6B7468] border-[#E2DCCD] hover:bg-[#F4F1EA]'
                     }`}
                   >
                     {level}
@@ -544,8 +542,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Est. Waste (Kg)
+              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
+                Estimated waste (kg)
               </label>
               <input
                 type="number"
@@ -553,45 +551,42 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 max={500}
                 value={estimatedKg}
                 onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white min-h-[40px]"
+                className="w-full px-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] tabular-nums focus:outline-none focus:border-[#1E6B4B]"
               />
             </div>
           </div>
 
           {/* Community Bounty Preview Callout */}
-          <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200/90 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <div>
-                <span className="text-xs font-bold text-slate-900 block">
-                  Automatic Community Bounty
-                </span>
-                <span className="text-[11px] text-emerald-700">
-                  Awarded to the volunteer who submits verified proof of cleaning this spot
-                </span>
-              </div>
+          <div className="bg-[#EAF3EE] p-3 rounded-[6px] border border-[#E2DCCD] flex items-center justify-between gap-3 text-xs">
+            <div>
+              <span className="font-semibold text-[#1C2B24] block">
+                Automatic civic bounty
+              </span>
+              <span className="text-[11px] text-[#6B7468]">
+                Awarded to whichever neighbour submits verified photo proof of cleaning this spot
+              </span>
             </div>
-            <span className="text-lg font-black font-mono text-emerald-600 flex-shrink-0">
+            <span className="font-semibold text-sm text-[#1E6B4B] tabular-nums flex-shrink-0">
               +{calculateBounty()} pts
             </span>
           </div>
 
           {/* Submit Action */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 flex-wrap">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2DCCD]">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
+              className="px-3.5 py-2 text-xs font-medium text-[#6B7468] hover:text-[#1C2B24] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!photoUrl || !title.trim()}
-              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
+              className="px-4 py-2 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] disabled:opacity-40 transition-colors shadow-subtle flex items-center gap-1.5"
             >
-              <CheckCircle className="w-4 h-4" />
-              Publish Cleanup Mission
+              <CheckCircle className="w-3.5 h-3.5" />
+              <span>Publish spot</span>
             </button>
           </div>
         </form>

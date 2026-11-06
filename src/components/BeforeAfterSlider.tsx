@@ -12,8 +12,8 @@ interface BeforeAfterSliderProps {
 export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
   beforeImage,
   afterImage,
-  beforeLabel = 'BEFORE (LITTERED)',
-  afterLabel = 'AFTER (RESTORED)',
+  beforeLabel = 'Before',
+  afterLabel = 'After',
   aspectRatioClass = 'aspect-[16/10]',
 }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -64,31 +64,31 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
   };
 
   const content = (
-    <div className="relative w-full bg-slate-950 select-none overflow-hidden group">
-      {/* View Mode & Fullscreen Controls Bar */}
-      <div className="absolute top-3 right-3 z-30 flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
+    <div className="relative w-full bg-[#1C2B24] select-none overflow-hidden group">
+      {/* View Mode & Fullscreen Controls */}
+      <div className="absolute top-3 right-3 z-30 flex items-center gap-1 bg-[#1C2B24]/75 p-1 rounded-[6px] border border-white/10 shadow-subtle">
         <button
           type="button"
           onClick={() => setViewMode(viewMode === 'slider' ? 'side-by-side' : 'slider')}
-          className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-          title={viewMode === 'slider' ? 'Switch to side-by-side view' : 'Switch to slider view'}
+          className="p-1 rounded-[4px] text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          title={viewMode === 'slider' ? 'Side-by-side view' : 'Slider view'}
           aria-label="Toggle comparison view mode"
         >
           {viewMode === 'slider' ? (
-            <Columns2 className="w-4 h-4" />
+            <Columns2 className="w-3.5 h-3.5" />
           ) : (
-            <SlidersHorizontal className="w-4 h-4" />
+            <SlidersHorizontal className="w-3.5 h-3.5" />
           )}
         </button>
 
         <button
           type="button"
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-          title={isFullscreen ? 'Close full screen' : 'Expand full screen'}
+          className="p-1 rounded-[4px] text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          title={isFullscreen ? 'Close fullscreen' : 'Expand fullscreen'}
           aria-label="Toggle fullscreen mode"
         >
-          {isFullscreen ? <X className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          {isFullscreen ? <X className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
         </button>
       </div>
 
@@ -105,7 +105,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          className={`relative w-full ${aspectRatioClass} overflow-hidden cursor-ew-resize touch-none focus:outline-none focus:ring-2 focus:ring-[#16A34A]`}
+          className={`relative w-full ${aspectRatioClass} overflow-hidden cursor-ew-resize touch-none focus:outline-none focus:ring-1 focus:ring-[#1E6B4B]`}
         >
           {/* Base Layer: AFTER (Restored) Image */}
           <img
@@ -114,14 +114,6 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />
-
-          {/* After Badge: Top Right */}
-          <div className="absolute top-3 right-14 sm:right-16 z-10 pointer-events-none">
-            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-extrabold tracking-wider uppercase bg-black/80 text-emerald-300 rounded-full border border-emerald-500/40 shadow-md backdrop-blur-md">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
-              {afterLabel}
-            </span>
-          </div>
 
           {/* Top Layer: BEFORE (Dirty) Image clipped by slider position */}
           <div
@@ -140,66 +132,73 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             />
           </div>
 
-          {/* Before Badge: Top Left */}
-          <div className="absolute top-3 left-3 z-10 pointer-events-none">
-            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[11px] font-extrabold tracking-wider uppercase bg-black/80 text-orange-200 rounded-full border border-orange-400/40 shadow-md backdrop-blur-md">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-orange-500 animate-pulse" />
-              {beforeLabel}
-            </span>
-          </div>
-
-          {/* Divider Line & Tactile Knob */}
+          {/* Divider Line & Clean Tactile Handle */}
           <div
             className="absolute top-0 bottom-0 z-20 pointer-events-none"
             style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           >
-            <div className="w-[2px] h-full bg-white shadow-md relative">
+            <div className="w-[2px] h-full bg-white relative shadow-[0_0_4px_rgba(0,0,0,0.4)]">
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white text-emerald-600 border-2 border-emerald-500 shadow-md flex items-center justify-center transition-all ${
-                  isDragging
-                    ? 'scale-110 ring-4 ring-emerald-500/30 bg-slate-50'
-                    : 'hover:scale-105'
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white text-[#1C2B24] border border-[#E2DCCD] shadow-subtle flex items-center justify-center transition-transform ${
+                  isDragging ? 'scale-110' : ''
                 }`}
               >
-                <MoveHorizontal className="w-4 h-4" />
+                <MoveHorizontal className="w-3.5 h-3.5 text-[#1C2B24]" />
               </div>
             </div>
           </div>
 
-          {/* Interactive Hint */}
+          {/* Solid Tags at Bottom Corners (as requested: brick red for Before, green for After) */}
+          <div className="absolute bottom-3 left-3 z-10 pointer-events-none">
+            <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#B3432E] rounded-[4px] shadow-subtle tracking-wide">
+              {beforeLabel}
+            </span>
+          </div>
+
+          <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
+            <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#2F8F5B] rounded-[4px] shadow-subtle tracking-wide">
+              {afterLabel}
+            </span>
+          </div>
+
+          {/* First interaction gentle hint */}
           {!hasInteracted && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-10 animate-bounce">
-              <span className="px-3.5 py-1.5 text-xs font-bold tracking-wide bg-black/80 text-white rounded-full border border-white/20 shadow-md flex items-center gap-2 backdrop-blur-md">
-                <MoveHorizontal className="w-3.5 h-3.5 text-emerald-400" />
-                Drag slider to view cleanup
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-none z-10 hidden sm:block">
+              <span className="px-2.5 py-1 text-[11px] font-medium text-white/90 bg-[#1C2B24]/80 rounded-[4px] border border-white/10 shadow-subtle">
+                Drag slider to compare
               </span>
             </div>
           )}
         </div>
       ) : (
         /* Side by Side layout */
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-950 p-2">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-900 border border-orange-500/30">
+        <div className={`relative w-full ${aspectRatioClass} grid grid-cols-2 divide-x divide-white/20`}>
+          <div className="relative h-full overflow-hidden">
             <img
               src={beforeImage}
               alt={beforeLabel}
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <span className="absolute top-3 left-3 px-3 py-1 text-[10px] font-extrabold uppercase bg-black/80 text-orange-300 border border-orange-500/40 rounded-full shadow-md backdrop-blur-md">
-              {beforeLabel}
-            </span>
+            <div className="absolute bottom-3 left-3 z-10">
+              <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#B3432E] rounded-[4px] shadow-subtle">
+                {beforeLabel}
+              </span>
+            </div>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-900 border border-green-500/30">
+
+          <div className="relative h-full overflow-hidden">
             <img
               src={afterImage}
               alt={afterLabel}
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <span className="absolute top-3 left-3 px-3 py-1 text-[10px] font-extrabold uppercase bg-black/80 text-green-300 border border-green-500/40 rounded-full shadow-md backdrop-blur-md">
-              {afterLabel}
-            </span>
+            <div className="absolute bottom-3 right-3 z-10">
+              <span className="inline-block px-2 py-0.5 text-[11px] font-semibold text-white bg-[#2F8F5B] rounded-[4px] shadow-subtle">
+                {afterLabel}
+              </span>
+            </div>
           </div>
         </div>
       )}
@@ -208,8 +207,8 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
   if (isFullscreen) {
     return (
-      <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-3 sm:p-6 backdrop-blur-md animate-in fade-in">
-        <div className="w-full max-w-5xl bg-white rounded-2xl overflow-hidden shadow-modal border border-slate-200">
+      <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div className="relative w-full max-w-5xl rounded-[12px] overflow-hidden border border-white/10 shadow-modal">
           {content}
         </div>
       </div>

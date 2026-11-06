@@ -6,13 +6,13 @@ import {
   Award,
   Plus,
   ChevronDown,
-  Sparkles,
   LogIn,
   LogOut,
   UserCog,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
+import { Avatar } from './Avatar';
 
 export type NavTab = 'feed' | 'map' | 'leaderboard' | 'rewards';
 
@@ -39,145 +39,114 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isGuestMode = isGuest || !user;
 
+  const navItems: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
+    { id: 'feed', label: 'Feed', icon: Compass },
+    { id: 'map', label: 'Map', icon: Map },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
+    { id: 'rewards', label: 'Rewards', icon: Award },
+  ];
+
   return (
     <>
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_1px_8px_rgba(15,23,42,0.03)]">
-        <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 lg:gap-8">
-          {/* Brand Logo - Official Camera Emblem & Typography */}
-          <div className="flex items-center flex-shrink-0">
+      <header className="sticky top-0 z-40 bg-[#FFFDF8] border-b border-[#E2DCCD]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-4">
+          {/* Left: Brand Lockup */}
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => onTabChange('feed')}
-              className="flex items-center group focus:outline-none"
-              title="GarbageMedia — Home"
+              className="flex items-center gap-2.5 text-left group"
             >
-              <img
-                src="/logo-horizontal.png"
-                alt="GarbageMedia"
-                className="h-8 sm:h-11 w-auto max-w-[165px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
-              />
+              <div className="w-8 h-8 rounded-[6px] bg-[#1E6B4B] text-white flex items-center justify-center font-serif text-base font-bold shadow-subtle flex-shrink-0">
+                G
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif text-base sm:text-lg font-bold text-[#1C2B24] tracking-tight leading-none">
+                  GarbageMedia
+                </span>
+                <span className="text-[10px] text-[#6B7468] tracking-normal font-sans leading-none mt-0.5">
+                  Neighbourhood cleanups
+                </span>
+              </div>
             </button>
           </div>
 
-          {/* Desktop Navigation Links - Centered & Premium Segmented Pill */}
-          <nav className="hidden md:flex items-center gap-1.5 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/80 shadow-xs">
-            <button
-              type="button"
-              onClick={() => onTabChange('feed')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
-                currentTab === 'feed'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <Compass className="w-4 h-4" />
-              <span>Feed</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onTabChange('map')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
-                currentTab === 'map'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <Map className="w-4 h-4" />
-              <span>Map</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onTabChange('leaderboard')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
-                currentTab === 'leaderboard'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <Trophy className="w-4 h-4" />
-              <span>Leaderboard</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onTabChange('rewards')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 min-h-[38px] ${
-                currentTab === 'rewards'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30 scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <Award className="w-4 h-4" />
-              <span>Rewards</span>
-            </button>
+          {/* Center: Simplified Text Tabs with Underline */}
+          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+            {navItems.map((item) => {
+              const isActive = currentTab === item.id;
+              return (
+                <button
+                  type="button"
+                  key={item.id}
+                  onClick={() => onTabChange(item.id)}
+                  className={`py-1 text-sm transition-colors border-b-2 ${
+                    isActive
+                      ? 'border-[#1E6B4B] text-[#1C2B24] font-semibold'
+                      : 'border-transparent text-[#6B7468] hover:text-[#1C2B24] font-medium'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
 
-          {/* Right Actions: User Menu & Report CTA */}
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            {/* If in Guest Mode, show a Sign In Button */}
+          {/* Right: Primary Button + Compact User Avatar */}
+          <div className="flex items-center gap-3">
+            {/* If in Guest Mode, show a small Sign In button */}
             {isGuestMode && onRequireAuth && (
               <button
                 type="button"
                 onClick={onRequireAuth}
-                className="h-9 sm:h-11 px-3 sm:px-4 text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-700 border border-slate-200/90 rounded-2xl transition-all flex items-center gap-1.5 shadow-xs"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1C2B24] hover:text-[#1E6B4B] transition-colors"
               >
-                <LogIn className="w-4 h-4 text-emerald-600" />
-                <span>Sign In</span>
+                <LogIn className="w-3.5 h-3.5 text-[#1E6B4B]" />
+                <span>Sign in</span>
               </button>
             )}
 
-            {/* CTA Button: High-End Emerald Gradient */}
+            {/* Single Strong Primary CTA */}
             <button
               type="button"
               onClick={onOpenReportModal}
-              className="h-9 sm:h-11 px-3 sm:px-5 text-xs sm:text-sm font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl shadow-md shadow-emerald-600/30 hover:shadow-lg hover:shadow-emerald-600/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2"
+              className="h-9 px-3 sm:px-3.5 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] transition-colors flex items-center gap-1.5 shadow-subtle flex-shrink-0"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span className="hidden sm:inline">Report Dirty Spot</span>
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">Report dirty spot</span>
               <span className="sm:hidden">Report</span>
             </button>
 
-            {/* User Account Dropdown */}
+            {/* Compact User Menu Button */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="h-9 sm:h-11 flex items-center gap-2 px-2.5 sm:px-3.5 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-300 shadow-xs hover:shadow-sm transition-all"
+                className="h-9 flex items-center gap-2 pl-1 pr-2 rounded-[6px] border border-[#E2DCCD] hover:border-[#D5CEBE] bg-[#FFFDF8] transition-colors"
+                aria-expanded={showUserMenu}
+                aria-label="User profile menu"
               >
-                <div className="relative flex-shrink-0">
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-emerald-500 shadow-xs"
-                  />
-                  {!isGuestMode && (
-                    <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
-                  )}
-                </div>
-                <div className="text-left hidden sm:block">
-                  <span className="text-xs font-bold text-slate-900 block leading-none truncate max-w-[105px]">
-                    {currentUser.name}
-                  </span>
-                  <span className="font-mono text-[10px] text-emerald-600 font-extrabold block leading-tight mt-0.5">
-                    {currentUser.points} pts
-                  </span>
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                <Avatar
+                  src={currentUser.avatar}
+                  name={currentUser.name}
+                  size="xs"
+                />
+                <span className="text-xs font-medium text-[#1C2B24] tabular-nums hidden sm:inline">
+                  {currentUser.points} pts
+                </span>
+                <ChevronDown className="w-3 h-3 text-[#6B7468]" />
               </button>
 
+              {/* Clean Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 shadow-modal rounded-2xl p-2 z-50 text-xs animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-2.5 border-b border-slate-100 mb-1">
-                    <p className="font-bold text-slate-900 truncate text-sm">{currentUser.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{currentUser.handle}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
-                        {isGuestMode ? 'Guest Mode' : currentUser.level}
-                      </span>
-                      <span className="text-[11px] font-mono text-emerald-600 font-black">
+                <div className="absolute right-0 mt-1.5 w-60 bg-[#FFFDF8] border border-[#E2DCCD] rounded-[12px] p-2 shadow-dropdown z-50 text-xs">
+                  <div className="px-3 py-2 border-b border-[#E2DCCD] mb-1">
+                    <p className="font-semibold text-[#1C2B24] truncate">{currentUser.name}</p>
+                    <p className="text-[11px] text-[#6B7468] truncate">{currentUser.handle}</p>
+                    <div className="flex items-center gap-2 mt-1.5 text-[11px] text-[#6B7468]">
+                      <span>{isGuestMode ? 'Guest' : currentUser.level}</span>
+                      <span>·</span>
+                      <span className="font-semibold text-[#1E6B4B] tabular-nums">
                         {currentUser.points} pts
                       </span>
                     </div>
@@ -190,13 +159,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setShowUserMenu(false);
                         onOpenEditProfile();
                       }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-emerald-50/70 text-slate-700 hover:text-emerald-800 flex items-center justify-between font-medium transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-[6px] hover:bg-[#F4F1EA] text-[#1C2B24] flex items-center gap-2 font-medium transition-colors"
                     >
-                      <div className="flex items-center gap-2">
-                        <UserCog className="w-4 h-4 text-emerald-600" />
-                        <span className="font-semibold">Edit Profile & Photo</span>
-                      </div>
-                      <span className="text-[10px] text-emerald-600 font-mono font-bold bg-emerald-50 px-1.5 py-0.5 rounded-md">Edit</span>
+                      <UserCog className="w-4 h-4 text-[#1E6B4B]" />
+                      <span>Edit profile</span>
                     </button>
                   )}
 
@@ -206,11 +172,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onTabChange('rewards');
                       setShowUserMenu(false);
                     }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 hover:text-slate-900 flex items-center justify-between font-medium transition-colors"
+                    className="w-full text-left px-3 py-2 rounded-[6px] hover:bg-[#F4F1EA] text-[#1C2B24] flex items-center gap-2 font-medium transition-colors"
                   >
-                    <span>My Rewards & Badges</span>
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <Award className="w-4 h-4 text-[#D9822B]" />
+                    <span>My rewards</span>
                   </button>
+
+                  <div className="border-t border-[#E2DCCD] my-1" />
 
                   {isGuestMode && onRequireAuth ? (
                     <button
@@ -219,10 +187,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setShowUserMenu(false);
                         onRequireAuth();
                       }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-emerald-50 text-emerald-700 flex items-center gap-2 font-bold transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-[6px] hover:bg-[#F4F1EA] text-[#1E6B4B] flex items-center gap-2 font-medium transition-colors"
                     >
-                      <LogIn className="w-4 h-4 text-emerald-600" />
-                      <span>Sign In or Register</span>
+                      <LogIn className="w-4 h-4" />
+                      <span>Sign in or register</span>
                     </button>
                   ) : (
                     <button
@@ -232,10 +200,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setShowUserMenu(false);
                         if (onRequireAuth) onRequireAuth();
                       }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-red-50 text-red-600 flex items-center justify-between font-medium transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-[6px] hover:bg-[#F4F1EA] text-[#B3432E] flex items-center gap-2 font-medium transition-colors"
                     >
-                      <span>Sign Out</span>
-                      <LogOut className="w-4 h-4 text-red-500" />
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign out</span>
                     </button>
                   )}
                 </div>
@@ -246,55 +214,26 @@ export const Navbar: React.FC<NavbarProps> = ({
       </header>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-3 py-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-2xl">
-        <button
-          type="button"
-          onClick={() => onTabChange('feed')}
-          className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl text-[10px] font-bold min-w-[56px] transition-colors ${
-            currentTab === 'feed'
-              ? 'text-emerald-700 bg-emerald-50 font-extrabold'
-              : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          <Compass className="w-4 h-4" />
-          <span>Feed</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onTabChange('map')}
-          className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl text-[10px] font-bold min-w-[56px] transition-colors ${
-            currentTab === 'map'
-              ? 'text-emerald-700 bg-emerald-50 font-extrabold'
-              : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          <Map className="w-4 h-4" />
-          <span>Map</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onTabChange('leaderboard')}
-          className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl text-[10px] font-bold min-w-[56px] transition-colors ${
-            currentTab === 'leaderboard'
-              ? 'text-emerald-700 bg-emerald-50 font-extrabold'
-              : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          <Trophy className="w-4 h-4" />
-          <span>Ranks</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onTabChange('rewards')}
-          className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl text-[10px] font-bold min-w-[56px] transition-colors ${
-            currentTab === 'rewards'
-              ? 'text-emerald-700 bg-emerald-50 font-extrabold'
-              : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          <Award className="w-4 h-4" />
-          <span>Rewards</span>
-        </button>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FFFDF8] border-t border-[#E2DCCD] px-2 py-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] flex items-center justify-around">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = currentTab === item.id;
+          return (
+            <button
+              type="button"
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
+              className={`flex flex-col items-center gap-0.5 py-1 px-3 text-[11px] transition-colors border-b-2 ${
+                isActive
+                  ? 'border-[#1E6B4B] text-[#1E6B4B] font-semibold'
+                  : 'border-transparent text-[#6B7468]'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </nav>
     </>
   );

@@ -146,17 +146,17 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden my-4 sm:my-6 animate-in fade-in zoom-in-95 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1C2B24]/60 backdrop-blur-xs overflow-y-auto">
+      <div className="relative w-full max-w-xl bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-modal overflow-hidden my-4 sm:my-6 text-[#1C2B24]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4.5 border-b border-slate-100 bg-slate-50/70">
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center font-bold text-lg shadow-xs flex-shrink-0">
-              ✨
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[#E2DCCD] bg-[#F4F1EA]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-[6px] bg-[#2F8F5B] text-white flex items-center justify-center font-bold text-sm shadow-subtle flex-shrink-0">
+              ✓
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black text-slate-900">Submit Cleanup Proof</h2>
-              <p className="text-[11px] sm:text-xs text-slate-500">
+              <h2 className="font-serif text-base font-bold text-[#1C2B24]">Submit cleanup proof</h2>
+              <p className="text-xs text-[#6B7468]">
                 Upload your 'After' photo and verify proximity to claim bounty points.
               </p>
             </div>
@@ -164,28 +164,28 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-[4px] text-[#6B7468] hover:text-[#1C2B24] hover:bg-[#E2DCCD] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[85vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 max-h-[82vh] overflow-y-auto">
           {/* Target Spot Summary Header */}
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div className="flex items-center gap-3 p-3 rounded-[6px] bg-[#F4F1EA] border border-[#E2DCCD]">
             <img
               src={spot.beforePhotoUrl}
               alt={spot.title}
-              className="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-xs flex-shrink-0"
+              className="w-14 h-14 rounded-[4px] object-cover border border-[#E2DCCD] flex-shrink-0"
             />
             <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-block mb-1">
-                Mission Spot
+              <span className="text-[10px] font-semibold text-[#B3432E] uppercase tracking-wider block mb-0.5">
+                Target spot
               </span>
-              <h4 className="font-bold text-xs sm:text-sm text-slate-900 truncate">{spot.title}</h4>
-              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate">
-                <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
+              <h4 className="font-semibold text-xs sm:text-sm text-[#1C2B24] truncate">{spot.title}</h4>
+              <p className="text-xs text-[#6B7468] flex items-center gap-1 mt-0.5 truncate">
+                <MapPin className="w-3.5 h-3.5 text-[#B3432E] flex-shrink-0" />
                 <span className="truncate">{spot.location.address}</span>
               </p>
             </div>
@@ -193,12 +193,12 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
           {/* Clean 'After' Photo Upload */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Photo of Cleaned Area (After) <span className="text-rose-500">*</span>
+            <label className="block text-xs font-semibold text-[#1C2B24] mb-1.5">
+              Photo of cleaned area (After) <span className="text-[#B3432E]">*</span>
             </label>
 
             {afterPhotoUrl ? (
-              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-xs">
+              <div className="relative aspect-[16/10] rounded-[6px] overflow-hidden border border-[#E2DCCD] bg-[#F4F1EA]">
                 <img
                   src={afterPhotoUrl}
                   alt="Restored proof"
@@ -207,21 +207,19 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setAfterPhotoUrl('')}
-                  className="absolute top-2.5 right-2.5 px-3 py-1.5 text-xs bg-slate-900/80 hover:bg-slate-900 text-white rounded-xl font-medium backdrop-blur-xs transition-colors border border-white/20"
+                  className="absolute top-2.5 right-2.5 px-2.5 py-1 text-xs bg-[#1C2B24]/80 hover:bg-[#1C2B24] text-white rounded-[4px] font-medium transition-colors"
                 >
-                  Change Photo
+                  Change photo
                 </button>
               </div>
             ) : (
-              <div className="space-y-2.5">
-                <label className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl cursor-pointer bg-slate-50 hover:bg-emerald-50/50 transition-all group">
-                  <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-xs group-hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 text-center">
-                    Snap 'After' Photo with Camera
+              <div className="space-y-2">
+                <label className="flex flex-col items-center justify-center p-5 border border-dashed border-[#D5CEBE] hover:border-[#1E6B4B] rounded-[6px] cursor-pointer bg-[#F4F1EA]/50 hover:bg-[#EAF3EE] transition-colors group">
+                  <Camera className="w-5 h-5 text-[#1E6B4B] mb-1.5" />
+                  <span className="text-xs font-semibold text-[#1C2B24] text-center">
+                    Snap 'After' photo with camera
                   </span>
-                  <span className="text-[11px] text-slate-500 mt-0.5 text-center">
+                  <span className="text-[11px] text-[#6B7468] text-center">
                     or choose a cleaned photo from file
                   </span>
                   <input
@@ -235,7 +233,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
                 {/* Quick Presets */}
                 <div className="pt-1">
-                  <span className="text-[11px] font-medium text-slate-500 block mb-1.5">
+                  <span className="text-[11px] text-[#6B7468] block mb-1">
                     Or select a sample clean photo for testing:
                   </span>
                   <div className="grid grid-cols-3 gap-2">
@@ -247,14 +245,14 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                           setAfterPhotoUrl(preset.url);
                           setCleanerNotes(preset.notes);
                         }}
-                        className="text-left p-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-xs"
+                        className="text-left p-1.5 rounded-[6px] border border-[#E2DCCD] bg-[#FFFDF8] hover:border-[#1E6B4B] transition-colors text-xs"
                       >
                         <img
                           src={preset.url}
                           alt={preset.name}
-                          className="w-full h-12 sm:h-14 object-cover rounded-lg mb-1"
+                          className="w-full h-12 object-cover rounded-[4px] mb-1"
                         />
-                        <span className="text-[11px] font-bold text-slate-700 block truncate">
+                        <span className="text-[11px] font-medium text-[#1C2B24] block truncate">
                           {preset.name}
                         </span>
                       </button>
@@ -267,27 +265,27 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
           {/* Proximity Verification Box */}
           <div
-            className={`p-3.5 sm:p-4 rounded-2xl border transition-all ${
+            className={`p-3 rounded-[6px] border transition-colors ${
               isLocationVerified
-                ? 'bg-emerald-50 border-emerald-200'
-                : 'bg-amber-50 border-amber-200'
+                ? 'bg-[#EAF3EE] border-[#1E6B4B]/30'
+                : 'bg-[#FDF6ED] border-[#D9822B]/30'
             }`}
           >
             <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2">
                 {isLocationVerified ? (
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-[#1E6B4B] flex-shrink-0" />
                 ) : (
-                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-[#D9822B] flex-shrink-0" />
                 )}
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">
+                  <h4 className="text-xs font-semibold text-[#1C2B24]">
                     {isLocationVerified
-                      ? 'On-Site Location Verified (< 250m)'
-                      : 'Outside Proximity Threshold'}
+                      ? 'On-site location verified (< 250m)'
+                      : 'Outside proximity threshold'}
                   </h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Calculated distance: <strong className="text-emerald-700 font-mono font-bold">{formatDistance(distanceMeters)}</strong> away from original report spot.
+                  <p className="text-[11px] text-[#6B7468] mt-0.5">
+                    Calculated distance: <strong className="text-[#1C2B24] tabular-nums font-semibold">{formatDistance(distanceMeters)}</strong> away from reported spot.
                   </p>
                 </div>
               </div>
@@ -296,61 +294,61 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               <button
                 type="button"
                 onClick={handleSimulateOnSite}
-                className="text-[11px] font-bold text-emerald-700 bg-white hover:bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs flex items-center gap-1 flex-shrink-0 min-h-[36px]"
+                className="text-xs font-medium text-[#1E6B4B] bg-[#FFFDF8] hover:bg-[#F4F1EA] px-2.5 py-1 rounded-[4px] border border-[#E2DCCD] shadow-subtle flex items-center gap-1 flex-shrink-0"
                 title="Simulate standing right next to the spot"
               >
-                <Navigation className="w-3 h-3 text-emerald-600" />
-                Simulate On-Site
+                <Navigation className="w-3 h-3 text-[#1E6B4B]" />
+                Simulate on-site
               </button>
             </div>
           </div>
 
           {/* Cleaner Notes */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Cleanup Notes / Details
+            <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
+              Cleanup notes / Details
             </label>
             <textarea
               rows={2}
               value={cleanerNotes}
               onChange={(e) => setCleanerNotes(e.target.value)}
-              placeholder="e.g. Collected 2 large bags of cans, sorted recyclables, swept pathway..."
-              className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white placeholder:text-slate-400 resize-none min-h-[56px]"
+              placeholder="e.g. Collected 2 bags of cans, swept sidewalk, sorted recyclables..."
+              className="w-full px-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B] resize-none"
             />
           </div>
 
-          {/* Rewards Calculation Pill */}
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 sm:p-4.5 rounded-2xl text-white flex items-center justify-between shadow-lg shadow-emerald-600/20 gap-3">
-            <div className="flex items-center gap-3">
-              <Award className="w-5 h-5 text-amber-200 flex-shrink-0" />
+          {/* Rewards Calculation Strip */}
+          <div className="bg-[#EAF3EE] p-3 rounded-[6px] border border-[#E2DCCD] flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-[#1E6B4B] flex-shrink-0" />
               <div>
-                <span className="text-xs font-extrabold block">Reward Points Earned</span>
-                <span className="text-[11px] text-emerald-100">
-                  Includes priority bounty, verified GPS proximity & proof bonus
+                <span className="font-semibold text-[#1C2B24] block">Reward points to be credited</span>
+                <span className="text-[11px] text-[#6B7468]">
+                  Includes spot bounty & verified on-site proof bonus
                 </span>
               </div>
             </div>
-            <span className="text-xl font-black font-mono text-amber-200 flex-shrink-0">
+            <span className="font-semibold text-sm text-[#1E6B4B] tabular-nums flex-shrink-0">
               +{pointsCalc.totalPoints} pts
             </span>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 flex-wrap">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2DCCD]">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px]"
+              className="px-3.5 py-2 text-xs font-medium text-[#6B7468] hover:text-[#1C2B24] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!afterPhotoUrl}
-              className="flex-1 sm:flex-none px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-btn-green disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 min-h-[44px]"
+              className="px-4 py-2 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] shadow-subtle disabled:opacity-40 transition-colors flex items-center gap-1.5"
             >
-              <Sparkles className="w-4 h-4" />
-              Submit Proof & Claim Bounty
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Submit proof & claim bounty</span>
             </button>
           </div>
         </form>
