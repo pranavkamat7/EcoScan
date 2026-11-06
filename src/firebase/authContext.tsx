@@ -28,6 +28,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   awardCleanupReward: (points: number, wasteKg: number) => Promise<void>;
   recordSpotReported: () => Promise<void>;
+  updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -163,6 +164,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
+    // Check if customized guest profile exists
+    try {
+      const savedGuest = localStorage.getItem('garbagemedia_guest_custom');
+      if (savedGuest) {
+        const parsed = JSON.parse(savedGuest);
+        if (parsed && parsed.name) {
+          setProfile(parsed);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     // Local guest profile
     const guestProf: UserProfile = {
       ...GUEST_USER,
@@ -242,6 +257,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUserProfile = async (updates: Partial<UserProfile>) => {
+    const current = profile || GUEST_USER;
+    const formattedHandle = updates.handle
+      ? (updates.handle.startsWith('@') ? updates.handle : `@${updates.handle}`)
+      : (updates.name ? `@${updates.name.toLowerCase().replace(/[^a-z0-9_]/g, '')}` : current.handle);
+
+    const updatedProfile: UserProfile = {
+      ...current,
+      ...updates,
+      handle: formattedHandle,
+    };
+
+    setProfile(updatedProfile);
+    saveUserProfile(updatedProfile);
+
+    // Save custom guest profile locally
+    if (updatedProfile.id.startsWith('guest') || updatedProfile.id === 'guest') {
+      try {
+        localStorage.setItem('garbagemedia_guest_custom', JSON.stringify(updatedProfile));
+      } catch {
+        // ignore
+      }
+    }
+
+    // Sync to Firebase Auth & Firestore if logged in with real account
+    if (user && !user.isAnonymous && auth) {
+      try {
+        const fbUpdates: { displayName?: string; photoURL?: string } = {};
+        if (updates.name) fbUpdates.displayName = updates.name;
+        if (updates.avatar) fbUpdates.photoURL = updates.avatar;
+        if (Object.keys(fbUpdates).length > 0) {
+          await updateProfile(user, fbUpdates);
+        }
+      } catch (err) {
+        console.warn('Could not update Firebase user displayName/photoURL:', err);
+      }
+
+      const firestore = db;
+      if (firestore && isFirebaseConfigured) {
+        try {
+          await setDoc(doc(firestore, 'users', user.uid), updatedProfile, { merge: true });
+        } catch (err) {
+          console.error('Could not sync profile to Firestore:', err);
+        }
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -256,6 +319,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         awardCleanupReward,
         recordSpotReported,
+        updateUserProfile,
       }}
     >
       {children}

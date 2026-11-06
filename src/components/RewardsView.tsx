@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Award, Gift, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Award, Gift, Sparkles, CheckCircle2, UserCog, MapPin, Pencil } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { getUserLevel } from '../utils/rewards';
 
 interface RewardsViewProps {
   currentUser: UserProfile;
+  onOpenEditProfile?: () => void;
 }
 
 const CIVIC_PERKS = [
@@ -42,7 +43,7 @@ const CIVIC_PERKS = [
   },
 ];
 
-export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
+export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser, onOpenEditProfile }) => {
   const levelInfo = getUserLevel(currentUser.points);
   const [claimedPerks, setClaimedPerks] = useState<string[]>([]);
 
@@ -54,6 +55,112 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser }) => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* Civic Profile Card */}
+      <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+            <div className="relative group">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-md ring-2 ring-emerald-500/30"
+              />
+              {onOpenEditProfile && (
+                <button
+                  type="button"
+                  onClick={onOpenEditProfile}
+                  className="absolute bottom-0 right-0 p-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-transform hover:scale-110 active:scale-95"
+                  title="Edit Profile Photo"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+                  {currentUser.name}
+                </h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-mono font-bold">
+                  {currentUser.level}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-mono">
+                {currentUser.handle}
+              </p>
+
+              {currentUser.city && (
+                <p className="text-xs text-slate-600 flex items-center justify-center sm:justify-start gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{currentUser.city}</span>
+                </p>
+              )}
+
+              {currentUser.bio ? (
+                <p className="text-xs text-slate-600 max-w-lg leading-relaxed pt-1">
+                  "{currentUser.bio}"
+                </p>
+              ) : (
+                <p className="text-[11px] text-slate-400 italic pt-0.5">
+                  No bio added yet. Click 'Edit Profile' to add your story.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {onOpenEditProfile && (
+            <button
+              type="button"
+              onClick={onOpenEditProfile}
+              className="px-4 py-2 text-xs font-extrabold bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 rounded-2xl shadow-xs transition-all flex items-center gap-1.5 min-h-[38px] flex-shrink-0"
+            >
+              <UserCog className="w-4 h-4 text-emerald-600" />
+              <span>Edit Profile & Photo</span>
+            </button>
+          )}
+        </div>
+
+        {/* Civic Activity Metric Pills */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-5 mt-5 border-t border-slate-100">
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/70 text-center">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 block font-bold">
+              Spots Cleaned
+            </span>
+            <span className="text-lg font-black font-mono text-slate-900 mt-0.5 block">
+              {currentUser.spotsCleaned}
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/70 text-center">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 block font-bold">
+              Spots Reported
+            </span>
+            <span className="text-lg font-black font-mono text-slate-900 mt-0.5 block">
+              {currentUser.spotsReported}
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/70 text-center">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 block font-bold">
+              Waste Cleared
+            </span>
+            <span className="text-lg font-black font-mono text-slate-900 mt-0.5 block">
+              {currentUser.wasteClearedKg} kg
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200/70 text-center">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-700 block font-bold">
+              Civic Bounty Points
+            </span>
+            <span className="text-lg font-black font-mono text-emerald-700 mt-0.5 block">
+              {currentUser.points} pts
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Civic Passport Level Card */}
       <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-7 shadow-xs relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">

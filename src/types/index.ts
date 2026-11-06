@@ -62,6 +62,9 @@ export interface UserProfile {
   spotsCleaned: number;
   wasteClearedKg: number;
   badges: Badge[];
+  bio?: string;
+  city?: string;
+  phone?: string;
 }
 
 export interface Badge {

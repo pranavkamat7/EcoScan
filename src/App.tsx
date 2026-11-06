@@ -11,6 +11,7 @@ import { SpotCard } from './components/SpotCard';
 import { FilterTabs } from './components/FilterTabs';
 import { ReportModal } from './components/ReportModal';
 import { CleanSubmissionModal } from './components/CleanSubmissionModal';
+import { EditProfileModal } from './components/EditProfileModal';
 import { MapView } from './components/MapView';
 import { Leaderboard } from './components/Leaderboard';
 import { RewardsView } from './components/RewardsView';
@@ -36,7 +37,7 @@ interface GarbageMediaDashboardProps {
 }
 
 function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaDashboardProps) {
-  const { profile, awardCleanupReward, recordSpotReported } = useAuth();
+  const { profile, awardCleanupReward, recordSpotReported, updateUserProfile } = useAuth();
   const currentUser = profile || GUEST_USER;
 
   const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
@@ -49,6 +50,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [activeCleanSpot, setActiveCleanSpot] = useState<Spot | null>(null);
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   // Subscribe to real-time Firestore spots (with local fallback)
   useEffect(() => {
@@ -235,6 +237,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
           if (tab !== 'map') setSelectedSpotForMap(null);
         }}
         onOpenReportModal={() => setIsReportModalOpen(true)}
+        onOpenEditProfile={() => setIsEditProfileOpen(true)}
         currentUser={currentUser}
         isGuest={isGuest}
         onRequireAuth={onRequireAuth}
@@ -604,7 +607,12 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         )}
 
         {/* VIEW 4: Rewards & Badges */}
-        {currentTab === 'rewards' && <RewardsView currentUser={currentUser} />}
+        {currentTab === 'rewards' && (
+          <RewardsView
+            currentUser={currentUser}
+            onOpenEditProfile={() => setIsEditProfileOpen(true)}
+          />
+        )}
       </main>
 
       {/* MODAL 1: Report Dirty Spot */}
@@ -622,6 +630,14 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         onClose={() => setActiveCleanSpot(null)}
         onSubmitClean={handleCleanSubmit}
         currentUser={currentUser}
+      />
+
+      {/* MODAL 3: Edit Profile Photo & Details */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        currentUser={currentUser}
+        onUpdateProfile={updateUserProfile}
       />
     </div>
   );

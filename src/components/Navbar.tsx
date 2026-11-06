@@ -9,6 +9,7 @@ import {
   Sparkles,
   LogIn,
   LogOut,
+  UserCog,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
@@ -19,6 +20,7 @@ interface NavbarProps {
   currentTab: NavTab;
   onTabChange: (tab: NavTab) => void;
   onOpenReportModal: () => void;
+  onOpenEditProfile?: () => void;
   currentUser: UserProfile;
   isGuest?: boolean;
   onRequireAuth?: () => void;
@@ -28,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   onTabChange,
   onOpenReportModal,
+  onOpenEditProfile,
   currentUser,
   isGuest = false,
   onRequireAuth,
@@ -179,6 +182,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </span>
                     </div>
                   </div>
+
+                  {onOpenEditProfile && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onOpenEditProfile();
+                      }}
+                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-emerald-50/70 text-slate-700 hover:text-emerald-800 flex items-center justify-between font-medium transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <UserCog className="w-4 h-4 text-emerald-600" />
+                        <span className="font-semibold">Edit Profile & Photo</span>
+                      </div>
+                      <span className="text-[10px] text-emerald-600 font-mono font-bold bg-emerald-50 px-1.5 py-0.5 rounded-md">Edit</span>
+                    </button>
+                  )}
 
                   <button
                     type="button"
