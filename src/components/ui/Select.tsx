@@ -34,7 +34,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-xs font-medium text-ink select-none"
+            className="block text-xs font-semibold text-navy select-none"
           >
             {label}
           </label>
@@ -45,10 +45,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             disabled={disabled}
-            className={`w-full h-10 rounded-sm bg-surface text-ink text-sm pl-3.5 pr-9 border appearance-none transition-all duration-200 disabled:bg-surface-muted disabled:opacity-60 disabled:cursor-not-allowed outline-none focus:ring-2 focus:ring-lime focus:border-forest ${
+            className={`w-full h-10 rounded-sm bg-white text-navy text-sm pl-3.5 pr-9 border appearance-none transition-all duration-180 disabled:bg-navy-50 disabled:opacity-60 disabled:cursor-not-allowed outline-none focus:ring-2 focus:ring-emerald focus:border-emerald ${
               error
                 ? 'border-coral focus:ring-coral/20'
-                : 'border-border hover:border-border-strong'
+                : 'border-line hover:border-line-strong'
             } ${className}`}
             {...props}
           >
@@ -58,7 +58,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>

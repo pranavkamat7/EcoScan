@@ -31,13 +31,13 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
 
     const variantClasses = {
       primary:
-        'bg-forest hover:bg-forest-hover text-lime border border-forest-border shadow-sm',
+        'bg-emerald hover:bg-emerald-600 text-white shadow-sm',
       secondary:
-        'bg-surface hover:bg-surface-hover text-ink border border-border hover:border-border-strong shadow-sm',
+        'bg-white hover:bg-navy-50 text-navy border border-line hover:border-line-strong shadow-sm',
       ghost:
-        'bg-transparent hover:bg-surface-muted text-muted hover:text-ink',
+        'bg-transparent hover:bg-navy-50 text-muted hover:text-navy',
       danger:
-        'bg-coral hover:bg-coral-hover text-white shadow-sm',
+        'bg-coral hover:bg-coral-600 text-white shadow-sm',
     }[variant];
 
     return (
@@ -47,7 +47,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         disabled={disabled}
         aria-label={label}
         title={label}
-        className={`inline-flex items-center justify-center rounded-sm transition-all duration-200 select-none disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-forest ${sizeClasses} ${variantClasses} ${className}`}
+        className={`inline-flex items-center justify-center rounded-sm transition-all duration-180 select-none disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-emerald ${sizeClasses} ${variantClasses} ${className}`}
         {...props}
       >
         {children}

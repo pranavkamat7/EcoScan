@@ -47,9 +47,9 @@ export const Avatar: React.FC<AvatarProps> = ({
   }[size];
 
   const indicatorColors = {
-    clean: 'bg-mint ring-surface',
-    needs_clean: 'bg-coral ring-surface',
-    online: 'bg-lime ring-surface',
+    clean: 'bg-emerald ring-white',
+    needs_clean: 'bg-coral ring-white',
+    online: 'bg-lime ring-white',
   };
 
   const showImage = Boolean(src && !imageError);
@@ -57,7 +57,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   return (
     <div className={`relative inline-flex flex-shrink-0 select-none ${className}`}>
       <div
-        className={`${sizeClasses} rounded-full border border-border bg-surface-muted text-ink flex items-center justify-center font-serif font-bold tracking-tight overflow-hidden shadow-sm`}
+        className={`${sizeClasses} rounded-full border border-line bg-navy-50 text-navy flex items-center justify-center font-heading font-bold tracking-tight overflow-hidden shadow-sm`}
         title={name}
       >
         {showImage ? (
@@ -69,7 +69,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             loading="lazy"
           />
         ) : (
-          <span className="leading-none text-forest">{initials}</span>
+          <span className="leading-none text-navy font-bold">{initials}</span>
         )}
       </div>
 

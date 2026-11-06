@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  MapPin,
   Heart,
   MessageSquare,
   Share2,
@@ -77,7 +76,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
   return (
     <Card
       variant="default"
-      className="p-0 overflow-hidden interactive-card border-border hover:border-border-strong text-left shadow-sm"
+      className="p-0 overflow-hidden interactive-card border-line hover:border-line-strong text-left shadow-sm"
     >
       {/* 1. HERO PHOTO SECTION: Full-width at the top */}
       <div className="relative w-full">
@@ -88,7 +87,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             aspectRatioClass="aspect-[16/10] sm:aspect-[16/9]"
           />
         ) : (
-          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-forest/20 overflow-hidden">
+          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-navy-100 overflow-hidden">
             <img
               src={spot.beforePhotoUrl}
               alt={spot.title}
@@ -103,7 +102,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             </div>
             {spot.rewardPoints > 0 && (
               <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
-                <Badge variant="warning" size="sm">
+                <Badge variant="points" size="sm">
                   +{spot.rewardPoints} pts bounty
                 </Badge>
               </div>
@@ -123,26 +122,26 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             indicator={isCleaned ? 'clean' : 'needs_clean'}
           />
 
-          <span className="font-semibold text-ink">
+          <span className="font-bold text-navy">
             {primaryAuthor.roleText}
           </span>
 
-          <span className="text-faint">·</span>
+          <span className="text-line-strong">·</span>
 
           <button
             type="button"
             onClick={() => onOpenMap(spot)}
-            className="hover:text-forest transition-colors truncate max-w-[200px] text-left underline-offset-2 hover:underline"
+            className="hover:text-emerald font-medium transition-colors truncate max-w-[200px] text-left underline-offset-2 hover:underline"
             title={spot.location.address || 'View on map'}
           >
             {spot.location.address || 'Location on map'}
           </button>
 
-          <span className="text-faint">·</span>
+          <span className="text-line-strong">·</span>
 
           <span className="tabular-nums">{formattedDate}</span>
 
-          <span className="text-faint">·</span>
+          <span className="text-line-strong">·</span>
 
           <Badge variant="points" size="sm">
             +{spot.rewardPoints} pts
@@ -151,7 +150,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
 
         {/* Title & Description */}
         <div className="space-y-1">
-          <h3 className="font-heading text-lg sm:text-xl font-bold text-ink leading-snug">
+          <h3 className="font-heading text-lg sm:text-xl font-bold text-navy leading-snug">
             {spot.title}
           </h3>
 
@@ -164,15 +163,15 @@ export const SpotCard: React.FC<SpotCardProps> = ({
           {/* Cleanup note if verified */}
           {isCleaned && spot.verification?.notes && (
             <div className="pt-1.5">
-              <p className="text-xs text-muted italic border-l-2 border-mint pl-3 py-0.5">
+              <p className="text-xs text-muted italic border-l-2 border-emerald pl-3 py-0.5">
                 "{spot.verification.notes}"
               </p>
             </div>
           )}
         </div>
 
-        {/* 3. CARD ACTIONS ROW: Clean & understated */}
-        <div className="pt-3 border-t border-border flex items-center justify-between gap-3 text-xs">
+        {/* 3. CARD ACTIONS ROW */}
+        <div className="pt-3 border-t border-line flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-4 text-muted">
             <button
               type="button"
@@ -185,7 +184,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                   spot.likesCount > 0 ? 'text-coral fill-coral' : 'text-muted'
                 }`}
               />
-              <span className="tabular-nums font-medium text-ink">
+              <span className="tabular-nums font-bold text-navy">
                 {spot.likesCount}
               </span>
             </button>
@@ -193,10 +192,10 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-1.5 hover:text-ink transition-colors py-1"
+              className="flex items-center gap-1.5 hover:text-navy transition-colors py-1"
             >
               <MessageSquare className="w-4 h-4 text-muted" />
-              <span className="tabular-nums font-medium text-ink">
+              <span className="tabular-nums font-bold text-navy">
                 {spot.comments.length}
               </span>
             </button>
@@ -204,7 +203,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             <button
               type="button"
               onClick={handleShare}
-              className="hover:text-ink transition-colors py-1 flex items-center gap-1"
+              className="hover:text-navy transition-colors py-1 flex items-center gap-1 font-medium"
               title="Copy share link"
             >
               <Share2 className="w-4 h-4 text-muted" />
@@ -214,7 +213,7 @@ export const SpotCard: React.FC<SpotCardProps> = ({
             </button>
           </div>
 
-          {/* If Needs Clean: Action to submit clean proof */}
+          {/* If Needs Clean: Action to submit clean proof (Emerald primary button) */}
           {isNeedsCleaning && (
             <Button
               variant="primary"
@@ -229,13 +228,13 @@ export const SpotCard: React.FC<SpotCardProps> = ({
 
         {/* 4. EXPANDABLE COMMENTS LIST */}
         {showComments && (
-          <div className="pt-3 border-t border-border space-y-3">
+          <div className="pt-3 border-t border-line space-y-3">
             {spot.comments.length > 0 ? (
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {spot.comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="flex items-start gap-2.5 text-xs p-2 rounded-sm bg-surface-muted border border-border/60"
+                    className="flex items-start gap-2.5 text-xs p-2.5 rounded-sm bg-navy-50/60 border border-line"
                   >
                     <Avatar
                       src={comment.authorAvatar}
@@ -244,10 +243,10 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="font-semibold text-ink">
+                        <span className="font-bold text-navy">
                           {comment.authorName}
                         </span>
-                        <span className="text-[10px] text-faint tabular-nums">
+                        <span className="text-[10px] text-muted tabular-nums">
                           {new Date(comment.createdAt).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'short',
@@ -274,14 +273,14 @@ export const SpotCard: React.FC<SpotCardProps> = ({
                 placeholder="Write a comment..."
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                className="flex-1 h-9 px-3 text-xs rounded-sm border border-border bg-surface text-ink outline-none focus:ring-2 focus:ring-lime focus:border-forest"
+                className="flex-1 h-9 px-3 text-xs rounded-sm border border-line bg-white text-navy outline-none focus:ring-2 focus:ring-emerald"
               />
               <Button
                 type="submit"
                 variant="secondary"
                 size="sm"
                 disabled={!commentText.trim()}
-                icon={<Send className="w-3.5 h-3.5 text-forest" />}
+                icon={<Send className="w-3.5 h-3.5 text-emerald" />}
               >
                 Send
               </Button>

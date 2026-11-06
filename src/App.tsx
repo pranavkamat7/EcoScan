@@ -31,6 +31,7 @@ import {
   EmptyState,
   Toast,
   Skeleton,
+  Logo,
 } from './components/ui';
 import {
   loadSpots,
@@ -288,7 +289,7 @@ function GarbageMediaDashboard({
             description="Snap dirty spots, clean them with on-site GPS verification, and publish before & after split sliders for civic points."
             action={
               <Button
-                variant="lime"
+                variant="primary"
                 size="md"
                 icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
                 onClick={() => setIsReportModalOpen(true)}
@@ -305,28 +306,28 @@ function GarbageMediaDashboard({
           >
             <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted">
               <span>
-                <strong className="font-semibold text-ink tabular-nums">
+                <strong className="font-semibold text-navy tabular-nums">
                   {stats.cleanedCount}
                 </strong>{' '}
                 {stats.cleanedCount === 1 ? 'spot restored' : 'spots restored'}
               </span>
-              <span className="text-border-strong">·</span>
+              <span className="text-line-strong">·</span>
               <span>
-                <strong className="font-semibold text-ink tabular-nums">
+                <strong className="font-semibold text-navy tabular-nums">
                   {stats.totalWasteKg} kg
                 </strong>{' '}
                 collected
               </span>
-              <span className="text-border-strong">·</span>
+              <span className="text-line-strong">·</span>
               <span>
-                <strong className="font-semibold text-forest tabular-nums">
+                <strong className="font-semibold text-emerald tabular-nums">
                   {stats.totalPointsAwarded} pts
                 </strong>{' '}
                 awarded
               </span>
               {stats.pendingCount > 0 && (
                 <>
-                  <span className="text-border-strong">·</span>
+                  <span className="text-line-strong">·</span>
                   <span className="text-coral font-medium">
                     <strong className="font-semibold tabular-nums">
                       {stats.pendingCount}
@@ -392,7 +393,7 @@ function GarbageMediaDashboard({
             <aside className="lg:col-span-4 space-y-4 hidden lg:block sticky top-24">
               {/* 1. How It Works (Short 3-line inline text list) */}
               <Card variant="default" className="p-5 space-y-3">
-                <h3 className="font-heading text-sm font-bold text-ink">
+                <h3 className="font-heading text-sm font-bold text-navy">
                   How GarbageMedia works
                 </h3>
                 <ol className="space-y-2 text-xs text-muted list-decimal list-inside leading-relaxed text-left">
@@ -404,12 +405,12 @@ function GarbageMediaDashboard({
 
               {/* 2. Active Missions */}
               <Card variant="default" className="p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-border pb-2.5">
-                  <h3 className="font-heading text-sm font-bold text-ink">
+                <div className="flex items-center justify-between border-b border-line pb-2.5">
+                  <h3 className="font-heading text-sm font-bold text-navy">
                     Active missions
                   </h3>
                   {stats.pendingCount > 0 && (
-                    <Badge variant="warning" size="sm">
+                    <Badge variant="needs_clean" size="sm">
                       {stats.pendingCount} open
                     </Badge>
                   )}
@@ -423,20 +424,20 @@ function GarbageMediaDashboard({
                       .map((spot) => (
                         <div
                           key={spot.id}
-                          className="p-3 rounded-sm border border-border bg-surface-muted/50 space-y-1 text-left"
+                          className="p-3 rounded-sm border border-line bg-navy-50/50 space-y-1 text-left"
                         >
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-amber font-semibold tabular-nums">
+                            <span className="text-emerald font-semibold tabular-nums">
                               +{spot.rewardPoints} pts bounty
                             </span>
-                            <span className="text-faint tabular-nums">
+                            <span className="text-muted tabular-nums">
                               {new Date(spot.createdAt).toLocaleDateString('en-GB', {
                                 day: 'numeric',
                                 month: 'short',
                               })}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-xs text-ink line-clamp-1">
+                          <h4 className="font-semibold text-xs text-navy line-clamp-1">
                             {spot.title}
                           </h4>
                           <p className="text-[11px] text-muted truncate">
@@ -454,14 +455,14 @@ function GarbageMediaDashboard({
                       ))
                   ) : (
                     <div className="py-3 text-center space-y-1">
-                      <p className="text-xs text-ink font-medium">All spots are clean</p>
+                      <p className="text-xs text-navy font-medium">All spots are clean</p>
                       <p className="text-[11px] text-muted">
                         No dirty spots currently reported.
                       </p>
                       <button
                         type="button"
                         onClick={() => setIsReportModalOpen(true)}
-                        className="mt-1 text-xs font-semibold text-forest hover:underline"
+                        className="mt-1 text-xs font-semibold text-emerald hover:underline"
                       >
                         Be the first to report a spot →
                       </button>
@@ -472,14 +473,14 @@ function GarbageMediaDashboard({
 
               {/* 3. Top Champions */}
               <Card variant="default" className="p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-border pb-2.5">
-                  <h3 className="font-heading text-sm font-bold text-ink">
+                <div className="flex items-center justify-between border-b border-line pb-2.5">
+                  <h3 className="font-heading text-sm font-bold text-navy">
                     Top champions
                   </h3>
                   <button
                     type="button"
                     onClick={() => setCurrentTab('leaderboard')}
-                    className="text-xs text-forest hover:underline font-semibold"
+                    className="text-xs text-emerald hover:underline font-semibold"
                   >
                     View all →
                   </button>
@@ -500,7 +501,7 @@ function GarbageMediaDashboard({
                           name={item.name}
                           size="xs"
                         />
-                        <span className="text-xs font-medium text-ink truncate max-w-[120px]">
+                        <span className="text-xs font-semibold text-navy truncate max-w-[120px]">
                           {item.name}
                         </span>
                       </div>
@@ -602,12 +603,8 @@ function AppContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center p-6 space-y-4">
-        <img
-          src="/logo.png"
-          alt="GarbageMedia"
-          className="h-14 w-auto object-contain animate-pulse"
-        />
-        <div className="space-y-2 w-48 text-center">
+        <Logo size="lg" />
+        <div className="space-y-2 w-48 text-center pt-2">
           <Skeleton variant="sm" height={12} className="w-full" />
           <Skeleton variant="sm" height={8} className="w-3/4 mx-auto" />
         </div>

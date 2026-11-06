@@ -18,3 +18,4 @@ export * from './PageHeader';
 export * from './SectionTitle';
 export * from './StatNumber';
 export * from './ProgressBar';
+export * from './Logo';

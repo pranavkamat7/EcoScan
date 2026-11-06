@@ -1,70 +1,101 @@
 /**
- * GarbageMedia Design Tokens
- * Single source of truth for the entire application.
- * No hardcoded hex values or px sizes should appear in components.
+ * GarbageMedia Official Brand Design Tokens
+ * Source of truth for brand colors, typography, radii, and tints.
  */
 
 :root {
   /* ==========================================================================
-     COLOR TOKENS
+     CORE BRAND PALETTE
      ========================================================================== */
-  
-  /* Primary Forest (Rich dark green for hero strips, primary elements, deep contrast) */
-  --color-forest: #0F291E;
-  --color-forest-dark: #091A13;
-  --color-forest-hover: #153A2B;
-  --color-forest-surface: #143326;
-  --color-forest-border: #1E4634;
+  --navy: #172536;       /* Primary dark: headings, body text, hero/header strips, footer */
+  --navy-2: #22364D;     /* Slightly lighter navy for hover, cards and gradients */
+  --emerald: #00B86B;    /* Primary brand color: buttons, links, active states */
+  --lime: #55D62E;       /* Highlight: points, rewards, success, progress bars */
+  --sky: #38BDF8;        /* Secondary accent: "After"/clean info, map, links */
+  --white: #FFFFFF;      /* Cards and surfaces */
+  --coral: #F0533D;      /* Status-only: "Before", needs clean, errors, danger */
 
-  /* Accent Lime (Electric civic highlight, badges, points, underlines, CTAs) */
-  --color-lime: #D4F63D;
-  --color-lime-hover: #C5E92E;
-  --color-lime-subtle: #F2FCC9;
-  --color-lime-text: #0F291E;
-
-  /* Civic Status Colors */
-  /* Coral: Needs clean / Before / Urgent / Warning */
-  --color-coral: #E0533C;
-  --color-coral-hover: #CC442E;
-  --color-coral-subtle: #FDF1EE;
-  --color-coral-text: #FFFFFF;
-
-  /* Mint: Restored / After / Cleaned / Success */
-  --color-mint: #238253;
-  --color-mint-hover: #1C6E45;
-  --color-mint-subtle: #EDF7F1;
-  --color-mint-text: #FFFFFF;
-
-  /* Amber: Open bounties / Featured */
-  --color-amber: #D9822B;
-  --color-amber-subtle: #FEF7EE;
-
-  /* Base Canvas & Surfaces */
-  --color-bg: #F4F1EA;              /* Warm civic paper/linen background */
-  --color-surface: #FFFDF8;         /* Crisp warm parchment card/modal surface */
-  --color-surface-muted: #F7F5EE;   /* Secondary recessed surface */
-  --color-surface-hover: #F2EFE6;
-
-  /* Borders & Dividers */
-  --color-border: #E2DCCD;
-  --color-border-strong: #CFC7B4;
-  --color-border-subtle: #ECE8DD;
-
-  /* Typography / Inks */
-  --color-ink: #14211A;             /* Deep slate-forest primary text */
-  --color-muted: #626F67;           /* Balanced neutral secondary text */
-  --color-faint: #98A39C;           /* Subtle tertiary / meta text */
-  --color-white: #FFFFFF;
+  /* Supporting neutrals (derived from navy) */
+  --bg: #F4F8F7;         /* Page background (very light cool white with subtle green tint) */
+  --ink: #172536;        /* Main text */
+  --muted: #5B6B7A;      /* Secondary text */
+  --line: #E3EBEA;       /* Borders and dividers */
+  --line-strong: #CBD8D6;
 
   /* ==========================================================================
-     RADIUS SCALE (Strictly 2 values + full for avatars/pills)
+     FULL TINT SCALES (50 to 900)
      ========================================================================== */
-  --radius-sm: 10px;                /* Buttons, inputs, chips, badges, small controls */
-  --radius-lg: 20px;                /* Cards, hero strips, modals, containers */
-  --radius-full: 9999px;            /* Avatars, round icons, pill indicators */
+  /* Navy Tints */
+  --navy-50: #F2F5F8;
+  --navy-100: #E1E8EE;
+  --navy-200: #C3D1DC;
+  --navy-300: #99B2C5;
+  --navy-400: #6F90AB;
+  --navy-500: #4B6E8C;
+  --navy-600: #33506B;
+  --navy-700: #22364D;
+  --navy-800: #172536;
+  --navy-900: #0E1722;
+  --navy-950: #080E16;
+
+  /* Emerald Tints */
+  --emerald-50: #E6F8F0;
+  --emerald-100: #C2F1DC;
+  --emerald-200: #8FE5BF;
+  --emerald-300: #54D59E;
+  --emerald-400: #23C382;
+  --emerald-500: #00B86B;
+  --emerald-600: #009E5B;
+  --emerald-700: #007D48;
+  --emerald-800: #00633A;
+  --emerald-900: #004F2F;
+
+  /* Lime Tints */
+  --lime-50: #F0FCEB;
+  --lime-100: #DCF7CE;
+  --lime-200: #BCEFA2;
+  --lime-300: #96E56E;
+  --lime-400: #74DC47;
+  --lime-500: #55D62E;
+  --lime-600: #41B320;
+  --lime-700: #338C19;
+  --lime-800: #286F15;
+  --lime-900: #205912;
+
+  /* Sky Tints */
+  --sky-50: #F0F9FF;
+  --sky-100: #E0F2FE;
+  --sky-200: #BAE6FD;
+  --sky-300: #7DD3FC;
+  --sky-400: #38BDF8;
+  --sky-500: #0EA5E9;
+  --sky-600: #0284C7;
+  --sky-700: #0369A1;
+  --sky-800: #075985;
+  --sky-900: #0C4A6E;
+
+  /* Coral Tints */
+  --coral-50: #FEF2F0;
+  --coral-100: #FDE2DD;
+  --coral-200: #FBC7BE;
+  --coral-300: #F7A394;
+  --coral-400: #F37864;
+  --coral-500: #F0533D;
+  --coral-600: #D83A24;
+  --coral-700: #B52C18;
+  --coral-800: #932617;
+  --coral-900: #7A2317;
 
   /* ==========================================================================
-     SPACING SCALE (Strictly 4, 8, 12, 16, 24, 32, 48, 64)
+     RADIUS SCALE (12px inputs/buttons, 20px cards, full for avatars/chips)
+     ========================================================================== */
+  --radius-sm: 12px;     /* Buttons, inputs, chips, badges */
+  --radius-md: 12px;
+  --radius-lg: 20px;     /* Cards, hero strips, modals, containers */
+  --radius-full: 9999px; /* Avatars, rounded pills */
+
+  /* ==========================================================================
+     SPACING SCALE
      ========================================================================== */
   --space-1: 4px;
   --space-2: 8px;
@@ -78,31 +109,22 @@
   /* ==========================================================================
      SHADOWS
      ========================================================================== */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 41, 30, 0.05);
-  --shadow-md: 0 4px 14px 0 rgba(15, 41, 30, 0.08);
-  --shadow-lg: 0 12px 32px 0 rgba(15, 41, 30, 0.12);
-  --shadow-modal: 0 20px 48px -10px rgba(15, 41, 30, 0.25);
+  --shadow-sm: 0 1px 3px 0 rgba(23, 37, 54, 0.04);
+  --shadow-md: 0 4px 16px 0 rgba(23, 37, 54, 0.08);
+  --shadow-lg: 0 12px 32px 0 rgba(23, 37, 54, 0.12);
+  --shadow-modal: 0 20px 48px -10px rgba(23, 37, 54, 0.22);
 
   /* ==========================================================================
      TYPOGRAPHY
      ========================================================================== */
-  --font-heading: 'Bricolage Grotesque', 'Fraunces', Georgia, serif;
-  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* ==========================================================================
      Z-INDEX
      ========================================================================== */
-  --z-base: 1;
-  --z-sticky: 40;
-  --z-dropdown: 50;
-  --z-modal-backdrop: 60;
+  --z-sticky: 50;
+  --z-dropdown: 60;
   --z-modal: 70;
   --z-toast: 80;
-
-  /* ==========================================================================
-     MOTION & EASING (150ms-250ms ease-out)
-     ========================================================================== */
-  --transition-fast: 150ms cubic-bezier(0, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0, 0, 0.2, 1);
-  --transition-slow: 250ms cubic-bezier(0, 0, 0.2, 1);
 }

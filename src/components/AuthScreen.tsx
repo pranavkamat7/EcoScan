@@ -6,6 +6,7 @@ import {
   Input,
   Button,
   Badge,
+  Logo,
 } from './ui';
 
 interface AuthScreenProps {
@@ -94,17 +95,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       {/* Top Header Bar */}
       <header className="max-w-shell w-full mx-auto flex items-center justify-between pb-6">
         <div className="flex items-center">
-          <img
-            src="/logo-horizontal.png"
-            alt="GarbageMedia"
-            className="h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-none object-contain"
-          />
+          <Logo size="md" />
         </div>
 
         <button
           type="button"
           onClick={handleGuest}
-          className="text-xs font-medium text-forest hover:underline flex items-center gap-1"
+          className="text-xs font-semibold text-emerald hover:underline flex items-center gap-1"
         >
           <span>Explore as guest</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -115,13 +112,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       <main className="max-w-shell w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6">
         {/* Left: Civic Manifesto */}
         <div className="lg:col-span-7 space-y-6 text-left">
-          <Badge variant="mint" size="md">
+          <Badge variant="restored" size="md">
             Grassroots Civic Movement
           </Badge>
 
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink tracking-tight leading-[1.15]">
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy tracking-tight leading-[1.15]">
             Clean your community. <br />
-            <span className="text-forest">Capture proof.</span> <br />
+            <span className="text-emerald">Capture proof.</span> <br />
             Earn civic rewards.
           </h1>
 
@@ -133,32 +130,32 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
           {/* 3 Step Explainer */}
           <div className="space-y-3 pt-2">
-            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
-              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white border border-line shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-emerald text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                 1
               </span>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-ink">Pin a dirty area on the map</h3>
+                <h3 className="text-xs sm:text-sm font-bold text-navy">Pin a dirty area on the map</h3>
                 <p className="text-xs text-muted">Snap a photo with live GPS and locality search.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
-              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white border border-line shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-emerald text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                 2
               </span>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-ink">Clean & verify on-site</h3>
+                <h3 className="text-xs sm:text-sm font-bold text-navy">Clean & verify on-site</h3>
                 <p className="text-xs text-muted">Submit after photo. Haversine GPS matching confirms proof.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
-              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-white border border-line shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-emerald text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                 3
               </span>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-ink">Interactive proof & civic rewards</h3>
+                <h3 className="text-xs sm:text-sm font-bold text-navy">Interactive proof & civic rewards</h3>
                 <p className="text-xs text-muted">A Before & After split slider is published live and points credited.</p>
               </div>
             </div>
@@ -167,20 +164,20 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
         {/* Right: Auth Card */}
         <div className="lg:col-span-5">
-          <Card variant="default" className="p-6 sm:p-8 space-y-5 text-left border-border-strong shadow-md">
+          <Card variant="default" className="p-6 sm:p-8 space-y-5 text-left border-line shadow-md">
             <div>
               <div className="flex items-center justify-between">
-                <h2 className="font-heading text-xl font-bold text-ink">
+                <h2 className="font-heading text-xl font-bold text-navy">
                   {mode === 'signin' ? 'Welcome Back' : 'Join GarbageMedia'}
                 </h2>
-                <div className="flex border border-border rounded-sm p-0.5 bg-surface-muted text-xs">
+                <div className="flex border border-line rounded-sm p-0.5 bg-navy-50 text-xs">
                   <button
                     type="button"
                     onClick={() => setMode('signin')}
-                    className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${
+                    className={`px-2.5 py-1 rounded-sm font-semibold transition-colors ${
                       mode === 'signin'
-                        ? 'bg-forest text-lime font-semibold'
-                        : 'text-muted hover:text-ink'
+                        ? 'bg-emerald text-white shadow-sm'
+                        : 'text-muted hover:text-navy'
                     }`}
                   >
                     Sign In
@@ -188,10 +185,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                   <button
                     type="button"
                     onClick={() => setMode('signup')}
-                    className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${
+                    className={`px-2.5 py-1 rounded-sm font-semibold transition-colors ${
                       mode === 'signup'
-                        ? 'bg-forest text-lime font-semibold'
-                        : 'text-muted hover:text-ink'
+                        ? 'bg-emerald text-white shadow-sm'
+                        : 'text-muted hover:text-navy'
                     }`}
                   >
                     Register
@@ -244,8 +241,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
             </Button>
 
             <div className="relative flex items-center justify-center py-1">
-              <div className="border-t border-border w-full" />
-              <span className="bg-surface px-2 text-[11px] text-muted uppercase tracking-wider absolute">
+              <div className="border-t border-line w-full" />
+              <span className="bg-white px-2 text-[11px] text-muted uppercase tracking-wider absolute">
                 or with email
               </span>
             </div>
@@ -258,7 +255,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                   placeholder="e.g. Ms dhoni"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  startIcon={<UserIcon className="w-3.5 h-3.5" />}
+                  startIcon={<UserIcon className="w-3.5 h-3.5 text-muted" />}
                   required
                 />
               )}
@@ -269,7 +266,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 placeholder="scout@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                startIcon={<Mail className="w-3.5 h-3.5" />}
+                startIcon={<Mail className="w-3.5 h-3.5 text-muted" />}
                 required
               />
 
@@ -279,7 +276,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                startIcon={<Lock className="w-3.5 h-3.5" />}
+                startIcon={<Lock className="w-3.5 h-3.5 text-muted" />}
                 required
               />
 
@@ -296,11 +293,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
               </div>
             </form>
 
-            <div className="pt-2 border-t border-border text-center">
+            <div className="pt-2 border-t border-line text-center">
               <button
                 type="button"
                 onClick={handleGuest}
-                className="text-xs text-muted hover:text-ink underline"
+                className="text-xs text-muted hover:text-navy underline"
               >
                 Skip for now, continue as Guest Volunteer →
               </button>
@@ -310,7 +307,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-border">
+      <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-line">
         <span>GarbageMedia · Grassroots neighbourhood cleanup registry</span>
       </footer>
     </div>

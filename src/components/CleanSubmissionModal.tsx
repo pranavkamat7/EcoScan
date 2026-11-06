@@ -151,10 +151,10 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {/* Before Spot Reference */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-ink">
+            <label className="block text-xs font-semibold text-navy">
               Original dirty spot (reference)
             </label>
-            <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-border bg-forest/5">
+            <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-line bg-navy-50/50">
               <img
                 src={spot.beforePhotoUrl}
                 alt="Before condition"
@@ -171,11 +171,11 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
 
           {/* After Photo Upload / Capture */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-ink">
+            <label className="block text-xs font-semibold text-navy">
               Restored after photo *
             </label>
             {afterPhotoUrl ? (
-              <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-border group bg-forest/5">
+              <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-line group bg-navy-50/50">
                 <img
                   src={afterPhotoUrl}
                   alt="Restored condition"
@@ -184,22 +184,22 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setAfterPhotoUrl('')}
-                  className="absolute top-2 right-2 px-2.5 py-1 bg-ink/75 hover:bg-ink text-white text-[11px] rounded-sm transition-colors"
+                  className="absolute top-2 right-2 px-2.5 py-1 bg-navy/80 hover:bg-navy text-white text-[11px] rounded-sm transition-colors"
                 >
                   Retake
                 </button>
                 <div className="absolute bottom-2 left-2">
-                  <Badge variant="mint" size="sm">
+                  <Badge variant="restored" size="sm">
                     After
                   </Badge>
                 </div>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center aspect-[4/3] border-2 border-dashed border-border hover:border-forest rounded-sm cursor-pointer bg-surface-muted/50 hover:bg-surface-muted transition-colors p-4 text-center">
-                <div className="w-10 h-10 rounded-full bg-forest text-lime flex items-center justify-center mb-2 shadow-sm">
+              <label className="flex flex-col items-center justify-center aspect-[4/3] border-2 border-dashed border-line hover:border-emerald rounded-sm cursor-pointer bg-navy-50/50 hover:bg-navy-50 transition-colors p-4 text-center">
+                <div className="w-10 h-10 rounded-full bg-emerald text-white flex items-center justify-center mb-2 shadow-sm">
                   <Camera className="w-5 h-5 stroke-[1.75]" />
                 </div>
-                <p className="text-xs font-semibold text-ink">Take or upload after photo</p>
+                <p className="text-xs font-semibold text-navy">Take or upload after photo</p>
                 <p className="text-[10px] text-muted mt-0.5">Show clean area clearly</p>
                 <input
                   type="file"
@@ -227,16 +227,16 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                   setAfterPhotoUrl(preset.url);
                   setCleanerNotes(preset.notes);
                 }}
-                className="p-1.5 rounded-sm border border-border bg-surface hover:bg-surface-muted transition-colors text-left space-y-1 text-xs"
+                className="p-1.5 rounded-sm border border-line bg-white hover:bg-navy-50 transition-colors text-left space-y-1 text-xs"
               >
-                <div className="h-12 rounded-sm overflow-hidden bg-surface-muted">
+                <div className="h-12 rounded-sm overflow-hidden bg-navy-50">
                   <img
                     src={preset.url}
                     alt={preset.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="font-medium text-ink truncate text-[11px]">
+                <p className="font-semibold text-navy truncate text-[11px]">
                   {preset.name}
                 </p>
               </button>
@@ -245,20 +245,20 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         </div>
 
         {/* GPS Proximity Check */}
-        <div className="p-3.5 rounded-sm border border-border bg-surface-muted space-y-2">
+        <div className="p-3.5 rounded-sm border border-line bg-navy-50/60 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-forest" />
-              <span className="text-xs font-semibold text-ink">
+              <ShieldCheck className="w-4 h-4 text-emerald" />
+              <span className="text-xs font-semibold text-navy">
                 On-site GPS Verification
               </span>
             </div>
             {isLocationVerified ? (
-              <Badge variant="mint" size="sm" icon={<CheckCircle2 className="w-3 h-3" />}>
+              <Badge variant="restored" size="sm" icon={<CheckCircle2 className="w-3 h-3" />}>
                 Verified on-site ({Math.round(distanceMeters)}m)
               </Badge>
             ) : (
-              <Badge variant="warning" size="sm">
+              <Badge variant="needs_clean" size="sm">
                 {Math.round(distanceMeters)}m away
               </Badge>
             )}
@@ -267,7 +267,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           <div className="flex items-center justify-between text-xs text-muted">
             <span>
               Haversine distance match:{' '}
-              <strong className="text-ink font-semibold tabular-nums">
+              <strong className="text-navy font-semibold tabular-nums">
                 {formatDistance(distanceMeters)}
               </strong>
             </span>
@@ -275,7 +275,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
               type="button"
               onClick={handleGetLiveGPS}
               disabled={isLocating}
-              className="text-forest hover:underline font-medium text-xs inline-flex items-center gap-1"
+              className="text-emerald hover:underline font-semibold text-xs inline-flex items-center gap-1"
             >
               <Navigation className="w-3 h-3" />
               <span>{isLocating ? 'Locating...' : 'Refresh GPS'}</span>
@@ -293,16 +293,16 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         />
 
         {/* Bounty Summary */}
-        <div className="p-3.5 rounded-sm bg-lime-subtle/50 border border-border flex items-center justify-between">
+        <div className="p-3.5 rounded-sm bg-navy-50/60 border border-line flex items-center justify-between">
           <div>
-            <span className="text-xs font-semibold text-forest block">
+            <span className="text-xs font-bold text-navy block">
               Bounty Reward to Claim
             </span>
             <span className="text-[11px] text-muted">
               Total points earned for verified cleanup
             </span>
           </div>
-          <Badge variant="lime" size="md">
+          <Badge variant="points" size="md">
             +{pointsCalc.totalPoints} pts
           </Badge>
         </div>

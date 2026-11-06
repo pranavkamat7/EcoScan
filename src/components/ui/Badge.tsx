@@ -1,6 +1,17 @@
 import React from 'react';
 
-export type BadgeVariant = 'success' | 'warning' | 'danger' | 'points' | 'neutral' | 'mint' | 'coral' | 'lime';
+export type BadgeVariant =
+  | 'success'
+  | 'restored'
+  | 'needs_clean'
+  | 'danger'
+  | 'points'
+  | 'pointsNavy'
+  | 'sky'
+  | 'neutral'
+  | 'coral'
+  | 'emerald'
+  | 'warning';
 
 export interface BadgeProps {
   children: React.ReactNode;
@@ -23,19 +34,26 @@ export const Badge: React.FC<BadgeProps> = ({
   }[size];
 
   const variantClasses = {
-    // Restored / Cleaned / Success
-    success: 'bg-mint-subtle text-mint border border-mint/20 font-medium',
-    mint: 'bg-mint text-white font-semibold shadow-sm',
-    // Needs clean / Before / Urgent / Danger
-    danger: 'bg-coral-subtle text-coral border border-coral/20 font-medium',
-    coral: 'bg-coral text-white font-semibold shadow-sm',
-    // Warning / Open bounties
-    warning: 'bg-amber-subtle text-amber border border-amber/30 font-medium',
-    // Civic Points
-    points: 'bg-forest text-lime font-semibold border border-forest-border shadow-sm tabular-nums',
-    lime: 'bg-lime text-forest font-semibold shadow-sm tabular-nums',
+    // Restored / After / Verified: Emerald tag with sky accents
+    success: 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold',
+    restored: 'bg-emerald text-white font-bold shadow-sm',
+    emerald: 'bg-emerald text-white font-bold shadow-sm',
+
+    // Before / Needs clean / Urgent: Coral
+    needs_clean: 'bg-coral text-white font-bold shadow-sm',
+    coral: 'bg-coral text-white font-bold shadow-sm',
+    danger: 'bg-coral-50 text-coral-800 border border-coral-200 font-semibold',
+    warning: 'bg-coral-50 text-coral-800 border border-coral-200 font-semibold',
+
+    // Points / Rewards / Level: Contrast-compliant (Navy text on Lime, or Lime text on Navy)
+    points: 'bg-lime text-navy font-extrabold shadow-sm tabular-nums tracking-tight',
+    pointsNavy: 'bg-navy text-lime font-extrabold border border-navy-700 shadow-sm tabular-nums tracking-tight',
+
+    // Info / Map: Sky blue
+    sky: 'bg-sky-50 text-sky-900 border border-sky-200 font-semibold',
+
     // Neutral
-    neutral: 'bg-surface-muted text-muted border border-border font-medium',
+    neutral: 'bg-navy-50 text-muted border border-line font-medium',
   }[variant];
 
   return (

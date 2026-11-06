@@ -10,51 +10,45 @@
   }
 
   body {
-    background-color: var(--color-bg);
-    color: var(--color-ink);
+    background-color: var(--bg);
+    color: var(--ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Headings: Bricolage Grotesque / Fraunces editorial civic feel */
+  /* Headings: Poppins rounded geometric brand typography */
   h1, h2, h3, h4, h5, h6 {
-    color: var(--color-ink);
+    color: var(--navy);
     font-family: var(--font-heading);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     font-weight: 700;
   }
 
-  /* Strict Tabular Numbers for all counts, points, coordinates, and dates */
+  /* Tabular numbers for all counts, points, and metrics */
   .tabular-nums, [data-num] {
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Subtle paper texture overlay (low opacity) */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.02;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  z-index: 99999;
+/* Subtle leaf / sparkle motif for hero strips and empty states (10-15% opacity) */
+.brand-motif-hero {
+  background-image: radial-gradient(circle at 90% 20%, rgba(85, 214, 46, 0.12) 0%, transparent 45%),
+                    radial-gradient(circle at 10% 80%, rgba(0, 184, 107, 0.15) 0%, transparent 40%);
 }
 
-/* Card hover lift - identical on all interactive cards */
+/* Interactive Card hover lift */
 .interactive-card {
-  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0, 0, 0.2, 1), border-color 200ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
 }
 .interactive-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: var(--color-border-strong);
+  border-color: var(--line-strong);
 }
 
-/* Skeleton shimmer animation */
+/* Skeleton shimmer */
 @keyframes skeletonShimmer {
   0% {
     background-position: -200% 0;
@@ -67,76 +61,67 @@ body::before {
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(226, 220, 205, 0.4) 0%,
-    rgba(255, 253, 248, 0.8) 50%,
-    rgba(226, 220, 205, 0.4) 100%
+    rgba(227, 235, 234, 0.4) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(227, 235, 234, 0.4) 100%
   );
   background-size: 200% 100%;
   animation: skeletonShimmer 1.5s infinite linear;
 }
 
-/* Clean subtle scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-strong);
+  background: var(--line-strong);
   border-radius: var(--radius-sm);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted);
+  background: var(--muted);
 }
 
-/* Leaflet container styling */
+/* Leaflet Container styling with brand colors */
 .leaflet-container {
   font-family: var(--font-sans) !important;
   z-index: 10 !important;
-  background-color: var(--color-bg) !important;
+  background-color: var(--bg) !important;
   border-radius: inherit;
 }
 
 .leaflet-bar {
-  background: var(--color-surface) !important;
-  border: 1px solid var(--color-border) !important;
+  background: var(--white) !important;
+  border: 1px solid var(--line) !important;
   box-shadow: var(--shadow-sm) !important;
   border-radius: var(--radius-sm) !important;
   overflow: hidden;
 }
 
 .leaflet-bar a {
-  background-color: var(--color-surface) !important;
-  color: var(--color-ink) !important;
-  border-bottom: 1px solid var(--color-border) !important;
+  background-color: var(--white) !important;
+  color: var(--navy) !important;
+  border-bottom: 1px solid var(--line) !important;
   transition: all 150ms ease;
 }
 
 .leaflet-bar a:hover {
-  background-color: var(--color-bg) !important;
-  color: var(--color-forest) !important;
+  background-color: var(--bg) !important;
+  color: var(--emerald) !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: var(--color-surface) !important;
-  color: var(--color-ink) !important;
-  border: 1px solid var(--color-border) !important;
+  background: var(--white) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
   border-radius: var(--radius-sm) !important;
   box-shadow: var(--shadow-md) !important;
   padding: 0 !important;
 }
 
 .leaflet-popup-tip {
-  background: var(--color-surface) !important;
-}
-
-/* Custom Marker Pins */
-.custom-pin-coral {
-  filter: drop-shadow(0 2px 4px rgba(224, 83, 60, 0.35));
-}
-
-.custom-pin-mint {
-  filter: drop-shadow(0 2px 4px rgba(35, 130, 83, 0.35));
+  background: var(--white) !important;
 }

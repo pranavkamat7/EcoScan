@@ -14,6 +14,7 @@ import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
 import { Avatar } from './ui/Avatar';
 import { Badge } from './ui/Badge';
+import { Logo } from './ui/Logo';
 
 export type NavTab = 'feed' | 'map' | 'leaderboard' | 'rewards';
 
@@ -50,25 +51,18 @@ export const AppShell: React.FC<AppShellProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-bg text-ink">
       {/* 1. SHARED STICKY HEADER */}
-      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-border transition-colors">
-        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Left: Brand Logo */}
+      <header className="sticky top-0 z-sticky bg-white/95 backdrop-blur-md border-b border-line transition-colors">
+        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+          {/* Left: Official Brand Logo with Clear Space (Clicking goes to Feed) */}
           <div className="flex items-center flex-shrink-0">
-            <button
-              type="button"
+            <Logo
+              size="md"
               onClick={() => onTabChange('feed')}
-              className="flex items-center group outline-none"
-              title="GarbageMedia — Home"
-            >
-              <img
-                src="/logo-horizontal.png"
-                alt="GarbageMedia"
-                className="h-8 sm:h-10 w-auto max-w-[165px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
-              />
-            </button>
+              className="py-1"
+            />
           </div>
 
-          {/* Center: Simplified Text Tabs with Active Lime Underline */}
+          {/* Center: Simplified Text Tabs with Signature Emerald Active Underline */}
           <nav className="hidden md:flex items-center gap-8 h-full" aria-label="Main navigation">
             {navItems.map((item) => {
               const isActive = currentTab === item.id;
@@ -77,42 +71,42 @@ export const AppShell: React.FC<AppShellProps> = ({
                   type="button"
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
-                  className={`relative h-full flex items-center text-sm font-medium transition-colors select-none outline-none ${
+                  className={`relative h-full flex items-center text-sm transition-colors select-none outline-none ${
                     isActive
-                      ? 'text-ink font-semibold'
-                      : 'text-muted hover:text-ink font-normal'
+                      ? 'text-navy font-bold'
+                      : 'text-muted hover:text-navy font-medium'
                   }`}
                 >
                   <span>{item.label}</span>
-                  {/* Shared lime underline indicator */}
+                  {/* Signature Emerald active underline indicator */}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-lime rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald rounded-full" />
                   )}
                 </button>
               );
             })}
           </nav>
 
-          {/* Right: User Chip (Avatar + Points + Rank Badge) */}
+          {/* Right: User Chip (Avatar + Points + Level) */}
           <div className="flex items-center gap-3">
             {/* If in Guest Mode, show a small Sign In button */}
             {isGuestMode && onRequireAuth && (
               <button
                 type="button"
                 onClick={onRequireAuth}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink hover:text-forest transition-colors rounded-sm hover:bg-surface-muted"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald hover:text-emerald-700 transition-colors rounded-sm hover:bg-emerald-50"
               >
-                <LogIn className="w-3.5 h-3.5 text-forest" />
+                <LogIn className="w-3.5 h-3.5" />
                 <span>Sign in</span>
               </button>
             )}
 
-            {/* Shared User Chip Menu */}
+            {/* Shared User Chip Menu with Elevated Stacking Context */}
             <div className="relative z-50">
               <button
                 type="button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="h-10 flex items-center gap-2 pl-1.5 pr-3 rounded-sm border border-border hover:border-border-strong bg-surface hover:bg-surface-hover transition-colors shadow-sm outline-none"
+                className="h-10 sm:h-11 flex items-center gap-2.5 pl-1.5 pr-3 rounded-sm border border-line hover:border-line-strong bg-white hover:bg-navy-50 transition-colors shadow-sm outline-none"
                 aria-expanded={showUserMenu}
                 aria-label="User profile menu"
               >
@@ -122,17 +116,17 @@ export const AppShell: React.FC<AppShellProps> = ({
                   size="sm"
                 />
                 <div className="hidden sm:flex flex-col text-left leading-tight">
-                  <span className="text-xs font-semibold text-ink truncate max-w-[110px]">
+                  <span className="text-xs font-bold text-navy truncate max-w-[110px]">
                     {currentUser.name}
                   </span>
-                  <span className="text-[11px] font-bold text-forest tabular-nums">
+                  <span className="text-[11px] font-extrabold text-emerald tabular-nums">
                     {currentUser.points} pts
                   </span>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-muted ml-0.5" />
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Elevated Dropdown Menu (Opens cleanly on top of PageHeader) */}
               {showUserMenu && (
                 <>
                   <div
@@ -140,20 +134,20 @@ export const AppShell: React.FC<AppShellProps> = ({
                     onClick={() => setShowUserMenu(false)}
                     aria-hidden="true"
                   />
-                  <div className="absolute right-0 mt-2 w-60 rounded-lg bg-surface border border-border shadow-modal py-1.5 z-50 animate-fadeIn">
-                    <div className="px-3.5 py-2.5 border-b border-border/80">
-                      <p className="text-xs font-semibold text-ink truncate">
+                  <div className="absolute right-0 mt-2 w-64 rounded-lg bg-white border border-line shadow-modal py-2 z-50 animate-fadeIn">
+                    <div className="px-4 py-2.5 border-b border-line">
+                      <p className="text-xs font-bold text-navy truncate">
                         {currentUser.name}
                       </p>
-                      <p className="text-[11px] text-muted truncate">
+                      <p className="text-[11px] text-muted truncate mt-0.5">
                         {currentUser.email || (isGuestMode ? 'Guest volunteer' : 'Civic Member')}
                       </p>
-                      <div className="mt-2 flex items-center justify-between">
+                      <div className="mt-2.5 flex items-center justify-between">
                         <Badge variant="points" size="sm">
                           {currentUser.points} pts
                         </Badge>
-                        <span className="text-[11px] text-muted font-medium">
-                          {currentUser.badges?.length || 1} badge
+                        <span className="text-[11px] text-emerald font-semibold">
+                          {currentUser.level}
                         </span>
                       </div>
                     </div>
@@ -165,10 +159,10 @@ export const AppShell: React.FC<AppShellProps> = ({
                           setShowUserMenu(false);
                           onOpenEditProfile();
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs text-ink hover:bg-surface-muted flex items-center gap-2 transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-xs text-navy hover:bg-navy-50 flex items-center gap-2.5 transition-colors font-medium"
                       >
-                        <UserCog className="w-3.5 h-3.5 text-muted" />
-                        <span>Edit profile</span>
+                        <UserCog className="w-4 h-4 text-muted" />
+                        <span>Edit profile & photo</span>
                       </button>
                     )}
 
@@ -180,9 +174,9 @@ export const AppShell: React.FC<AppShellProps> = ({
                             setShowUserMenu(false);
                             onRequireAuth();
                           }}
-                          className="w-full text-left px-3.5 py-2 text-xs text-forest font-medium hover:bg-surface-muted flex items-center gap-2 transition-colors"
+                          className="w-full text-left px-4 py-2.5 text-xs text-emerald font-bold hover:bg-emerald-50 flex items-center gap-2.5 transition-colors"
                         >
-                          <LogIn className="w-3.5 h-3.5 text-forest" />
+                          <LogIn className="w-4 h-4 text-emerald" />
                           <span>Sign in with account</span>
                         </button>
                       )
@@ -193,9 +187,9 @@ export const AppShell: React.FC<AppShellProps> = ({
                           setShowUserMenu(false);
                           logout();
                         }}
-                        className="w-full text-left px-3.5 py-2 text-xs text-coral hover:bg-coral-subtle flex items-center gap-2 transition-colors border-t border-border mt-1"
+                        className="w-full text-left px-4 py-2.5 text-xs text-coral hover:bg-coral-50 flex items-center gap-2.5 transition-colors font-semibold border-t border-line mt-1"
                       >
-                        <LogOut className="w-3.5 h-3.5" />
+                        <LogOut className="w-4 h-4" />
                         <span>Sign out</span>
                       </button>
                     )}
@@ -208,32 +202,32 @@ export const AppShell: React.FC<AppShellProps> = ({
       </header>
 
       {/* 2. SHARED MAIN CONTENT (Max width 1200px, consistent padding) */}
-      <main className="flex-1 max-w-shell w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="flex-1 max-w-shell w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-0">
         {children}
       </main>
 
-      {/* 3. SHARED FOOTER */}
-      <footer className="border-t border-border bg-surface py-8 text-center text-xs text-muted">
-        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-heading font-bold text-ink">GarbageMedia</span>
-            <span>·</span>
-            <span>Grassroots civic neighbourhood cleanups</span>
+      {/* 3. SHARED FOOTER (Navy Dark Strip) */}
+      <footer className="border-t border-navy-700 bg-navy text-white/80 py-8 text-center text-xs">
+        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-3">
+            <Logo size="sm" variant="onDark" onClick={() => onTabChange('feed')} />
+            <span className="text-white/40">·</span>
+            <span className="text-xs text-white/80 font-medium">Grassroots Civic Transformations</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex items-center gap-4 text-[11px] text-white/70">
             <span>Verified photo proofs</span>
-            <span>·</span>
+            <span className="text-white/30">·</span>
             <span>Open community registry</span>
-            <span>·</span>
-            <span className="inline-flex items-center gap-1 text-forest font-medium">
-              <Heart className="w-3 h-3 text-coral fill-coral" /> Powered by Volunteers
+            <span className="text-white/30">·</span>
+            <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
+              <Heart className="w-3.5 h-3.5 text-coral fill-coral" /> Powered by Volunteers
             </span>
           </div>
         </div>
       </footer>
 
       {/* 4. SHARED MOBILE BOTTOM TAB BAR */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line pb-safe">
         <nav className="grid grid-cols-4 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
@@ -244,14 +238,14 @@ export const AppShell: React.FC<AppShellProps> = ({
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
                 className={`relative flex flex-col items-center justify-center gap-1 transition-colors select-none outline-none ${
-                  isActive ? 'text-forest font-semibold' : 'text-muted hover:text-ink'
+                  isActive ? 'text-emerald font-bold' : 'text-muted hover:text-navy'
                 }`}
               >
-                {/* Active lime pill indicator */}
+                {/* Active emerald pill indicator */}
                 {isActive && (
-                  <span className="absolute top-0 left-1/4 right-1/4 h-[3px] bg-lime rounded-full" />
+                  <span className="absolute top-0 left-1/4 right-1/4 h-[3px] bg-emerald rounded-full" />
                 )}
-                <Icon className={`w-4 h-4 ${isActive ? 'text-forest' : 'text-muted'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-emerald' : 'text-muted'}`} />
                 <span className="text-[10px] leading-none">{item.label}</span>
               </button>
             );

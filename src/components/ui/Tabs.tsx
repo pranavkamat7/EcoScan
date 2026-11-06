@@ -22,7 +22,7 @@ export function Tabs<T extends string = string>({
 }: TabsProps<T>) {
   return (
     <nav
-      className={`flex items-center gap-4 sm:gap-6 border-b border-border overflow-x-auto flex-nowrap pb-0 w-full ${className}`}
+      className={`flex items-center gap-4 sm:gap-6 border-b border-line overflow-x-auto flex-nowrap pb-0 w-full ${className}`}
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       aria-label="Tabs"
     >
@@ -35,8 +35,8 @@ export function Tabs<T extends string = string>({
             onClick={() => onChange(item.id)}
             className={`relative pb-3 text-xs sm:text-sm font-medium transition-colors select-none whitespace-nowrap outline-none flex items-center gap-1.5 flex-shrink-0 ${
               isActive
-                ? 'text-ink font-semibold'
-                : 'text-muted hover:text-ink font-normal'
+                ? 'text-navy font-bold'
+                : 'text-muted hover:text-navy font-normal'
             }`}
           >
             {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
@@ -44,15 +44,15 @@ export function Tabs<T extends string = string>({
             {typeof item.count === 'number' && (
               <span
                 className={`text-xs tabular-nums ${
-                  isActive ? 'text-forest font-semibold' : 'text-faint'
+                  isActive ? 'text-emerald font-bold' : 'text-muted'
                 }`}
               >
                 ({item.count})
               </span>
             )}
-            {/* Signature Lime Underline for active state */}
+            {/* Signature Emerald active underline indicator */}
             {isActive && (
-              <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-lime rounded-full" />
+              <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald rounded-full" />
             )}
           </button>
         );

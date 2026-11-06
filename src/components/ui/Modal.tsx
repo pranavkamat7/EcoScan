@@ -50,25 +50,25 @@ export const Modal: React.FC<ModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fadeIn"
+      className="fixed inset-0 z-modal flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fadeIn"
     >
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-ink/50 backdrop-blur-[2px] transition-opacity duration-200"
+        className="fixed inset-0 bg-navy/60 backdrop-blur-[2px] transition-opacity duration-180"
         aria-hidden="true"
       />
 
-      {/* Modal Dialog Card (Strict 20px radius) */}
+      {/* Modal Dialog Card (20px radius) */}
       <div
-        className={`relative w-full ${sizeClasses} bg-surface rounded-lg border border-border shadow-modal overflow-hidden z-10 my-auto transform transition-all duration-200 animate-scaleUp text-left ${className}`}
+        className={`relative w-full ${sizeClasses} bg-white rounded-lg border border-line shadow-modal overflow-hidden z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left ${className}`}
       >
         {/* Header */}
         {(title || description) && (
-          <div className="flex items-start justify-between p-5 sm:p-6 border-b border-border bg-surface-muted/50">
+          <div className="flex items-start justify-between p-5 sm:p-6 border-b border-line bg-navy-50/50">
             <div className="space-y-1 pr-6">
               {title && (
-                <h3 className="font-heading text-lg sm:text-xl font-bold text-ink leading-tight">
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-navy leading-tight">
                   {title}
                 </h3>
               )}
@@ -81,7 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
               size="sm"
               variant="ghost"
               onClick={onClose}
-              className="-mr-1.5 -mt-1.5 text-muted hover:text-ink"
+              className="-mr-1.5 -mt-1.5 text-muted hover:text-navy"
             >
               <X className="w-4 h-4" />
             </IconButton>

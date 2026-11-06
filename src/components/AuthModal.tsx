@@ -125,7 +125,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     >
       <div className="space-y-4 text-left">
         {/* Sign in / Sign up Mode Switcher */}
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-line">
           <button
             type="button"
             onClick={() => {
@@ -134,8 +134,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`pb-2 text-xs font-semibold flex-1 text-center border-b-2 transition-colors ${
               mode === 'signin'
-                ? 'border-forest text-forest'
-                : 'border-transparent text-muted hover:text-ink'
+                ? 'border-emerald text-emerald'
+                : 'border-transparent text-muted hover:text-navy'
             }`}
           >
             Sign In
@@ -148,8 +148,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`pb-2 text-xs font-semibold flex-1 text-center border-b-2 transition-colors ${
               mode === 'signup'
-                ? 'border-forest text-forest'
-                : 'border-transparent text-muted hover:text-ink'
+                ? 'border-emerald text-emerald'
+                : 'border-transparent text-muted hover:text-navy'
             }`}
           >
             Create Account
@@ -196,8 +196,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </Button>
 
         <div className="relative flex items-center justify-center py-1">
-          <div className="border-t border-border w-full" />
-          <span className="bg-surface px-2 text-[11px] text-muted uppercase tracking-wider absolute">
+          <div className="border-t border-line w-full" />
+          <span className="bg-white px-2 text-[11px] text-muted uppercase tracking-wider absolute">
             or with email
           </span>
         </div>
@@ -211,7 +211,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               placeholder="e.g. Ms dhoni"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              startIcon={<UserIcon className="w-3.5 h-3.5" />}
+              startIcon={<UserIcon className="w-3.5 h-3.5 text-muted" />}
               required
             />
           )}
@@ -222,7 +222,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             placeholder="scout@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            startIcon={<Mail className="w-3.5 h-3.5" />}
+            startIcon={<Mail className="w-3.5 h-3.5 text-muted" />}
             required
           />
 
@@ -232,7 +232,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            startIcon={<Lock className="w-3.5 h-3.5" />}
+            startIcon={<Lock className="w-3.5 h-3.5 text-muted" />}
             required
           />
 
@@ -243,7 +243,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               size="md"
               className="w-full"
               isLoading={loading}
-              icon={<LogIn className="w-4 h-4 text-lime" />}
+              icon={<LogIn className="w-4 h-4 text-white" />}
             >
               {mode === 'signin' ? 'Sign in to account' : 'Create volunteer profile'}
             </Button>
@@ -251,11 +251,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </form>
 
         {/* Guest & Firebase Config Links */}
-        <div className="pt-3 border-t border-border flex items-center justify-between text-xs">
+        <div className="pt-3 border-t border-line flex items-center justify-between text-xs">
           <button
             type="button"
             onClick={handleGuestLogin}
-            className="text-muted hover:text-ink underline text-[11px]"
+            className="text-muted hover:text-navy underline text-[11px]"
           >
             Skip for now, continue as guest
           </button>
@@ -264,7 +264,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="button"
               onClick={onOpenFirebaseConfig}
-              className="text-forest hover:underline text-[11px]"
+              className="text-emerald hover:underline text-[11px]"
             >
               ⚙️ Firebase setup
             </button>

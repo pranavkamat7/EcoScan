@@ -7,91 +7,112 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* Core Palette mapped to Design Tokens */
-        forest: {
-          DEFAULT: 'var(--color-forest)',
-          dark: 'var(--color-forest-dark)',
-          hover: 'var(--color-forest-hover)',
-          surface: 'var(--color-forest-surface)',
-          border: 'var(--color-forest-border)',
+        /* Official GarbageMedia Brand Colors */
+        navy: {
+          DEFAULT: 'var(--navy)',
+          2: 'var(--navy-2)',
+          50: 'var(--navy-50)',
+          100: 'var(--navy-100)',
+          200: 'var(--navy-200)',
+          300: 'var(--navy-300)',
+          400: 'var(--navy-400)',
+          500: 'var(--navy-500)',
+          600: 'var(--navy-600)',
+          700: 'var(--navy-700)',
+          800: 'var(--navy-800)',
+          900: 'var(--navy-900)',
+          950: 'var(--navy-950)',
+        },
+        emerald: {
+          DEFAULT: 'var(--emerald)',
+          50: 'var(--emerald-50)',
+          100: 'var(--emerald-100)',
+          200: 'var(--emerald-200)',
+          300: 'var(--emerald-300)',
+          400: 'var(--emerald-400)',
+          500: 'var(--emerald-500)',
+          600: 'var(--emerald-600)',
+          700: 'var(--emerald-700)',
+          800: 'var(--emerald-800)',
+          900: 'var(--emerald-900)',
         },
         lime: {
-          DEFAULT: 'var(--color-lime)',
-          hover: 'var(--color-lime-hover)',
-          subtle: 'var(--color-lime-subtle)',
+          DEFAULT: 'var(--lime)',
+          50: 'var(--lime-50)',
+          100: 'var(--lime-100)',
+          200: 'var(--lime-200)',
+          300: 'var(--lime-300)',
+          400: 'var(--lime-400)',
+          500: 'var(--lime-500)',
+          600: 'var(--lime-600)',
+          700: 'var(--lime-700)',
+          800: 'var(--lime-800)',
+          900: 'var(--lime-900)',
+        },
+        sky: {
+          DEFAULT: 'var(--sky)',
+          50: 'var(--sky-50)',
+          100: 'var(--sky-100)',
+          200: 'var(--sky-200)',
+          300: 'var(--sky-300)',
+          400: 'var(--sky-400)',
+          500: 'var(--sky-500)',
+          600: 'var(--sky-600)',
+          700: 'var(--sky-700)',
+          800: 'var(--sky-800)',
+          900: 'var(--sky-900)',
         },
         coral: {
-          DEFAULT: 'var(--color-coral)',
-          hover: 'var(--color-coral-hover)',
-          subtle: 'var(--color-coral-subtle)',
+          DEFAULT: 'var(--coral)',
+          50: 'var(--coral-50)',
+          100: 'var(--coral-100)',
+          200: 'var(--coral-200)',
+          300: 'var(--coral-300)',
+          400: 'var(--coral-400)',
+          500: 'var(--coral-500)',
+          600: 'var(--coral-600)',
+          700: 'var(--coral-700)',
+          800: 'var(--coral-800)',
+          900: 'var(--coral-900)',
         },
-        mint: {
-          DEFAULT: 'var(--color-mint)',
-          hover: 'var(--color-mint-hover)',
-          subtle: 'var(--color-mint-subtle)',
+        /* Supporting Neutrals */
+        bg: 'var(--bg)',
+        ink: 'var(--ink)',
+        muted: 'var(--muted)',
+        line: {
+          DEFAULT: 'var(--line)',
+          strong: 'var(--line-strong)',
         },
-        amber: {
-          DEFAULT: 'var(--color-amber)',
-          subtle: 'var(--color-amber-subtle)',
-        },
-        /* Canvas & Surfaces */
-        bg: 'var(--color-bg)',
-        surface: {
-          DEFAULT: 'var(--color-surface)',
-          muted: 'var(--color-surface-muted)',
-          hover: 'var(--color-surface-hover)',
-        },
-        border: {
-          DEFAULT: 'var(--color-border)',
-          strong: 'var(--color-border-strong)',
-          subtle: 'var(--color-border-subtle)',
-        },
-        /* Typography */
-        ink: 'var(--color-ink)',
-        muted: 'var(--color-muted)',
-        faint: 'var(--color-faint)',
+        white: 'var(--white)',
+        surface: 'var(--white)',
       },
       fontFamily: {
-        heading: ['Bricolage Grotesque', 'Fraunces', 'Georgia', 'serif'],
-        serif: ['Fraunces', 'Bricolage Grotesque', 'Georgia', 'serif'],
-        sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        heading: ['Poppins', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       borderRadius: {
-        sm: 'var(--radius-sm)',         /* 10px */
-        DEFAULT: 'var(--radius-sm)',    /* 10px */
-        md: 'var(--radius-sm)',         /* 10px */
-        lg: 'var(--radius-lg)',         /* 20px */
-        xl: 'var(--radius-lg)',         /* 20px */
-        '2xl': 'var(--radius-lg)',      /* 20px */
-        '3xl': 'var(--radius-lg)',      /* 20px */
-        full: 'var(--radius-full)',
+        sm: 'var(--radius-sm)',      /* 12px for inputs & buttons */
+        DEFAULT: 'var(--radius-sm)', /* 12px */
+        md: 'var(--radius-md)',      /* 12px */
+        lg: 'var(--radius-lg)',      /* 20px for cards & containers */
+        xl: 'var(--radius-lg)',      /* 20px */
+        '2xl': 'var(--radius-lg)',   /* 20px */
+        full: 'var(--radius-full)',  /* Full for avatars & pills */
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',
-        subtle: 'var(--shadow-sm)',
         md: 'var(--shadow-md)',
-        card: 'var(--shadow-md)',
         lg: 'var(--shadow-lg)',
         modal: 'var(--shadow-modal)',
-      },
-      spacing: {
-        1: 'var(--space-1)',
-        2: 'var(--space-2)',
-        3: 'var(--space-3)',
-        4: 'var(--space-4)',
-        6: 'var(--space-6)',
-        8: 'var(--space-8)',
-        12: 'var(--space-12)',
-        16: 'var(--space-16)',
       },
       maxWidth: {
         shell: '1200px',
       },
       zIndex: {
         sticky: '50',
-        dropdown: '70',
-        modal: '80',
-        toast: '90',
+        dropdown: '60',
+        modal: '70',
+        toast: '80',
       },
     },
   },

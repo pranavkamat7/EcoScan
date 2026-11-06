@@ -82,7 +82,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
         action={
           onOpenEditProfile && (
             <Button
-              variant="lime"
+              variant="primary"
               size="md"
               icon={<UserCog className="w-4 h-4 stroke-[2]" />}
               onClick={onOpenEditProfile}
@@ -123,10 +123,10 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
 
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h2 className="font-heading text-xl sm:text-2xl font-bold text-ink">
+                <h2 className="font-heading text-xl sm:text-2xl font-bold text-navy">
                   {currentUser.name}
                 </h2>
-                <Badge variant="mint" size="sm">
+                <Badge variant="restored" size="sm">
                   {currentUser.level}
                 </Badge>
               </div>
@@ -137,13 +137,13 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
 
               {currentUser.city && (
                 <p className="text-xs text-muted flex items-center justify-center sm:justify-start gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-forest" />
+                  <MapPin className="w-3.5 h-3.5 text-emerald" />
                   <span>{currentUser.city}</span>
                 </p>
               )}
 
               {currentUser.bio ? (
-                <p className="text-xs sm:text-sm text-ink/80 pt-1 max-w-md">
+                <p className="text-xs sm:text-sm text-navy/80 pt-1 max-w-md">
                   {currentUser.bio}
                 </p>
               ) : (
@@ -157,7 +157,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
           <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
             <div className="text-right">
               <span className="text-xs text-muted block">Available Balance</span>
-              <span className="font-heading text-2xl font-bold text-forest tabular-nums">
+              <span className="font-heading text-2xl font-bold text-emerald tabular-nums">
                 {currentUser.points.toLocaleString()} pts
               </span>
             </div>
@@ -165,23 +165,23 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
         </div>
 
         {/* Civic Impact Metrics Strip */}
-        <div className="pt-4 border-t border-border grid grid-cols-3 gap-2 sm:gap-4 text-center">
-          <div className="p-3 rounded-sm bg-surface-muted border border-border">
-            <span className="font-heading text-lg sm:text-xl font-bold text-ink tabular-nums">
+        <div className="pt-4 border-t border-line grid grid-cols-3 gap-2 sm:gap-4 text-center">
+          <div className="p-3 rounded-sm bg-navy-50/50 border border-line">
+            <span className="font-heading text-lg sm:text-xl font-bold text-navy tabular-nums">
               {currentUser.spotsCleaned}
             </span>
             <p className="text-[11px] text-muted">Spots Restored</p>
           </div>
 
-          <div className="p-3 rounded-sm bg-surface-muted border border-border">
-            <span className="font-heading text-lg sm:text-xl font-bold text-ink tabular-nums">
+          <div className="p-3 rounded-sm bg-navy-50/50 border border-line">
+            <span className="font-heading text-lg sm:text-xl font-bold text-navy tabular-nums">
               {currentUser.wasteClearedKg} kg
             </span>
             <p className="text-[11px] text-muted">Waste Collected</p>
           </div>
 
-          <div className="p-3 rounded-sm bg-surface-muted border border-border">
-            <span className="font-heading text-lg sm:text-xl font-bold text-forest tabular-nums">
+          <div className="p-3 rounded-sm bg-navy-50/50 border border-line">
+            <span className="font-heading text-lg sm:text-xl font-bold text-emerald tabular-nums">
               {currentUser.badges?.length || 2}
             </span>
             <p className="text-[11px] text-muted">Badges Earned</p>
@@ -210,7 +210,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
               >
                 <div className="space-y-2.5">
                   <div className="flex items-start justify-between gap-3">
-                    <span className="text-2xl p-2 rounded-sm bg-surface-muted border border-border flex-shrink-0">
+                    <span className="text-2xl p-2 rounded-sm bg-navy-50 border border-line flex-shrink-0">
                       {perk.icon}
                     </span>
                     <Badge variant="points" size="sm">
@@ -219,7 +219,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
                   </div>
 
                   <div>
-                    <h3 className="font-heading font-bold text-base text-ink">
+                    <h3 className="font-heading font-bold text-base text-navy">
                       {perk.title}
                     </h3>
                     <p className="text-xs text-muted mt-1 leading-relaxed">
@@ -228,13 +228,13 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-border flex items-center justify-between">
+                <div className="pt-2 border-t border-line flex items-center justify-between">
                   <span className="text-[11px] text-muted font-medium">
                     {perk.category}
                   </span>
 
                   {isClaimed ? (
-                    <Badge variant="mint" size="sm" icon={<Check className="w-3 h-3" />}>
+                    <Badge variant="restored" size="sm" icon={<Check className="w-3 h-3" />}>
                       Claimed
                     </Badge>
                   ) : (
@@ -262,27 +262,27 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
         />
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <Card variant="default" className="text-center p-4 space-y-2 border-mint/40 bg-mint-subtle/20">
+          <Card variant="default" className="text-center p-4 space-y-2 border-emerald/30 bg-emerald-50/20">
             <span className="text-2xl block">🌱</span>
-            <h4 className="font-heading font-bold text-xs text-ink">First Cleanup</h4>
-            <Badge variant="mint" size="sm">Unlocked</Badge>
+            <h4 className="font-heading font-bold text-xs text-navy">First Cleanup</h4>
+            <Badge variant="restored" size="sm">Unlocked</Badge>
           </Card>
 
-          <Card variant="default" className="text-center p-4 space-y-2 border-mint/40 bg-mint-subtle/20">
+          <Card variant="default" className="text-center p-4 space-y-2 border-emerald/30 bg-emerald-50/20">
             <span className="text-2xl block">📍</span>
-            <h4 className="font-heading font-bold text-xs text-ink">Civic Scout</h4>
-            <Badge variant="mint" size="sm">Unlocked</Badge>
+            <h4 className="font-heading font-bold text-xs text-navy">Civic Scout</h4>
+            <Badge variant="restored" size="sm">Unlocked</Badge>
           </Card>
 
-          <Card variant="default" className="text-center p-4 space-y-2 border-border opacity-70">
+          <Card variant="default" className="text-center p-4 space-y-2 border-line opacity-70">
             <span className="text-2xl block">⚖️</span>
-            <h4 className="font-heading font-bold text-xs text-ink">50kg Waste Removed</h4>
+            <h4 className="font-heading font-bold text-xs text-navy">50kg Waste Removed</h4>
             <Badge variant="neutral" size="sm">In progress</Badge>
           </Card>
 
-          <Card variant="default" className="text-center p-4 space-y-2 border-border opacity-70">
+          <Card variant="default" className="text-center p-4 space-y-2 border-line opacity-70">
             <span className="text-2xl block">👑</span>
-            <h4 className="font-heading font-bold text-xs text-ink">Top 3 Champion</h4>
+            <h4 className="font-heading font-bold text-xs text-navy">Top 3 Champion</h4>
             <Badge variant="neutral" size="sm">Locked</Badge>
           </Card>
         </div>

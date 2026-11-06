@@ -30,7 +30,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-medium text-ink select-none"
+            className="block text-xs font-semibold text-navy select-none"
           >
             {label}
           </label>
@@ -38,7 +38,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center">
           {startIcon && (
-            <div className="absolute left-3 text-muted pointer-events-none flex items-center">
+            <div className="absolute left-3.5 text-muted pointer-events-none flex items-center">
               {startIcon}
             </div>
           )}
@@ -47,18 +47,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             disabled={disabled}
-            className={`w-full h-10 rounded-sm bg-surface text-ink text-sm border transition-all duration-200 placeholder:text-muted/60 disabled:bg-surface-muted disabled:opacity-60 disabled:cursor-not-allowed outline-none focus:ring-2 focus:ring-lime focus:border-forest ${
-              startIcon ? 'pl-9' : 'pl-3.5'
-            } ${endIcon ? 'pr-9' : 'pr-3.5'} ${
+            className={`w-full h-10 rounded-sm bg-white text-navy text-sm border transition-all duration-180 placeholder:text-muted/60 disabled:bg-navy-50 disabled:opacity-60 disabled:cursor-not-allowed outline-none focus:ring-2 focus:ring-emerald focus:border-emerald ${
+              startIcon ? 'pl-10' : 'pl-3.5'
+            } ${endIcon ? 'pr-10' : 'pr-3.5'} ${
               error
                 ? 'border-coral focus:ring-coral/20'
-                : 'border-border hover:border-border-strong'
+                : 'border-line hover:border-line-strong'
             } ${className}`}
             {...props}
           />
 
           {endIcon && (
-            <div className="absolute right-3 text-muted flex items-center">
+            <div className="absolute right-3.5 text-muted flex items-center">
               {endIcon}
             </div>
           )}

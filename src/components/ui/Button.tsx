@@ -27,9 +27,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    // Strict 10px radius, 150-250ms ease-out, consistent typography
+    // 12px radius, 180ms ease-out, Poppins/Inter brand typography
     const baseClasses =
-      'inline-flex items-center justify-center font-medium rounded-sm transition-all duration-200 select-none disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-1';
+      'inline-flex items-center justify-center font-medium rounded-sm transition-all duration-180 select-none disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-1';
 
     const sizeClasses = {
       sm: 'h-8 px-3 text-xs gap-1.5',
@@ -38,21 +38,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }[size];
 
     const variantClasses = {
-      // Signature primary: Forest background + electric lime text
+      // Primary: The ONE primary button style (Emerald background + white text)
       primary:
-        'bg-forest hover:bg-forest-hover text-lime font-semibold shadow-sm border border-forest-border hover:shadow-md',
-      // Lime alternate primary
-      lime:
-        'bg-lime hover:bg-lime-hover text-forest font-semibold shadow-sm border border-lime hover:shadow-md',
-      // Secondary: crisp warm surface with border
+        'bg-emerald hover:bg-emerald-600 text-white font-semibold shadow-sm hover:shadow-md',
+      // Secondary: White surface + Line border + Navy text
       secondary:
-        'bg-surface hover:bg-surface-hover text-ink border border-border hover:border-border-strong shadow-sm',
-      // Ghost: minimal chrome
+        'bg-white hover:bg-navy-50 text-navy border border-line hover:border-line-strong shadow-sm',
+      // Ghost: Minimal chrome
       ghost:
-        'bg-transparent hover:bg-surface-muted text-muted hover:text-ink',
-      // Danger: coral alert
+        'bg-transparent hover:bg-navy-50 text-muted hover:text-navy',
+      // Danger: Coral alert for destructive actions
       danger:
-        'bg-coral hover:bg-coral-hover text-white font-medium shadow-sm',
+        'bg-coral hover:bg-coral-600 text-white font-semibold shadow-sm',
+      // Lime: Navy text on Lime background (contrast compliant)
+      lime:
+        'bg-lime hover:bg-lime-600 text-navy font-bold shadow-sm hover:shadow-md',
     }[variant];
 
     return (

@@ -2,13 +2,10 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import type { Spot, UserProfile } from '../types';
 import {
-  AlertTriangle,
-  CheckCircle2,
   MapPin,
   Sparkles,
   X,
   Crosshair,
-  ArrowRight,
   Search,
   Layers,
   RotateCcw,
@@ -21,7 +18,6 @@ import {
   Card,
   Button,
   IconButton,
-  Chip,
   Badge,
   Avatar,
 } from './ui';
@@ -96,7 +92,6 @@ export const MapView: React.FC<MapViewProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    // Default center (Margao / Goa or first spot)
     const initialCenter: [number, number] =
       spots.length > 0
         ? [spots[0].location.lat, spots[0].location.lng]
@@ -108,10 +103,8 @@ export const MapView: React.FC<MapViewProps> = ({
       zoomControl: false,
     });
 
-    // Custom Zoom Control at bottom right
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // Initial Tile Layer
     const activeTile = TILE_PROVIDERS[tileStyle];
     const tileLayer = L.tileLayer(activeTile.url, {
       attribution: activeTile.attribution,
@@ -121,14 +114,13 @@ export const MapView: React.FC<MapViewProps> = ({
     tileLayerRef.current = tileLayer;
     mapInstanceRef.current = map;
 
-    // Cleanup on unmount
     return () => {
       map.remove();
       mapInstanceRef.current = null;
     };
   }, []);
 
-  // Update Tile Layer on style switch
+  // Update Tile Layer
   useEffect(() => {
     if (!mapInstanceRef.current || !tileLayerRef.current) return;
 
@@ -142,12 +134,11 @@ export const MapView: React.FC<MapViewProps> = ({
     tileLayerRef.current = newTileLayer;
   }, [tileStyle]);
 
-  // Render Spots as Custom Markers (Coral for needs clean, Mint for restored)
+  // Render Spots as Custom Markers (Coral for needs clean, Emerald for restored)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Clear old markers
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
@@ -160,14 +151,14 @@ export const MapView: React.FC<MapViewProps> = ({
       const isSelected = activeSpot?.id === spot.id;
       const isCleaned = spot.status === 'cleaned';
 
-      // Design system status colors: coral (#E0533C) & mint (#238253)
-      const markerColor = isCleaned ? '#238253' : '#E0533C';
+      // Brand mapping: Coral #F0533D for Needs Clean, Emerald #00B86B for Restored
+      const markerColor = isCleaned ? '#00B86B' : '#F0533D';
       const markerEmoji = isCleaned ? '✨' : '⚠️';
 
       const customIcon = L.divIcon({
         className: 'custom-spot-marker',
         html: `
-          <div class="relative group cursor-pointer transition-transform duration-200 ${
+          <div class="relative group cursor-pointer transition-transform duration-180 ${
             isSelected ? 'scale-125 z-30' : 'hover:scale-110'
           }">
             <div style="
@@ -179,7 +170,7 @@ export const MapView: React.FC<MapViewProps> = ({
               display: flex;
               align-items: center;
               justify-content: center;
-              box-shadow: 0 4px 12px rgba(15, 41, 30, 0.25);
+              box-shadow: 0 4px 12px rgba(23, 37, 54, 0.25);
               border: 2px solid white;
             ">
               <span style="transform: rotate(45deg); font-size: ${isSelected ? '15px' : '12px'};">
@@ -207,7 +198,7 @@ export const MapView: React.FC<MapViewProps> = ({
     });
   }, [spots, mapFilter, activeSpot, onSelectSpot]);
 
-  // Search places using OpenStreetMap Nominatim
+  // Place Search
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -264,7 +255,7 @@ export const MapView: React.FC<MapViewProps> = ({
         const userIcon = L.divIcon({
           className: 'custom-spot-marker',
           html: `
-            <div class="w-4 h-4 rounded-full bg-forest border-2 border-lime shadow-md ring-4 ring-forest/20 animate-pulse"></div>
+            <div class="w-4 h-4 rounded-full bg-emerald border-2 border-white shadow-md ring-4 ring-emerald/20 animate-pulse"></div>
           `,
           iconSize: [20, 20],
           iconAnchor: [10, 10],
@@ -302,7 +293,7 @@ export const MapView: React.FC<MapViewProps> = ({
         action={
           onOpenReportModal && (
             <Button
-              variant="lime"
+              variant="primary"
               size="md"
               icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
               onClick={onOpenReportModal}
@@ -313,27 +304,27 @@ export const MapView: React.FC<MapViewProps> = ({
         }
       />
 
-      {/* 2. MAP IN A LARGE 20px-RADIUS CONTAINER */}
+      {/* 2. MAP IN A 20px-RADIUS CONTAINER */}
       <Card
         variant="default"
-        className="p-0 overflow-hidden relative h-[640px] shadow-sm border border-border"
+        className="p-0 overflow-hidden relative h-[640px] shadow-sm border border-line"
       >
         {/* Map Canvas */}
         <div ref={mapContainerRef} className="w-full h-full z-0" />
 
         {/* TOP FLOATING CONTROLS BAR */}
         <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
-          {/* Left: Floating Filter Chips & Search Bar */}
+          {/* Left: Filter Chips & Search Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
             {/* Filter Chips Container */}
-            <div className="bg-surface/95 backdrop-blur-sm p-1.5 rounded-sm border border-border shadow-sm flex items-center gap-1.5">
+            <div className="bg-white/95 backdrop-blur-sm p-1.5 rounded-sm border border-line shadow-sm flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setMapFilter('all')}
-                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors select-none ${
+                className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors select-none ${
                   mapFilter === 'all'
-                    ? 'bg-forest text-lime font-semibold'
-                    : 'text-muted hover:text-ink'
+                    ? 'bg-navy text-white'
+                    : 'text-muted hover:text-navy'
                 }`}
               >
                 All ({spots.length})
@@ -342,10 +333,10 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setMapFilter('needs_cleaning')}
-                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors flex items-center gap-1.5 select-none ${
+                className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors flex items-center gap-1.5 select-none ${
                   mapFilter === 'needs_cleaning'
-                    ? 'bg-coral text-white font-semibold'
-                    : 'text-coral hover:bg-coral-subtle'
+                    ? 'bg-coral text-white'
+                    : 'text-coral hover:bg-coral-50'
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-coral inline-block" />
@@ -355,22 +346,22 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setMapFilter('cleaned')}
-                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors flex items-center gap-1.5 select-none ${
+                className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors flex items-center gap-1.5 select-none ${
                   mapFilter === 'cleaned'
-                    ? 'bg-mint text-white font-semibold'
-                    : 'text-mint hover:bg-mint-subtle'
+                    ? 'bg-emerald text-white'
+                    : 'text-emerald hover:bg-emerald-50'
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-mint inline-block" />
+                <span className="w-2 h-2 rounded-full bg-emerald inline-block" />
                 Restored ({restoredCount})
               </button>
             </div>
 
             {/* Place Search Bar */}
             <div className="relative min-w-[220px] sm:w-64">
-              <div className="bg-surface/95 backdrop-blur-sm flex items-center gap-2 px-3 py-2 rounded-sm border border-border shadow-sm">
+              <div className="bg-white/95 backdrop-blur-sm flex items-center gap-2 px-3.5 py-2 rounded-sm border border-line shadow-sm">
                 {isSearching ? (
-                  <Loader2 className="w-3.5 h-3.5 text-forest animate-spin flex-shrink-0" />
+                  <Loader2 className="w-3.5 h-3.5 text-emerald animate-spin flex-shrink-0" />
                 ) : (
                   <Search className="w-3.5 h-3.5 text-muted flex-shrink-0" />
                 )}
@@ -382,7 +373,7 @@ export const MapView: React.FC<MapViewProps> = ({
                     if (searchResults.length > 0) setShowSearchDropdown(true);
                   }}
                   placeholder="Search city, locality..."
-                  className="bg-transparent border-none outline-none text-xs text-ink placeholder:text-muted/60 w-full"
+                  className="bg-transparent border-none outline-none text-xs text-navy placeholder:text-muted/60 w-full font-medium"
                 />
                 {searchQuery && (
                   <button
@@ -391,7 +382,7 @@ export const MapView: React.FC<MapViewProps> = ({
                       setSearchQuery('');
                       setSearchResults([]);
                     }}
-                    className="text-muted hover:text-ink text-xs p-0.5"
+                    className="text-muted hover:text-navy text-xs p-0.5"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -400,15 +391,15 @@ export const MapView: React.FC<MapViewProps> = ({
 
               {/* Geocode Search Results Dropdown */}
               {showSearchDropdown && searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 bg-surface border border-border rounded-sm shadow-md overflow-hidden z-30 max-h-52 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-line rounded-sm shadow-md overflow-hidden z-30 max-h-52 overflow-y-auto">
                   {searchResults.map((place, idx) => (
                     <button
                       key={`${place.lat}-${place.lng}-${idx}`}
                       type="button"
                       onClick={() => handleSelectSearchResult(place)}
-                      className="w-full px-3 py-2 text-left text-xs hover:bg-surface-muted border-b border-border/50 last:border-b-0 flex items-start gap-2 text-ink transition-colors"
+                      className="w-full px-3.5 py-2 text-left text-xs hover:bg-navy-50 border-b border-line/60 last:border-b-0 flex items-start gap-2 text-navy transition-colors font-medium"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-forest flex-shrink-0 mt-0.5" />
+                      <MapPin className="w-3.5 h-3.5 text-emerald flex-shrink-0 mt-0.5" />
                       <span className="line-clamp-2 leading-tight">
                         {place.display_name}
                       </span>
@@ -426,9 +417,9 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowLayerMenu(!showLayerMenu)}
-                className="h-9 px-3 bg-surface/95 backdrop-blur-sm hover:bg-surface border border-border rounded-sm shadow-sm text-xs font-medium text-ink flex items-center gap-1.5 transition-colors"
+                className="h-9 px-3 bg-white/95 backdrop-blur-sm hover:bg-white border border-line rounded-sm shadow-sm text-xs font-semibold text-navy flex items-center gap-1.5 transition-colors"
               >
-                <Layers className="w-3.5 h-3.5 text-forest" />
+                <Layers className="w-3.5 h-3.5 text-emerald" />
                 <span>{TILE_PROVIDERS[tileStyle].name}</span>
               </button>
 
@@ -438,7 +429,7 @@ export const MapView: React.FC<MapViewProps> = ({
                     className="fixed inset-0 z-10"
                     onClick={() => setShowLayerMenu(false)}
                   />
-                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface border border-border rounded-sm shadow-md py-1 z-20">
+                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-white border border-line rounded-sm shadow-md py-1 z-20">
                     {(Object.keys(TILE_PROVIDERS) as MapTileStyle[]).map((style) => (
                       <button
                         key={style}
@@ -447,15 +438,15 @@ export const MapView: React.FC<MapViewProps> = ({
                           setTileStyle(style);
                           setShowLayerMenu(false);
                         }}
-                        className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                        className={`w-full text-left px-3.5 py-2 text-xs transition-colors flex items-center justify-between font-medium ${
                           tileStyle === style
-                            ? 'font-semibold text-forest bg-surface-muted'
-                            : 'text-ink hover:bg-surface-muted'
+                            ? 'font-bold text-emerald bg-emerald-50'
+                            : 'text-navy hover:bg-navy-50'
                         }`}
                       >
                         <span>{TILE_PROVIDERS[style].name}</span>
                         {tileStyle === style && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-forest" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald" />
                         )}
                       </button>
                     ))}
@@ -470,7 +461,7 @@ export const MapView: React.FC<MapViewProps> = ({
               size="sm"
               variant="secondary"
               onClick={handleFitAllSpots}
-              className="bg-surface/95 backdrop-blur-sm"
+              className="bg-white/95 backdrop-blur-sm"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </IconButton>
@@ -481,35 +472,35 @@ export const MapView: React.FC<MapViewProps> = ({
               size="sm"
               variant="secondary"
               onClick={handleLocateMe}
-              className="bg-surface/95 backdrop-blur-sm"
+              className="bg-white/95 backdrop-blur-sm"
             >
-              <Crosshair className="w-3.5 h-3.5 text-forest" />
+              <Crosshair className="w-3.5 h-3.5 text-emerald" />
             </IconButton>
           </div>
         </div>
 
-        {/* BOTTOM SHEET / SIDE PANEL PREVIEW (Card style with 20px radius) */}
+        {/* BOTTOM SHEET / SIDE PANEL PREVIEW (20px Card style) */}
         {activeSpot && (
           <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-20 pointer-events-auto animate-slideUp">
             <Card
               variant="default"
-              className="p-4 sm:p-5 shadow-modal border-border-strong relative"
+              className="p-4 sm:p-5 shadow-modal border-line-strong relative"
             >
               <IconButton
                 label="Close preview"
                 size="sm"
                 variant="ghost"
                 onClick={() => setActiveSpot(null)}
-                className="absolute top-3 right-3 text-muted hover:text-ink"
+                className="absolute top-3 right-3 text-muted hover:text-navy"
               >
                 <X className="w-3.5 h-3.5" />
               </IconButton>
 
-              <div className="space-y-3">
+              <div className="space-y-3 text-left">
                 {/* Status + Points */}
                 <div className="flex items-center gap-2">
                   {activeSpot.status === 'cleaned' ? (
-                    <Badge variant="mint" size="sm">
+                    <Badge variant="restored" size="sm">
                       Restored & verified
                     </Badge>
                   ) : (
@@ -523,7 +514,7 @@ export const MapView: React.FC<MapViewProps> = ({
                 </div>
 
                 {/* Photo Preview */}
-                <div className="relative w-full h-36 rounded-sm overflow-hidden bg-forest/10 border border-border">
+                <div className="relative w-full h-36 rounded-sm overflow-hidden bg-navy-100 border border-line">
                   <img
                     src={
                       activeSpot.status === 'cleaned' && activeSpot.verification
@@ -534,7 +525,7 @@ export const MapView: React.FC<MapViewProps> = ({
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-2 left-2">
-                    <span className="text-[10px] font-semibold text-white px-2 py-0.5 rounded-sm bg-ink/75">
+                    <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-sm bg-navy/80">
                       {activeSpot.status === 'cleaned' ? 'After Proof' : 'Before Photo'}
                     </span>
                   </div>
@@ -542,11 +533,11 @@ export const MapView: React.FC<MapViewProps> = ({
 
                 {/* Spot Details */}
                 <div className="space-y-1">
-                  <h4 className="font-heading font-bold text-base text-ink line-clamp-1">
+                  <h4 className="font-heading font-bold text-base text-navy line-clamp-1">
                     {activeSpot.title}
                   </h4>
-                  <p className="text-xs text-muted truncate flex items-center gap-1">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                  <p className="text-xs text-muted truncate flex items-center gap-1 font-medium">
+                    <MapPin className="w-3 h-3 text-emerald flex-shrink-0" />
                     <span>{activeSpot.location.address}</span>
                   </p>
                 </div>
@@ -563,8 +554,8 @@ export const MapView: React.FC<MapViewProps> = ({
                     Clean this spot & earn +{activeSpot.rewardPoints} pts
                   </Button>
                 ) : (
-                  <div className="pt-1 flex items-center justify-between text-xs text-muted border-t border-border">
-                    <span className="flex items-center gap-1.5">
+                  <div className="pt-2 flex items-center justify-between text-xs text-muted border-t border-line">
+                    <span className="flex items-center gap-1.5 font-medium">
                       <Avatar
                         src={activeSpot.verification?.cleanerAvatar}
                         name={activeSpot.verification?.cleanerName}
@@ -572,7 +563,7 @@ export const MapView: React.FC<MapViewProps> = ({
                       />
                       <span>By {activeSpot.verification?.cleanerName}</span>
                     </span>
-                    <span className="text-mint font-semibold">Restored</span>
+                    <span className="text-emerald font-bold">Restored</span>
                   </div>
                 )}
               </div>

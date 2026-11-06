@@ -23,13 +23,14 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
 
     const variantClasses = {
       default:
-        'bg-surface text-ink border border-border shadow-sm rounded-lg p-5 sm:p-6',
+        'bg-white text-ink border border-line shadow-sm rounded-lg p-5 sm:p-6',
+      // Navy hero gradient from navy to navy-2 only
       dark:
-        'bg-forest text-white border border-forest-border shadow-md rounded-lg p-6 sm:p-8',
+        'bg-gradient-to-r from-navy to-navy-2 text-white border border-navy-700 shadow-md rounded-lg p-6 sm:p-8',
       stat:
-        'bg-surface text-ink border border-border shadow-sm rounded-lg p-4 sm:p-5',
+        'bg-white text-ink border border-line shadow-sm rounded-lg p-4 sm:p-5',
       muted:
-        'bg-surface-muted text-ink border border-border rounded-lg p-4 sm:p-5',
+        'bg-navy-50 text-ink border border-line rounded-lg p-4 sm:p-5',
     }[variant];
 
     const interactiveClasses = isInteractive

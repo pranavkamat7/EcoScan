@@ -81,9 +81,9 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
   return (
     <div
-      className={`relative select-none overflow-hidden bg-forest/20 ${className} ${
+      className={`relative select-none overflow-hidden bg-navy-100 ${className} ${
         isFullscreen
-          ? 'fixed inset-0 z-[70] bg-ink/95 flex items-center justify-center p-4'
+          ? 'fixed inset-0 z-[70] bg-navy/95 flex items-center justify-center p-4'
           : ''
       }`}
     >
@@ -92,7 +92,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
         <button
           type="button"
           onClick={() => setViewMode(viewMode === 'slider' ? 'side-by-side' : 'slider')}
-          className="p-1.5 rounded-sm bg-ink/75 hover:bg-ink text-white/90 hover:text-white transition-colors shadow-sm"
+          className="p-1.5 rounded-sm bg-navy/75 hover:bg-navy text-white transition-colors shadow-sm"
           title={viewMode === 'slider' ? 'Side-by-side view' : 'Split slider view'}
           aria-label="Toggle comparison view"
         >
@@ -102,7 +102,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
         <button
           type="button"
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 rounded-sm bg-ink/75 hover:bg-ink text-white/90 hover:text-white transition-colors shadow-sm"
+          className="p-1.5 rounded-sm bg-navy/75 hover:bg-navy text-white transition-colors shadow-sm"
           title={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
           aria-label="Toggle fullscreen comparison"
         >
@@ -123,7 +123,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          className={`relative w-full ${aspectRatioClass} overflow-hidden cursor-ew-resize touch-none focus:outline-none focus:ring-2 focus:ring-lime`}
+          className={`relative w-full ${aspectRatioClass} overflow-hidden cursor-ew-resize touch-none focus:outline-none focus:ring-2 focus:ring-emerald`}
         >
           {/* Base Layer: AFTER (Restored) Image */}
           <img
@@ -155,18 +155,18 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             className="absolute top-0 bottom-0 z-20 pointer-events-none"
             style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           >
-            <div className="w-[2px] h-full bg-white relative shadow-[0_0_6px_rgba(0,0,0,0.5)]">
+            <div className="w-[2px] h-full bg-white relative shadow-[0_0_6px_rgba(23,37,54,0.45)]">
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-ink border border-border shadow-md flex items-center justify-center transition-transform ${
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-navy border border-line shadow-md flex items-center justify-center transition-transform ${
                   isDragging ? 'scale-110' : ''
                 }`}
               >
-                <MoveHorizontal className="w-4 h-4 text-ink" />
+                <MoveHorizontal className="w-4 h-4 text-navy" />
               </div>
             </div>
           </div>
 
-          {/* Solid Corner Tags: Coral for Before (bottom-left), Mint for After (bottom-right) */}
+          {/* Solid Corner Tags: Coral for Before (bottom-left), Emerald for After (bottom-right) */}
           <div className="absolute bottom-3 left-3 z-10 pointer-events-none">
             <Badge variant="coral" size="sm">
               {beforeLabel}
@@ -174,7 +174,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           </div>
 
           <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
-            <Badge variant="mint" size="sm">
+            <Badge variant="emerald" size="sm">
               {afterLabel}
             </Badge>
           </div>
@@ -182,7 +182,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           {/* First interaction gentle hint */}
           {!hasInteracted && (
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-none z-10 hidden sm:block">
-              <span className="px-3 py-1 text-[11px] font-medium text-white bg-ink/80 rounded-sm border border-white/10 shadow-sm">
+              <span className="px-3 py-1 text-[11px] font-semibold text-white bg-navy/80 rounded-sm border border-white/10 shadow-sm">
                 Drag slider to compare
               </span>
             </div>
@@ -213,7 +213,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
               loading="lazy"
             />
             <div className="absolute bottom-3 right-3">
-              <Badge variant="mint" size="sm">
+              <Badge variant="emerald" size="sm">
                 {afterLabel}
               </Badge>
             </div>

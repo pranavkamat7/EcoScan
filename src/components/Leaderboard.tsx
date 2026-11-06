@@ -46,7 +46,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         action={
           onOpenReportModal && (
             <Button
-              variant="lime"
+              variant="primary"
               size="md"
               icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
               onClick={onOpenReportModal}
@@ -58,7 +58,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
       />
 
       {/* 2. TIMEFRAME FILTER ROW */}
-      <div className="flex items-center justify-between gap-4 border-b border-border pb-3 flex-wrap">
+      <div className="flex items-center justify-between gap-4 border-b border-line pb-3 flex-wrap">
         <div className="flex items-center gap-2">
           <Chip
             variant="tag"
@@ -84,18 +84,18 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
 
         <span className="text-xs text-muted">
-          <strong className="font-semibold text-ink tabular-nums">{sortedChampions.length}</strong> active champions
+          <strong className="font-semibold text-navy tabular-nums">{sortedChampions.length}</strong> active champions
         </span>
       </div>
 
-      {/* 3. PODIUM FOR TOP 3 (Lime/Gold accent cards) */}
+      {/* 3. PODIUM FOR TOP 3 (Lime/Emerald accent cards) */}
       {topThree.length >= 3 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-end pt-4">
           {/* Rank 2 (Silver) */}
           <Card
             variant="default"
             interactive
-            className="order-2 md:order-1 text-center p-5 border-border hover:border-forest space-y-3"
+            className="order-2 md:order-1 text-center p-5 border-line hover:border-emerald space-y-3"
           >
             <div className="relative inline-block mx-auto">
               <Avatar
@@ -103,12 +103,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 name={topThree[1].name}
                 size="lg"
               />
-              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-surface-muted text-ink border border-border flex items-center justify-center text-xs font-bold shadow-sm">
+              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-navy-50 text-navy border border-line flex items-center justify-center text-xs font-bold shadow-sm">
                 2
               </span>
             </div>
             <div>
-              <h4 className="font-heading font-bold text-sm text-ink truncate">
+              <h4 className="font-heading font-bold text-sm text-navy truncate">
                 {topThree[1].name}
               </h4>
               <p className="text-xs text-muted tabular-nums">
@@ -120,14 +120,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
             </Badge>
           </Card>
 
-          {/* Rank 1 (Gold / Lime Champion Center - Elevated) */}
+          {/* Rank 1 (Lime Champion Center - Elevated) */}
           <Card
             variant="default"
             interactive
-            className="order-1 md:order-2 text-center p-6 sm:p-7 border-2 border-forest shadow-md bg-surface space-y-3 md:-translate-y-2"
+            className="order-1 md:order-2 text-center p-6 sm:p-7 border-2 border-emerald shadow-md bg-white space-y-3 md:-translate-y-2"
           >
-            <div className="inline-flex items-center gap-1 text-xs font-bold text-forest bg-lime px-2.5 py-0.5 rounded-sm mx-auto shadow-sm">
-              <Trophy className="w-3.5 h-3.5 fill-forest" />
+            <div className="inline-flex items-center gap-1 text-xs font-bold text-navy bg-lime px-2.5 py-0.5 rounded-sm mx-auto shadow-sm">
+              <Trophy className="w-3.5 h-3.5 fill-navy" />
               <span>Civic Champion</span>
             </div>
             <div className="relative inline-block mx-auto mt-1">
@@ -136,12 +136,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 name={topThree[0].name}
                 size="xl"
               />
-              <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-lime text-forest border-2 border-forest flex items-center justify-center text-xs font-extrabold shadow-sm">
+              <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-lime text-navy border-2 border-emerald flex items-center justify-center text-xs font-extrabold shadow-sm">
                 1
               </span>
             </div>
             <div>
-              <h3 className="font-heading font-extrabold text-base sm:text-lg text-ink truncate">
+              <h3 className="font-heading font-extrabold text-base sm:text-lg text-navy truncate">
                 {topThree[0].name}
               </h3>
               <p className="text-xs text-muted tabular-nums">
@@ -157,7 +157,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           <Card
             variant="default"
             interactive
-            className="order-3 text-center p-5 border-border hover:border-forest space-y-3"
+            className="order-3 text-center p-5 border-line hover:border-emerald space-y-3"
           >
             <div className="relative inline-block mx-auto">
               <Avatar
@@ -165,12 +165,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 name={topThree[2].name}
                 size="lg"
               />
-              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-surface-muted text-ink border border-border flex items-center justify-center text-xs font-bold shadow-sm">
+              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-navy-50 text-navy border border-line flex items-center justify-center text-xs font-bold shadow-sm">
                 3
               </span>
             </div>
             <div>
-              <h4 className="font-heading font-bold text-sm text-ink truncate">
+              <h4 className="font-heading font-bold text-sm text-navy truncate">
                 {topThree[2].name}
               </h4>
               <p className="text-xs text-muted tabular-nums">
@@ -191,7 +191,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           className="p-4 sm:p-5 flex items-center justify-between gap-4 border-2 border-lime shadow-md"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <span className="w-8 h-8 rounded-sm bg-lime text-forest font-heading font-bold flex items-center justify-center text-xs flex-shrink-0 tabular-nums">
+            <span className="w-8 h-8 rounded-sm bg-lime text-navy font-heading font-extrabold flex items-center justify-center text-xs flex-shrink-0 tabular-nums">
               #{currentUserRank}
             </span>
             <Avatar
@@ -204,7 +204,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 <span className="font-heading font-bold text-white text-sm sm:text-base truncate">
                   {currentUser.name}
                 </span>
-                <span className="text-[11px] text-lime font-semibold uppercase tracking-wider">
+                <span className="text-[11px] text-lime font-bold uppercase tracking-wider">
                   (You)
                 </span>
               </div>
@@ -227,7 +227,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
       {/* 5. RANKED TABLE LIST (Cards style) */}
       <Card variant="default" className="p-0 overflow-hidden shadow-sm">
-        <div className="px-5 py-3 bg-surface-muted border-b border-border flex items-center justify-between text-xs font-semibold text-muted">
+        <div className="px-5 py-3 bg-navy-50/70 border-b border-line flex items-center justify-between text-xs font-semibold text-muted">
           <span>Rank & Volunteer</span>
           <div className="flex items-center gap-8 sm:gap-12">
             <span className="hidden sm:inline">Cleanups</span>
@@ -235,7 +235,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
         </div>
 
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-line">
           {sortedChampions.map((champion, idx) => {
             const isUser = champion.id === currentUser.id || champion.name === currentUser.name;
             const rank = idx + 1;
@@ -245,14 +245,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 key={champion.id}
                 className={`px-5 py-3.5 flex items-center justify-between gap-4 transition-colors ${
                   isUser
-                    ? 'bg-lime-subtle/40 font-medium'
-                    : 'hover:bg-surface-muted/50'
+                    ? 'bg-emerald-50/40 font-medium'
+                    : 'hover:bg-navy-50/50'
                 }`}
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <span
                     className={`w-7 text-xs font-heading font-bold tabular-nums text-center ${
-                      rank <= 3 ? 'text-forest' : 'text-muted'
+                      rank <= 3 ? 'text-emerald' : 'text-muted'
                     }`}
                   >
                     #{rank}
@@ -265,8 +265,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   />
 
                   <div className="min-w-0 text-left">
-                    <p className="text-xs sm:text-sm font-semibold text-ink truncate">
-                      {champion.name} {isUser && <span className="text-forest text-[11px] font-normal">(You)</span>}
+                    <p className="text-xs sm:text-sm font-semibold text-navy truncate">
+                      {champion.name} {isUser && <span className="text-emerald text-[11px] font-semibold">(You)</span>}
                     </p>
                     <p className="text-[11px] text-muted truncate">
                       {champion.wasteClearedKg ?? champion.wasteKg} kg cleared
@@ -278,7 +278,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                   <span className="text-xs text-muted tabular-nums hidden sm:inline">
                     {champion.cleanupsCount ?? champion.spotsCleaned}
                   </span>
-                  <Badge variant={isUser ? 'lime' : 'points'} size="sm">
+                  <Badge variant="points" size="sm">
                     {champion.points.toLocaleString()} pts
                   </Badge>
                 </div>

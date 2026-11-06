@@ -22,15 +22,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className = '',
 }) => {
   return (
-    <Card className={`text-center p-8 sm:p-12 space-y-4 max-w-lg mx-auto ${className}`}>
+    <Card className={`relative text-center p-8 sm:p-12 space-y-4 max-w-lg mx-auto overflow-hidden ${className}`}>
+      {/* Subtle brand motif */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald/5 rounded-full blur-2xl pointer-events-none" />
+
       {icon && (
-        <div className="w-12 h-12 rounded-full bg-forest text-lime flex items-center justify-center mx-auto shadow-sm">
+        <div className="w-12 h-12 rounded-full bg-emerald text-white flex items-center justify-center mx-auto shadow-sm relative z-10">
           {icon}
         </div>
       )}
 
-      <div className="space-y-1">
-        <h4 className="font-heading text-base sm:text-lg font-bold text-ink leading-tight">
+      <div className="space-y-1 relative z-10">
+        <h4 className="font-heading text-base sm:text-lg font-bold text-navy leading-tight">
           {title}
         </h4>
         {description && (
@@ -41,7 +44,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </div>
 
       {actionLabel && onAction && (
-        <div className="pt-2">
+        <div className="pt-2 relative z-10">
           <Button
             variant="primary"
             size="md"

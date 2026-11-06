@@ -116,8 +116,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-5 text-left">
         {/* Avatar Section */}
-        <div className="space-y-3 pb-3 border-b border-border">
-          <label className="block text-xs font-medium text-ink">
+        <div className="space-y-3 pb-3 border-b border-line">
+          <label className="block text-xs font-semibold text-navy">
             Profile photo
           </label>
           <div className="flex items-center gap-4">
@@ -128,8 +128,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
 
             <div className="space-y-2">
-              <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-surface-muted text-xs font-medium text-ink rounded-sm border border-border cursor-pointer transition-colors shadow-sm">
-                <Upload className="w-3.5 h-3.5 text-forest" />
+              <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-navy-50 text-xs font-semibold text-navy rounded-sm border border-line cursor-pointer transition-colors shadow-sm">
+                <Upload className="w-3.5 h-3.5 text-emerald" />
                 <span>Upload device photo</span>
                 <input
                   type="file"
@@ -162,8 +162,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   onClick={() => setAvatar(preset.url)}
                   className={`w-9 h-9 rounded-full overflow-hidden border-2 transition-all flex-shrink-0 ${
                     avatar === preset.url
-                      ? 'border-forest ring-2 ring-lime scale-105'
-                      : 'border-border hover:border-forest opacity-80 hover:opacity-100'
+                      ? 'border-emerald ring-2 ring-emerald/30 scale-105'
+                      : 'border-line hover:border-emerald opacity-80 hover:opacity-100'
                   }`}
                   title={preset.name}
                 >
@@ -184,7 +184,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
           placeholder="e.g. Ms dhoni"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          startIcon={<User className="w-3.5 h-3.5" />}
+          startIcon={<User className="w-3.5 h-3.5 text-muted" />}
           required
         />
 
@@ -194,7 +194,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             placeholder="e.g. msdhoni"
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
-            startIcon={<AtSign className="w-3.5 h-3.5" />}
+            startIcon={<AtSign className="w-3.5 h-3.5 text-muted" />}
           />
 
           <Input
@@ -202,7 +202,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             placeholder="e.g. Margao, Goa"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            startIcon={<MapPin className="w-3.5 h-3.5" />}
+            startIcon={<MapPin className="w-3.5 h-3.5 text-muted" />}
           />
         </div>
 
@@ -215,7 +215,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         />
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-line">
           <Button variant="ghost" size="md" onClick={onClose}>
             Cancel
           </Button>
@@ -227,9 +227,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             isLoading={isSubmitting}
             icon={
               successMessage ? (
-                <Check className="w-4 h-4 text-lime" />
+                <Check className="w-4 h-4 text-white" />
               ) : (
-                <Sparkles className="w-4 h-4 text-lime" />
+                <Sparkles className="w-4 h-4 text-white" />
               )
             }
           >

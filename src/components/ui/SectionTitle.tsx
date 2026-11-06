@@ -16,7 +16,7 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
   return (
     <div className={`flex items-baseline justify-between gap-4 pb-2 text-left ${className}`}>
       <div className="space-y-0.5">
-        <h2 className="font-heading text-lg sm:text-xl font-bold text-ink tracking-tight">
+        <h2 className="font-heading text-lg sm:text-xl font-bold text-navy tracking-tight">
           {title}
         </h2>
         {subtitle && <p className="text-xs text-muted font-normal">{subtitle}</p>}
