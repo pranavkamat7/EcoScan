@@ -87,6 +87,12 @@ export default {
       maxWidth: {
         shell: '1200px',
       },
+      zIndex: {
+        sticky: '50',
+        dropdown: '70',
+        modal: '80',
+        toast: '90',
+      },
     },
   },
   plugins: [],

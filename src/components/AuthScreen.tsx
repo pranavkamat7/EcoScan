@@ -93,18 +93,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
     <div className="min-h-screen bg-bg flex flex-col justify-between p-4 sm:p-6 lg:p-8">
       {/* Top Header Bar */}
       <header className="max-w-shell w-full mx-auto flex items-center justify-between pb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-sm bg-forest text-lime flex items-center justify-center font-heading text-lg font-bold shadow-sm border border-forest-border">
-            G
-          </div>
-          <div>
-            <span className="font-heading text-lg font-bold text-ink leading-tight block">
-              GarbageMedia
-            </span>
-            <span className="text-[11px] text-muted leading-tight">
-              Civic cleanups & verified proofs
-            </span>
-          </div>
+        <div className="flex items-center">
+          <img
+            src="/logo-horizontal.png"
+            alt="GarbageMedia"
+            className="h-9 sm:h-11 w-auto max-w-[170px] sm:max-w-none object-contain"
+          />
         </div>
 
         <button

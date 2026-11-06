@@ -602,9 +602,11 @@ function AppContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center p-6 space-y-4">
-        <div className="w-12 h-12 rounded-sm bg-forest text-lime flex items-center justify-center font-heading text-xl font-bold shadow-md">
-          G
-        </div>
+        <img
+          src="/logo.png"
+          alt="GarbageMedia"
+          className="h-14 w-auto object-contain animate-pulse"
+        />
         <div className="space-y-2 w-48 text-center">
           <Skeleton variant="sm" height={12} className="w-full" />
           <Skeleton variant="sm" height={8} className="w-3/4 mx-auto" />

@@ -50,31 +50,21 @@ export const AppShell: React.FC<AppShellProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-bg text-ink">
       {/* 1. SHARED STICKY HEADER */}
-      <header className="sticky top-0 z-sticky bg-surface/95 backdrop-blur-md border-b border-border transition-colors">
+      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-border transition-colors">
         <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Left: Brand Lockup */}
-          <div className="flex items-center gap-3">
+          {/* Left: Brand Logo */}
+          <div className="flex items-center flex-shrink-0">
             <button
               type="button"
               onClick={() => onTabChange('feed')}
-              className="flex items-center gap-3 text-left group outline-none"
+              className="flex items-center group outline-none"
+              title="GarbageMedia — Home"
             >
-              <div className="w-9 h-9 rounded-sm bg-forest text-lime flex items-center justify-center font-heading text-lg font-bold shadow-sm border border-forest-border flex-shrink-0 group-hover:bg-forest-hover transition-colors">
-                G
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-heading text-base sm:text-lg font-bold text-ink tracking-tight leading-none">
-                    GarbageMedia
-                  </span>
-                  <Badge variant="mint" size="sm" className="hidden sm:inline-flex py-0 px-1.5 text-[10px]">
-                    Civic proof
-                  </Badge>
-                </div>
-                <span className="text-[11px] text-muted tracking-normal font-sans leading-none mt-1">
-                  Community cleanups & photo proofs
-                </span>
-              </div>
+              <img
+                src="/logo-horizontal.png"
+                alt="GarbageMedia"
+                className="h-8 sm:h-10 w-auto max-w-[165px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
+              />
             </button>
           </div>
 
@@ -118,7 +108,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             )}
 
             {/* Shared User Chip Menu */}
-            <div className="relative">
+            <div className="relative z-50">
               <button
                 type="button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -146,11 +136,11 @@ export const AppShell: React.FC<AppShellProps> = ({
               {showUserMenu && (
                 <>
                   <div
-                    className="fixed inset-0 z-dropdown"
+                    className="fixed inset-0 z-40"
                     onClick={() => setShowUserMenu(false)}
                     aria-hidden="true"
                   />
-                  <div className="absolute right-0 mt-2 w-56 rounded-sm bg-surface border border-border shadow-md py-1.5 z-dropdown animate-fadeIn">
+                  <div className="absolute right-0 mt-2 w-60 rounded-lg bg-surface border border-border shadow-modal py-1.5 z-50 animate-fadeIn">
                     <div className="px-3.5 py-2.5 border-b border-border/80">
                       <p className="text-xs font-semibold text-ink truncate">
                         {currentUser.name}
@@ -243,7 +233,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       </footer>
 
       {/* 4. SHARED MOBILE BOTTOM TAB BAR */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-sticky bg-surface border-t border-border pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border pb-safe">
         <nav className="grid grid-cols-4 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
