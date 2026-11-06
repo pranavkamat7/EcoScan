@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import {
-  X,
   Camera,
   MapPin,
   AlertCircle,
@@ -10,6 +9,9 @@ import {
   Search,
   Crosshair,
   Sparkles,
+  ArrowRight,
+  ArrowLeft,
+  Upload,
 } from 'lucide-react';
 import { GeoLocation, SeverityLevel, Spot, UserProfile } from '../types';
 import {
@@ -19,6 +21,14 @@ import {
   SAMPLE_CITIES,
   GeocodeSearchResult,
 } from '../utils/geo';
+import {
+  Modal,
+  ProgressBar,
+  Input,
+  Textarea,
+  Button,
+  Badge,
+} from './ui';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -54,6 +64,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   onSubmit,
   currentUser,
 }) => {
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [photoUrl, setPhotoUrl] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -62,9 +73,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   const [estimatedKg, setEstimatedKg] = useState<number>(10);
 
   const [location, setLocation] = useState<GeoLocation>({
-    lat: 40.7829,
-    lng: -73.9654,
-    address: 'Central Park West, New York',
+    lat: 15.2832,
+    lng: 73.9862,
+    address: 'Margao, Goa, India',
     accuracyMeters: 5,
   });
 
@@ -85,12 +96,13 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      setStep(1);
       handleGetLiveLocation();
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || step !== 2) return;
 
     const timer = setTimeout(() => {
       if (!pickerMapContainerRef.current) return;
@@ -107,11 +119,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           maxZoom: 19,
         }).addTo(map);
 
-        const customPin = L.divIcon({
+        const markerIcon = L.divIcon({
           className: 'custom-spot-marker',
           html: `
-            <div style="background-color: #EF4444; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 3px solid white;">
-              <span style="transform: rotate(45deg); color: white; font-size: 15px;">📍</span>
+            <div style="background-color: #E0533C; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15,41,30,0.3); border: 2px solid white;">
+              <span style="transform: rotate(45deg); font-size: 13px;">⚠️</span>
             </div>
           `,
           iconSize: [34, 34],
@@ -119,31 +131,30 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         });
 
         const marker = L.marker([location.lat, location.lng], {
+          icon: markerIcon,
           draggable: true,
-          icon: customPin,
         }).addTo(map);
 
-        marker.on('dragend', async (e: any) => {
-          const latlng = e.target.getLatLng();
-          const lat = latlng.lat;
-          const lng = latlng.lng;
-          try {
-            const addr = await reverseGeocode(lat, lng);
-            setLocation({ lat, lng, address: addr, accuracyMeters: 5 });
-          } catch {
-            setLocation((prev) => ({ ...prev, lat, lng }));
-          }
+        marker.on('dragend', async () => {
+          const latLng = marker.getLatLng();
+          const addr = await reverseGeocode(latLng.lat, latLng.lng);
+          setLocation({
+            lat: latLng.lat,
+            lng: latLng.lng,
+            address: addr,
+            accuracyMeters: 5,
+          });
         });
 
         map.on('click', async (e: L.LeafletMouseEvent) => {
-          const { lat, lng } = e.latlng;
-          marker.setLatLng([lat, lng]);
-          try {
-            const addr = await reverseGeocode(lat, lng);
-            setLocation({ lat, lng, address: addr, accuracyMeters: 5 });
-          } catch {
-            setLocation((prev) => ({ ...prev, lat, lng }));
-          }
+          marker.setLatLng(e.latlng);
+          const addr = await reverseGeocode(e.latlng.lat, e.latlng.lng);
+          setLocation({
+            lat: e.latlng.lat,
+            lng: e.latlng.lng,
+            address: addr,
+            accuracyMeters: 5,
+          });
         });
 
         pickerMapInstanceRef.current = map;
@@ -151,18 +162,10 @@ export const ReportModal: React.FC<ReportModalProps> = ({
       } else {
         pickerMapInstanceRef.current.invalidateSize();
       }
-    }, 150);
+    }, 200);
 
     return () => clearTimeout(timer);
-  }, [isOpen]);
-
-  // Keep marker in sync with state
-  useEffect(() => {
-    if (pickerMarkerRef.current && pickerMapInstanceRef.current) {
-      pickerMarkerRef.current.setLatLng([location.lat, location.lng]);
-      pickerMapInstanceRef.current.setView([location.lat, location.lng], 15);
-    }
-  }, [location.lat, location.lng]);
+  }, [isOpen, step, location.lat, location.lng]);
 
   const handleGetLiveLocation = async () => {
     setIsLocating(true);
@@ -175,7 +178,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
         pickerMarkerRef.current.setLatLng([loc.lat, loc.lng]);
       }
     } catch (err: any) {
-      setLocationError(err.message || 'Could not fetch device GPS. Please click on map to position.');
+      setLocationError(err.message || 'Could not fetch device GPS. Please pick a location manually.');
     } finally {
       setIsLocating(false);
     }
@@ -217,8 +220,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     });
     setPlaceQuery('');
     setShowDropdown(false);
-    if (pickerMapInstanceRef.current) {
+    if (pickerMapInstanceRef.current && pickerMarkerRef.current) {
       pickerMapInstanceRef.current.flyTo([place.lat, place.lng], 15);
+      pickerMarkerRef.current.setLatLng([place.lat, place.lng]);
     }
   };
 
@@ -254,83 +258,88 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     const tags = tagsInput
       .split(',')
       .map((t) => t.trim())
-      .filter((t) => t.length > 0);
-
-    const bounty = calculateBounty();
+      .filter(Boolean);
 
     onSubmit({
-      reporterId: currentUser.id,
-      reporterName: currentUser.name,
-      reporterAvatar: currentUser.avatar,
       title: title.trim(),
-      description: description.trim() || 'Civic spot requiring community cleanup.',
+      description: description.trim(),
       beforePhotoUrl: photoUrl,
       location,
       severity,
-      rewardPoints: bounty,
-      tags: tags.length > 0 ? tags : ['CivicSpot'],
+      rewardPoints: calculateBounty(),
       estimatedWasteKg: estimatedKg,
+      reporterId: currentUser.id,
+      reporterName: currentUser.name,
+      reporterAvatar: currentUser.avatar || '',
+      tags: tags.length ? tags : ['Litter'],
     });
 
     onClose();
   };
 
-  if (!isOpen) return null;
+  const stepProgress = step === 1 ? 33 : step === 2 ? 66 : 100;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1C2B24]/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-xl bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-modal overflow-hidden my-4 sm:my-6 text-[#1C2B24]">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[#E2DCCD] bg-[#F4F1EA]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-[#B3432E] text-white flex items-center justify-center font-bold text-sm shadow-subtle flex-shrink-0">
-              📍
-            </div>
-            <div>
-              <h2 className="font-serif text-base font-bold text-[#1C2B24]">Report a dirty spot</h2>
-              <p className="text-xs text-[#6B7468]">
-                Pin a littered area needing cleanup and set a community bounty.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-[4px] text-[#6B7468] hover:text-[#1C2B24] hover:bg-[#E2DCCD] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Report a Littered Spot"
+      description={`Step ${step} of 3: ${
+        step === 1
+          ? 'Upload initial photo proof'
+          : step === 2
+          ? 'Pin precise location on map'
+          : 'Spot description & estimated waste'
+      }`}
+      size="lg"
+    >
+      <div className="space-y-5">
+        {/* Step Progress Bar */}
+        <ProgressBar
+          value={stepProgress}
+          variant="lime"
+          valueLabel={`Step ${step} / 3`}
+        />
 
-        {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 max-h-[82vh] overflow-y-auto">
-          {/* Photo Upload */}
-          <div>
-            <label className="block text-xs font-semibold text-[#1C2B24] mb-1.5">
-              Photo of dirty area <span className="text-[#B3432E]">*</span>
-            </label>
+        {/* STEP 1: PHOTO CAPTURE & UPLOAD */}
+        {step === 1 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-ink">
+                Take or upload dirty spot photo
+              </label>
 
-            {photoUrl ? (
-              <div className="relative aspect-[16/10] rounded-[6px] overflow-hidden border border-[#E2DCCD] bg-[#F4F1EA]">
-                <img src={photoUrl} alt="Reported spot" className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => setPhotoUrl('')}
-                  className="absolute top-2.5 right-2.5 px-2.5 py-1 text-xs bg-[#1C2B24]/80 hover:bg-[#1C2B24] text-white rounded-[4px] font-medium transition-colors"
-                >
-                  Change photo
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <label className="flex flex-col items-center justify-center p-5 border border-dashed border-[#D5CEBE] hover:border-[#1E6B4B] rounded-[6px] cursor-pointer bg-[#F4F1EA]/50 hover:bg-[#EAF3EE] transition-colors group">
-                  <Camera className="w-5 h-5 text-[#1E6B4B] mb-1.5" />
-                  <span className="text-xs font-semibold text-[#1C2B24] text-center">
-                    Take photo with camera
-                  </span>
-                  <span className="text-[11px] text-[#6B7468] text-center">
-                    or select an image from your device
-                  </span>
+              {photoUrl ? (
+                <div className="relative w-full aspect-[16/10] rounded-sm overflow-hidden border border-border group bg-forest/5">
+                  <img
+                    src={photoUrl}
+                    alt="Preview of dirty spot"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl('')}
+                    className="absolute top-3 right-3 px-3 py-1 bg-ink/75 hover:bg-ink text-white text-xs rounded-sm transition-colors shadow-sm"
+                  >
+                    Replace photo
+                  </button>
+                  <div className="absolute bottom-3 left-3">
+                    <Badge variant="coral" size="sm">
+                      Before Proof
+                    </Badge>
+                  </div>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full aspect-[16/10] border-2 border-dashed border-border hover:border-forest rounded-sm cursor-pointer bg-surface-muted/60 hover:bg-surface-muted transition-colors p-6 text-center">
+                  <div className="w-12 h-12 rounded-full bg-forest text-lime flex items-center justify-center mb-3 shadow-sm">
+                    <Camera className="w-6 h-6 stroke-[1.75]" />
+                  </div>
+                  <p className="text-sm font-semibold text-ink">
+                    Snap a photo or browse device
+                  </p>
+                  <p className="text-xs text-muted mt-1">
+                    JPEG, PNG, WebP up to 10MB
+                  </p>
                   <input
                     type="file"
                     accept="image/*"
@@ -339,258 +348,227 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                     className="hidden"
                   />
                 </label>
-
-                {/* Sample mess presets */}
-                <div className="pt-1">
-                  <span className="text-[11px] text-[#6B7468] block mb-1">
-                    Or select a sample dirty spot for testing:
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {PRESET_MESSES.map((preset) => (
-                      <button
-                        type="button"
-                        key={preset.name}
-                        onClick={() => {
-                          setPhotoUrl(preset.url);
-                          setTitle(preset.title);
-                          setSeverity(preset.severity);
-                        }}
-                        className="text-left p-1.5 rounded-[6px] border border-[#E2DCCD] bg-[#FFFDF8] hover:border-[#1E6B4B] transition-colors text-xs"
-                      >
-                        <img
-                          src={preset.url}
-                          alt={preset.name}
-                          className="w-full h-12 object-cover rounded-[4px] mb-1"
-                        />
-                        <span className="text-[11px] font-medium text-[#1C2B24] block truncate">
-                          {preset.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Interactive Map Picker & GPS Section */}
-          <div className="space-y-2.5 bg-[#F4F1EA] p-3.5 rounded-[6px] border border-[#E2DCCD]">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-[#1C2B24] flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#1E6B4B]" />
-                Spot location <span className="text-[#B3432E]">*</span>
-              </label>
-              <button
-                type="button"
-                onClick={handleGetLiveLocation}
-                disabled={isLocating}
-                className="text-[11px] font-medium text-[#1E6B4B] hover:underline flex items-center gap-1"
-              >
-                {isLocating ? (
-                  <>
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    Finding GPS...
-                  </>
-                ) : (
-                  <>
-                    <Crosshair className="w-3 h-3 text-[#1E6B4B]" />
-                    Use live GPS
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Place Search Bar */}
-            <div className="relative">
-              <div className="flex items-center gap-2 bg-[#FFFDF8] px-3 py-1.5 rounded-[6px] border border-[#E2DCCD] text-xs">
-                {isSearchingPlace ? (
-                  <Loader2 className="w-3.5 h-3.5 text-[#1E6B4B] animate-spin flex-shrink-0" />
-                ) : (
-                  <Search className="w-3.5 h-3.5 text-[#6B7468] flex-shrink-0" />
-                )}
-                <input
-                  type="text"
-                  value={placeQuery}
-                  onChange={handlePlaceSearch}
-                  placeholder="Type an address or city to search..."
-                  className="w-full text-xs bg-transparent text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none"
-                />
-              </div>
-
-              {/* Autocomplete dropdown */}
-              {showDropdown && searchResults.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown overflow-hidden z-30 max-h-48 overflow-y-auto">
-                  {searchResults.map((item, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleSelectPlace(item)}
-                      className="w-full text-left px-3 py-2 text-xs text-[#1C2B24] hover:bg-[#F4F1EA] border-b border-[#E2DCCD] last:border-b-0 flex items-center gap-2 transition-colors"
-                    >
-                      <MapPin className="w-3.5 h-3.5 text-[#B3432E] flex-shrink-0" />
-                      <span className="truncate">{item.display_name}</span>
-                    </button>
-                  ))}
-                </div>
               )}
             </div>
 
-            {/* Interactive Leaflet Picker Map */}
-            <div className="relative w-full h-40 rounded-[6px] overflow-hidden border border-[#E2DCCD] bg-[#FFFDF8]">
-              <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
-              <div className="absolute top-2 left-2 z-10 bg-[#FFFDF8]/90 px-2 py-0.5 rounded-[4px] border border-[#E2DCCD] text-[10px] text-[#1C2B24]">
-                📍 Drag or click map to move pin
-              </div>
-            </div>
-
-            {/* Selected Address Display */}
-            <div className="bg-[#FFFDF8] p-2.5 rounded-[6px] border border-[#E2DCCD] text-xs">
-              <p className="font-medium text-[#1C2B24] truncate">
-                {location.address || 'Locating address...'}
-              </p>
-              <p className="text-[11px] text-[#6B7468] tabular-nums mt-0.5">
-                Lat: {location.lat.toFixed(5)}, Lng: {location.lng.toFixed(5)}
-              </p>
-            </div>
-
-            {locationError && (
-              <p className="text-xs text-[#B3432E] flex items-center gap-1">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                {locationError}
-              </p>
-            )}
-
-            {/* Quick city switcher presets */}
-            <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-              <span className="text-[11px] text-[#6B7468]">Sample cities:</span>
-              {SAMPLE_CITIES.slice(0, 4).map((city) => (
-                <button
-                  type="button"
-                  key={city.name}
-                  onClick={() =>
-                    setLocation({
-                      lat: city.lat,
-                      lng: city.lng,
-                      address: city.name,
-                      accuracyMeters: 5,
-                    })
-                  }
-                  className="text-[11px] px-2 py-0.5 rounded-[4px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] hover:border-[#1E6B4B] transition-colors"
-                >
-                  {city.name.split(',')[0]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Title & Description */}
-          <div className="space-y-3">
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Spot title <span className="text-[#B3432E]">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Broken glass & wrappers beside riverside path"
-                className="w-full px-3 py-2 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Description / Details
-              </label>
-              <textarea
-                rows={2}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Details on types of litter, gloves recommended, accessibility..."
-                className="w-full px-3 py-2 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B] resize-none"
-              />
-            </div>
-          </div>
-
-          {/* Severity and Est. Waste */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Severity level
-              </label>
-              <div className="grid grid-cols-3 gap-1.5">
-                {(['low', 'medium', 'high'] as SeverityLevel[]).map((level) => (
+            {/* Quick Photo URL or Presets */}
+            <div className="pt-2 border-t border-border space-y-2">
+              <span className="text-xs font-medium text-muted block">
+                Or pick a quick demo mess to test:
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {PRESET_MESSES.map((preset) => (
                   <button
-                    key={level}
+                    key={preset.name}
                     type="button"
-                    onClick={() => setSeverity(level)}
-                    className={`py-1.5 px-2 text-xs font-medium rounded-[4px] capitalize transition-colors border ${
-                      severity === level
-                        ? level === 'high'
-                          ? 'bg-[#B3432E] text-white border-[#B3432E]'
-                          : level === 'medium'
-                          ? 'bg-[#D9822B] text-white border-[#D9822B]'
-                          : 'bg-[#1E6B4B] text-white border-[#1E6B4B]'
-                        : 'bg-[#FFFDF8] text-[#6B7468] border-[#E2DCCD] hover:bg-[#F4F1EA]'
-                    }`}
+                    onClick={() => {
+                      setPhotoUrl(preset.url);
+                      setTitle(preset.title);
+                      setSeverity(preset.severity);
+                    }}
+                    className="p-2 text-left rounded-sm border border-border bg-surface hover:bg-surface-muted transition-colors text-xs space-y-1"
                   >
-                    {level}
+                    <div className="h-14 rounded-sm overflow-hidden bg-surface-muted">
+                      <img
+                        src={preset.url}
+                        alt={preset.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="font-medium text-ink truncate text-[11px]">
+                      {preset.name}
+                    </p>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Estimated waste (kg)
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={500}
-                value={estimatedKg}
-                onChange={(e) => setEstimatedKg(Number(e.target.value))}
-                className="w-full px-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] tabular-nums focus:outline-none focus:border-[#1E6B4B]"
-              />
+            <div className="flex justify-end pt-3">
+              <Button
+                variant="primary"
+                size="md"
+                disabled={!photoUrl}
+                iconRight={<ArrowRight className="w-4 h-4" />}
+                onClick={() => setStep(2)}
+              >
+                Next: Pin location
+              </Button>
             </div>
           </div>
+        )}
 
-          {/* Community Bounty Preview Callout */}
-          <div className="bg-[#EAF3EE] p-3 rounded-[6px] border border-[#E2DCCD] flex items-center justify-between gap-3 text-xs">
-            <div>
-              <span className="font-semibold text-[#1C2B24] block">
-                Automatic civic bounty
-              </span>
-              <span className="text-[11px] text-[#6B7468]">
-                Awarded to whichever neighbour submits verified photo proof of cleaning this spot
-              </span>
+        {/* STEP 2: LOCATION PICKER */}
+        {step === 2 && (
+          <div className="space-y-4 animate-fadeIn">
+            {/* Search and GPS Bar */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Search address or landmark..."
+                  value={placeQuery}
+                  onChange={handlePlaceSearch}
+                  startIcon={<Search className="w-3.5 h-3.5" />}
+                />
+                {showDropdown && searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-sm shadow-md overflow-hidden z-20 max-h-40 overflow-y-auto">
+                    {searchResults.map((place, idx) => (
+                      <button
+                        key={`${place.lat}-${place.lng}-${idx}`}
+                        type="button"
+                        onClick={() => handleSelectPlace(place)}
+                        className="w-full px-3 py-2 text-left text-xs hover:bg-surface-muted border-b border-border/50 text-ink truncate"
+                      >
+                        {place.display_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={handleGetLiveLocation}
+                isLoading={isLocating}
+                icon={<Crosshair className="w-4 h-4 text-forest" />}
+              >
+                Use GPS
+              </Button>
             </div>
-            <span className="font-semibold text-sm text-[#1E6B4B] tabular-nums flex-shrink-0">
-              +{calculateBounty()} pts
-            </span>
-          </div>
 
-          {/* Submit Action */}
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E2DCCD]">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-3.5 py-2 text-xs font-medium text-[#6B7468] hover:text-[#1C2B24] transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!photoUrl || !title.trim()}
-              className="px-4 py-2 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] disabled:opacity-40 transition-colors shadow-subtle flex items-center gap-1.5"
-            >
-              <CheckCircle className="w-3.5 h-3.5" />
-              <span>Publish spot</span>
-            </button>
+            {/* Interactive Leaflet Pin Picker */}
+            <div className="relative w-full h-56 rounded-sm border border-border overflow-hidden">
+              <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
+            </div>
+
+            <div className="p-3 rounded-sm bg-surface-muted border border-border flex items-start gap-2.5">
+              <MapPin className="w-4 h-4 text-forest flex-shrink-0 mt-0.5" />
+              <div className="text-left text-xs min-w-0">
+                <span className="font-semibold text-ink block">Selected Coordinates:</span>
+                <p className="text-muted truncate">{location.address}</p>
+                <span className="text-[10px] text-faint tabular-nums">
+                  {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-3">
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<ArrowLeft className="w-4 h-4" />}
+                onClick={() => setStep(1)}
+              >
+                Back
+              </Button>
+
+              <Button
+                variant="primary"
+                size="md"
+                iconRight={<ArrowRight className="w-4 h-4" />}
+                onClick={() => setStep(3)}
+              >
+                Next: Spot details
+              </Button>
+            </div>
           </div>
-        </form>
+        )}
+
+        {/* STEP 3: DETAILS & BOUNTY SUBMIT */}
+        {step === 3 && (
+          <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn text-left">
+            <Input
+              label="Spot title *"
+              placeholder="e.g. Broken beer bottles & fast food bags along trail"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+
+            <Textarea
+              label="Description (optional)"
+              placeholder="Provide details about accessibility, hazards, or cleanup tips..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-ink mb-1.5">
+                  Severity level
+                </label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {(['low', 'medium', 'high'] as SeverityLevel[]).map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => setSeverity(lvl)}
+                      className={`py-2 text-xs font-medium rounded-sm border transition-colors select-none capitalize ${
+                        severity === lvl
+                          ? 'bg-forest text-lime border-forest font-semibold'
+                          : 'bg-surface text-muted border-border hover:text-ink'
+                      }`}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-ink mb-1.5">
+                  Estimated waste (kg)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={200}
+                  value={estimatedKg}
+                  onChange={(e) => setEstimatedKg(Number(e.target.value) || 1)}
+                  className="w-full h-10 rounded-sm bg-surface text-ink text-sm px-3 border border-border outline-none focus:ring-2 focus:ring-lime focus:border-forest tabular-nums"
+                />
+              </div>
+            </div>
+
+            {/* Bounty Reward Summary Strip */}
+            <div className="p-3.5 rounded-sm bg-lime-subtle/50 border border-border flex items-center justify-between">
+              <div>
+                <span className="text-xs font-semibold text-forest block">
+                  Volunteer Civic Bounty
+                </span>
+                <span className="text-[11px] text-muted">
+                  Points awarded to the neighbour who verifies the cleanup
+                </span>
+              </div>
+              <Badge variant="lime" size="md">
+                +{calculateBounty()} pts
+              </Badge>
+            </div>
+
+            <div className="flex items-center justify-between pt-3">
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<ArrowLeft className="w-4 h-4" />}
+                onClick={() => setStep(2)}
+              >
+                Back
+              </Button>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                disabled={!title.trim()}
+                icon={<Sparkles className="w-4 h-4 text-lime" />}
+              >
+                Submit dirty spot & launch bounty
+              </Button>
+            </div>
+          </form>
+        )}
       </div>
-    </div>
+    </Modal>
   );
 };

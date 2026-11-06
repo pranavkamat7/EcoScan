@@ -13,8 +13,18 @@ import {
   Layers,
   RotateCcw,
   Loader2,
+  Plus,
 } from 'lucide-react';
 import { searchLocations, GeocodeSearchResult } from '../utils/geo';
+import {
+  PageHeader,
+  Card,
+  Button,
+  IconButton,
+  Chip,
+  Badge,
+  Avatar,
+} from './ui';
 
 interface MapViewProps {
   spots: Spot[];
@@ -22,11 +32,15 @@ interface MapViewProps {
   onSelectSpot: (spot: Spot) => void;
   onCleanSpot: (spot: Spot) => void;
   currentUser: UserProfile;
+  onOpenReportModal?: () => void;
 }
 
 type MapTileStyle = 'streets' | 'terrain' | 'satellite';
 
-const TILE_PROVIDERS: Record<MapTileStyle, { url: string; maxZoom: number; attribution: string; name: string }> = {
+const TILE_PROVIDERS: Record<
+  MapTileStyle,
+  { url: string; maxZoom: number; attribution: string; name: string }
+> = {
   streets: {
     name: 'OpenStreetMap',
     url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -52,6 +66,7 @@ export const MapView: React.FC<MapViewProps> = ({
   selectedSpot,
   onSelectSpot,
   onCleanSpot,
+  onOpenReportModal,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -77,20 +92,26 @@ export const MapView: React.FC<MapViewProps> = ({
     }
   }, [selectedSpot]);
 
-  // Initialize Map
+  // Initialize Leaflet Map
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    const initialCenterLat = activeSpot ? activeSpot.location.lat : spots[0]?.location.lat || 40.7829;
-    const initialCenterLng = activeSpot ? activeSpot.location.lng : spots[0]?.location.lng || -73.9654;
+    // Default center (Margao / Goa or first spot)
+    const initialCenter: [number, number] =
+      spots.length > 0
+        ? [spots[0].location.lat, spots[0].location.lng]
+        : [15.2832, 73.9862];
 
     const map = L.map(mapContainerRef.current, {
-      center: [initialCenterLat, initialCenterLng],
+      center: initialCenter,
       zoom: 14,
       zoomControl: false,
-      scrollWheelZoom: true,
     });
 
+    // Custom Zoom Control at bottom right
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // Initial Tile Layer
     const activeTile = TILE_PROVIDERS[tileStyle];
     const tileLayer = L.tileLayer(activeTile.url, {
       attribution: activeTile.attribution,
@@ -100,13 +121,14 @@ export const MapView: React.FC<MapViewProps> = ({
     tileLayerRef.current = tileLayer;
     mapInstanceRef.current = map;
 
+    // Cleanup on unmount
     return () => {
       map.remove();
       mapInstanceRef.current = null;
     };
   }, []);
 
-  // Update tile style when user selects a different one
+  // Update Tile Layer on style switch
   useEffect(() => {
     if (!mapInstanceRef.current || !tileLayerRef.current) return;
 
@@ -120,7 +142,7 @@ export const MapView: React.FC<MapViewProps> = ({
     tileLayerRef.current = newTileLayer;
   }, [tileStyle]);
 
-  // Render Spots as Custom Markers
+  // Render Spots as Custom Markers (Coral for needs clean, Mint for restored)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -138,13 +160,14 @@ export const MapView: React.FC<MapViewProps> = ({
       const isSelected = activeSpot?.id === spot.id;
       const isCleaned = spot.status === 'cleaned';
 
-      const markerColor = isCleaned ? '#16A34A' : '#EF4444';
+      // Design system status colors: coral (#E0533C) & mint (#238253)
+      const markerColor = isCleaned ? '#238253' : '#E0533C';
       const markerEmoji = isCleaned ? '✨' : '⚠️';
 
       const customIcon = L.divIcon({
         className: 'custom-spot-marker',
         html: `
-          <div class="relative group cursor-pointer transition-transform duration-300 ${
+          <div class="relative group cursor-pointer transition-transform duration-200 ${
             isSelected ? 'scale-125 z-30' : 'hover:scale-110'
           }">
             <div style="
@@ -156,18 +179,13 @@ export const MapView: React.FC<MapViewProps> = ({
               display: flex;
               align-items: center;
               justify-content: center;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-              border: 3px solid white;
+              box-shadow: 0 4px 12px rgba(15, 41, 30, 0.25);
+              border: 2px solid white;
             ">
-              <span style="transform: rotate(45deg); font-size: ${isSelected ? '16px' : '13px'};">
+              <span style="transform: rotate(45deg); font-size: ${isSelected ? '15px' : '12px'};">
                 ${markerEmoji}
               </span>
             </div>
-            ${
-              isSelected
-                ? `<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white shadow-md"></div>`
-                : ''
-            }
           </div>
         `,
         iconSize: isSelected ? [38, 38] : [32, 32],
@@ -187,13 +205,9 @@ export const MapView: React.FC<MapViewProps> = ({
 
       markersRef.current.push(marker);
     });
+  }, [spots, mapFilter, activeSpot, onSelectSpot]);
 
-    if (activeSpot) {
-      map.panTo([activeSpot.location.lat, activeSpot.location.lng], { animate: true });
-    }
-  }, [spots, activeSpot, mapFilter, onSelectSpot]);
-
-  // Handle Search Input with Debounce
+  // Search places using OpenStreetMap Nominatim
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -250,13 +264,10 @@ export const MapView: React.FC<MapViewProps> = ({
         const userIcon = L.divIcon({
           className: 'custom-spot-marker',
           html: `
-            <div class="user-location-marker">
-              <div class="user-location-pulse"></div>
-              <div class="user-location-dot"></div>
-            </div>
+            <div class="w-4 h-4 rounded-full bg-forest border-2 border-lime shadow-md ring-4 ring-forest/20 animate-pulse"></div>
           `,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
         });
 
         userMarkerRef.current = L.marker([latitude, longitude], {
@@ -279,237 +290,296 @@ export const MapView: React.FC<MapViewProps> = ({
     map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
   };
 
+  const needsCleanCount = spots.filter((s) => s.status === 'needs_cleaning').length;
+  const restoredCount = spots.filter((s) => s.status === 'cleaned').length;
+
   return (
-    <div className="relative w-full h-[calc(100vh-140px)] min-h-[520px] rounded-[12px] border border-[#E2DCCD] overflow-hidden shadow-subtle bg-[#F4F1EA]">
-      {/* Map Canvas */}
-      <div ref={mapContainerRef} className="w-full h-full z-0" />
-
-      {/* TOP FLOATING CONTROLS BAR */}
-      <div className="absolute top-3 left-3 right-3 sm:left-4 sm:right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pointer-events-none">
-        {/* Left: Filter Buttons & Search Input */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pointer-events-auto">
-          {/* Status Filters */}
-          <div className="bg-[#FFFDF8] p-1 rounded-[6px] border border-[#E2DCCD] shadow-subtle flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setMapFilter('all')}
-              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors ${
-                mapFilter === 'all'
-                  ? 'bg-[#1C2B24] text-white'
-                  : 'text-[#6B7468] hover:text-[#1C2B24]'
-              }`}
+    <div className="space-y-6">
+      {/* 1. SHARED PAGE HEADER */}
+      <PageHeader
+        title="Interactive Civic Clean Map"
+        description="Explore littered spots and restored transformations pinned by community volunteers across your city."
+        action={
+          onOpenReportModal && (
+            <Button
+              variant="lime"
+              size="md"
+              icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
+              onClick={onOpenReportModal}
             >
-              All ({spots.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setMapFilter('needs_cleaning')}
-              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors flex items-center gap-1 ${
-                mapFilter === 'needs_cleaning'
-                  ? 'bg-[#B3432E] text-white'
-                  : 'text-[#B3432E] hover:bg-[#F4F1EA]'
-              }`}
-            >
-              Needs clean ({spots.filter((s) => s.status === 'needs_cleaning').length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setMapFilter('cleaned')}
-              className={`px-2.5 py-1 rounded-[4px] text-xs font-medium transition-colors flex items-center gap-1 ${
-                mapFilter === 'cleaned'
-                  ? 'bg-[#2F8F5B] text-white'
-                  : 'text-[#2F8F5B] hover:bg-[#F4F1EA]'
-              }`}
-            >
-              Restored ({spots.filter((s) => s.status === 'cleaned').length})
-            </button>
-          </div>
+              Report dirty spot
+            </Button>
+          )
+        }
+      />
 
-          {/* Place Search Bar */}
-          <div className="relative min-w-[220px] sm:w-64">
-            <div className="bg-[#FFFDF8] flex items-center gap-2 px-3 py-1.5 rounded-[6px] border border-[#E2DCCD] shadow-subtle">
-              {isSearching ? (
-                <Loader2 className="w-3.5 h-3.5 text-[#1E6B4B] animate-spin flex-shrink-0" />
-              ) : (
-                <Search className="w-3.5 h-3.5 text-[#6B7468] flex-shrink-0" />
-              )}
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={() => {
-                  if (searchResults.length > 0) setShowSearchDropdown(true);
-                }}
-                placeholder="Search any place or town..."
-                className="w-full text-xs bg-transparent text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSearchResults([]);
-                    setShowSearchDropdown(false);
-                  }}
-                  className="text-[#6B7468] hover:text-[#1C2B24]"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
+      {/* 2. MAP IN A LARGE 20px-RADIUS CONTAINER */}
+      <Card
+        variant="default"
+        className="p-0 overflow-hidden relative h-[640px] shadow-sm border border-border"
+      >
+        {/* Map Canvas */}
+        <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-            {/* Dropdown search results */}
-            {showSearchDropdown && searchResults.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown overflow-hidden z-30 max-h-56 overflow-y-auto">
-                {searchResults.map((item, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSelectSearchResult(item)}
-                    className="w-full text-left px-3 py-2 text-xs text-[#1C2B24] hover:bg-[#F4F1EA] border-b border-[#E2DCCD] last:border-b-0 flex items-start gap-2 transition-colors"
-                  >
-                    <MapPin className="w-3.5 h-3.5 text-[#B3432E] flex-shrink-0 mt-0.5" />
-                    <span className="truncate">{item.display_name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right: Map Layers & Utility Dock */}
-        <div className="flex items-center gap-1.5 self-end sm:self-auto pointer-events-auto">
-          {/* Map Layer Switcher */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowLayerMenu(!showLayerMenu)}
-              className="bg-[#FFFDF8] px-2.5 py-1.5 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1C2B24] hover:bg-[#F4F1EA] transition-colors flex items-center gap-1.5 text-xs font-medium"
-              title="Change map style"
-            >
-              <Layers className="w-3.5 h-3.5 text-[#1E6B4B]" />
-              <span className="hidden sm:inline">{TILE_PROVIDERS[tileStyle].name}</span>
-            </button>
-
-            {showLayerMenu && (
-              <div className="absolute right-0 top-full mt-1 w-44 bg-[#FFFDF8] rounded-[6px] border border-[#E2DCCD] shadow-dropdown p-1 z-30">
-                <span className="text-[11px] text-[#6B7468] px-2 py-1 block">
-                  Map view style
-                </span>
-                {(['streets', 'terrain', 'satellite'] as MapTileStyle[]).map((style) => (
-                  <button
-                    key={style}
-                    type="button"
-                    onClick={() => {
-                      setTileStyle(style);
-                      setShowLayerMenu(false);
-                    }}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-[4px] text-xs font-medium transition-colors flex items-center justify-between ${
-                      tileStyle === style
-                        ? 'bg-[#EAF3EE] text-[#1E6B4B] font-semibold'
-                        : 'text-[#1C2B24] hover:bg-[#F4F1EA]'
-                    }`}
-                  >
-                    <span>{TILE_PROVIDERS[style].name}</span>
-                    {tileStyle === style && <span className="text-xs">✓</span>}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Fit all spots */}
-          <button
-            type="button"
-            onClick={handleFitAllSpots}
-            className="bg-[#FFFDF8] p-2 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1C2B24] hover:bg-[#F4F1EA] transition-colors"
-            title="Fit all spots on screen"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-
-          {/* GPS Locate Me Button */}
-          <button
-            type="button"
-            onClick={handleLocateMe}
-            className="bg-[#FFFDF8] p-2 rounded-[6px] border border-[#E2DCCD] shadow-subtle text-[#1E6B4B] hover:bg-[#F4F1EA] transition-colors"
-            title="Center on my live location"
-          >
-            <Crosshair className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Floating Active Spot Preview Drawer (Bottom Left) */}
-      {activeSpot && (
-        <div className="absolute bottom-4 left-3 right-3 sm:left-4 sm:right-auto sm:w-[380px] z-20 bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-dropdown p-4 text-[#1C2B24]">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <span
-              className={`inline-block px-2 py-0.5 rounded-[4px] text-[11px] font-semibold ${
-                activeSpot.status === 'cleaned'
-                  ? 'bg-[#2F8F5B] text-white'
-                  : 'bg-[#B3432E] text-white'
-              }`}
-            >
-              {activeSpot.status === 'cleaned'
-                ? 'Restored'
-                : `Needs clean · +${activeSpot.rewardPoints} pts`}
-            </span>
-            <button
-              type="button"
-              onClick={() => setActiveSpot(null)}
-              className="p-1 text-[#6B7468] hover:text-[#1C2B24] rounded-[4px] transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="flex gap-3 items-center mb-3">
-            <div className="relative w-16 h-16 rounded-[6px] overflow-hidden border border-[#E2DCCD] flex-shrink-0 bg-[#F4F1EA]">
-              <img
-                src={
-                  activeSpot.status === 'cleaned' && activeSpot.verification
-                    ? activeSpot.verification.afterPhotoUrl
-                    : activeSpot.beforePhotoUrl
-                }
-                alt={activeSpot.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="min-w-0">
-              <h4 className="font-semibold text-xs text-[#1C2B24] truncate">{activeSpot.title}</h4>
-              <p className="text-[11px] text-[#6B7468] line-clamp-2 mt-0.5">
-                {activeSpot.description}
-              </p>
-              <p className="text-[11px] text-[#6B7468] flex items-center gap-1 mt-0.5 truncate">
-                <MapPin className="w-3 h-3 text-[#B3432E] flex-shrink-0" />
-                <span className="truncate">{activeSpot.location.address}</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between pt-2 border-t border-[#E2DCCD]">
-            <button
-              type="button"
-              onClick={() => onSelectSpot(activeSpot)}
-              className="text-xs font-medium text-[#1E6B4B] hover:underline flex items-center gap-1 transition-colors"
-            >
-              <span>View full card</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-
-            {activeSpot.status === 'needs_cleaning' && (
+        {/* TOP FLOATING CONTROLS BAR */}
+        <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
+          {/* Left: Floating Filter Chips & Search Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
+            {/* Filter Chips Container */}
+            <div className="bg-surface/95 backdrop-blur-sm p-1.5 rounded-sm border border-border shadow-sm flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => onCleanSpot(activeSpot)}
-                className="px-3 py-1.5 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] transition-colors shadow-subtle"
+                onClick={() => setMapFilter('all')}
+                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors select-none ${
+                  mapFilter === 'all'
+                    ? 'bg-forest text-lime font-semibold'
+                    : 'text-muted hover:text-ink'
+                }`}
               >
-                Clean this spot
+                All ({spots.length})
               </button>
-            )}
+
+              <button
+                type="button"
+                onClick={() => setMapFilter('needs_cleaning')}
+                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors flex items-center gap-1.5 select-none ${
+                  mapFilter === 'needs_cleaning'
+                    ? 'bg-coral text-white font-semibold'
+                    : 'text-coral hover:bg-coral-subtle'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-coral inline-block" />
+                Needs clean ({needsCleanCount})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMapFilter('cleaned')}
+                className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors flex items-center gap-1.5 select-none ${
+                  mapFilter === 'cleaned'
+                    ? 'bg-mint text-white font-semibold'
+                    : 'text-mint hover:bg-mint-subtle'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-mint inline-block" />
+                Restored ({restoredCount})
+              </button>
+            </div>
+
+            {/* Place Search Bar */}
+            <div className="relative min-w-[220px] sm:w-64">
+              <div className="bg-surface/95 backdrop-blur-sm flex items-center gap-2 px-3 py-2 rounded-sm border border-border shadow-sm">
+                {isSearching ? (
+                  <Loader2 className="w-3.5 h-3.5 text-forest animate-spin flex-shrink-0" />
+                ) : (
+                  <Search className="w-3.5 h-3.5 text-muted flex-shrink-0" />
+                )}
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={() => {
+                    if (searchResults.length > 0) setShowSearchDropdown(true);
+                  }}
+                  placeholder="Search city, locality..."
+                  className="bg-transparent border-none outline-none text-xs text-ink placeholder:text-muted/60 w-full"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults([]);
+                    }}
+                    className="text-muted hover:text-ink text-xs p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
+              {/* Geocode Search Results Dropdown */}
+              {showSearchDropdown && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 bg-surface border border-border rounded-sm shadow-md overflow-hidden z-30 max-h-52 overflow-y-auto">
+                  {searchResults.map((place, idx) => (
+                    <button
+                      key={`${place.lat}-${place.lng}-${idx}`}
+                      type="button"
+                      onClick={() => handleSelectSearchResult(place)}
+                      className="w-full px-3 py-2 text-left text-xs hover:bg-surface-muted border-b border-border/50 last:border-b-0 flex items-start gap-2 text-ink transition-colors"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-forest flex-shrink-0 mt-0.5" />
+                      <span className="line-clamp-2 leading-tight">
+                        {place.display_name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Map Utility Buttons */}
+          <div className="flex items-center gap-1.5 pointer-events-auto self-end sm:self-auto">
+            {/* Layer switcher */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowLayerMenu(!showLayerMenu)}
+                className="h-9 px-3 bg-surface/95 backdrop-blur-sm hover:bg-surface border border-border rounded-sm shadow-sm text-xs font-medium text-ink flex items-center gap-1.5 transition-colors"
+              >
+                <Layers className="w-3.5 h-3.5 text-forest" />
+                <span>{TILE_PROVIDERS[tileStyle].name}</span>
+              </button>
+
+              {showLayerMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowLayerMenu(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface border border-border rounded-sm shadow-md py-1 z-20">
+                    {(Object.keys(TILE_PROVIDERS) as MapTileStyle[]).map((style) => (
+                      <button
+                        key={style}
+                        type="button"
+                        onClick={() => {
+                          setTileStyle(style);
+                          setShowLayerMenu(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                          tileStyle === style
+                            ? 'font-semibold text-forest bg-surface-muted'
+                            : 'text-ink hover:bg-surface-muted'
+                        }`}
+                      >
+                        <span>{TILE_PROVIDERS[style].name}</span>
+                        {tileStyle === style && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-forest" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Fit all spots */}
+            <IconButton
+              label="Fit all cleanup spots in view"
+              size="sm"
+              variant="secondary"
+              onClick={handleFitAllSpots}
+              className="bg-surface/95 backdrop-blur-sm"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </IconButton>
+
+            {/* Locate me */}
+            <IconButton
+              label="Center on my location"
+              size="sm"
+              variant="secondary"
+              onClick={handleLocateMe}
+              className="bg-surface/95 backdrop-blur-sm"
+            >
+              <Crosshair className="w-3.5 h-3.5 text-forest" />
+            </IconButton>
           </div>
         </div>
-      )}
+
+        {/* BOTTOM SHEET / SIDE PANEL PREVIEW (Card style with 20px radius) */}
+        {activeSpot && (
+          <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-20 pointer-events-auto animate-slideUp">
+            <Card
+              variant="default"
+              className="p-4 sm:p-5 shadow-modal border-border-strong relative"
+            >
+              <IconButton
+                label="Close preview"
+                size="sm"
+                variant="ghost"
+                onClick={() => setActiveSpot(null)}
+                className="absolute top-3 right-3 text-muted hover:text-ink"
+              >
+                <X className="w-3.5 h-3.5" />
+              </IconButton>
+
+              <div className="space-y-3">
+                {/* Status + Points */}
+                <div className="flex items-center gap-2">
+                  {activeSpot.status === 'cleaned' ? (
+                    <Badge variant="mint" size="sm">
+                      Restored & verified
+                    </Badge>
+                  ) : (
+                    <Badge variant="coral" size="sm">
+                      Needs clean
+                    </Badge>
+                  )}
+                  <Badge variant="points" size="sm">
+                    +{activeSpot.rewardPoints} pts
+                  </Badge>
+                </div>
+
+                {/* Photo Preview */}
+                <div className="relative w-full h-36 rounded-sm overflow-hidden bg-forest/10 border border-border">
+                  <img
+                    src={
+                      activeSpot.status === 'cleaned' && activeSpot.verification
+                        ? activeSpot.verification.afterPhotoUrl
+                        : activeSpot.beforePhotoUrl
+                    }
+                    alt={activeSpot.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-2 left-2">
+                    <span className="text-[10px] font-semibold text-white px-2 py-0.5 rounded-sm bg-ink/75">
+                      {activeSpot.status === 'cleaned' ? 'After Proof' : 'Before Photo'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Spot Details */}
+                <div className="space-y-1">
+                  <h4 className="font-heading font-bold text-base text-ink line-clamp-1">
+                    {activeSpot.title}
+                  </h4>
+                  <p className="text-xs text-muted truncate flex items-center gap-1">
+                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                    <span>{activeSpot.location.address}</span>
+                  </p>
+                </div>
+
+                {/* Action Button */}
+                {activeSpot.status === 'needs_cleaning' ? (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="w-full"
+                    icon={<Sparkles className="w-3.5 h-3.5 text-lime" />}
+                    onClick={() => onCleanSpot(activeSpot)}
+                  >
+                    Clean this spot & earn +{activeSpot.rewardPoints} pts
+                  </Button>
+                ) : (
+                  <div className="pt-1 flex items-center justify-between text-xs text-muted border-t border-border">
+                    <span className="flex items-center gap-1.5">
+                      <Avatar
+                        src={activeSpot.verification?.cleanerAvatar}
+                        name={activeSpot.verification?.cleanerName}
+                        size="xs"
+                      />
+                      <span>By {activeSpot.verification?.cleanerName}</span>
+                    </span>
+                    <span className="text-mint font-semibold">Restored</span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

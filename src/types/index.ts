@@ -15,6 +15,7 @@ export interface SpotComment {
   authorAvatar: string;
   text: string;
   createdAt: string;
+  authorId?: string;
 }
 
 export interface CleanVerification {
@@ -25,7 +26,9 @@ export interface CleanVerification {
   cleanedAt: string;
   location: GeoLocation;
   distanceFromOriginMeters: number;
+  gpsDistanceMeters?: number;
   isLocationVerified: boolean;
+  verified?: boolean;
   notes?: string;
   pointsEarned: number;
 }
@@ -54,14 +57,15 @@ export interface Spot {
 export interface UserProfile {
   id: string;
   name: string;
-  handle: string;
-  avatar: string;
+  handle?: string;
+  avatar?: string;
+  email?: string;
   points: number;
   level: string;
   spotsReported: number;
   spotsCleaned: number;
   wasteClearedKg: number;
-  badges: Badge[];
+  badges?: string[] | Badge[];
   bio?: string;
   city?: string;
   phone?: string;
@@ -79,12 +83,14 @@ export interface LeaderboardItem {
   rank: number;
   id: string;
   name: string;
-  handle: string;
+  handle?: string;
   avatar: string;
   points: number;
   spotsCleaned: number;
+  cleanupsCount?: number;
   wasteKg: number;
-  badge: string;
+  wasteClearedKg?: number;
+  badge?: string;
   isCurrentUser?: boolean;
 }
 

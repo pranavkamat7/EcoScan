@@ -7,40 +7,85 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#F4F1EA',
-        surface: '#FFFDF8',
-        border: '#E2DCCD',
-        ink: '#1C2B24',
-        muted: '#6B7468',
-        primary: {
-          DEFAULT: '#1E6B4B',
-          hover: '#18553B',
-          light: '#EAF3EE',
+        /* Core Palette mapped to Design Tokens */
+        forest: {
+          DEFAULT: 'var(--color-forest)',
+          dark: 'var(--color-forest-dark)',
+          hover: 'var(--color-forest-hover)',
+          surface: 'var(--color-forest-surface)',
+          border: 'var(--color-forest-border)',
         },
-        accent: '#D9822B',
-        before: '#B3432E',
-        after: '#2F8F5B',
+        lime: {
+          DEFAULT: 'var(--color-lime)',
+          hover: 'var(--color-lime-hover)',
+          subtle: 'var(--color-lime-subtle)',
+        },
+        coral: {
+          DEFAULT: 'var(--color-coral)',
+          hover: 'var(--color-coral-hover)',
+          subtle: 'var(--color-coral-subtle)',
+        },
+        mint: {
+          DEFAULT: 'var(--color-mint)',
+          hover: 'var(--color-mint-hover)',
+          subtle: 'var(--color-mint-subtle)',
+        },
+        amber: {
+          DEFAULT: 'var(--color-amber)',
+          subtle: 'var(--color-amber-subtle)',
+        },
+        /* Canvas & Surfaces */
+        bg: 'var(--color-bg)',
+        surface: {
+          DEFAULT: 'var(--color-surface)',
+          muted: 'var(--color-surface-muted)',
+          hover: 'var(--color-surface-hover)',
+        },
+        border: {
+          DEFAULT: 'var(--color-border)',
+          strong: 'var(--color-border-strong)',
+          subtle: 'var(--color-border-subtle)',
+        },
+        /* Typography */
+        ink: 'var(--color-ink)',
+        muted: 'var(--color-muted)',
+        faint: 'var(--color-faint)',
       },
       fontFamily: {
-        serif: ['Fraunces', 'Georgia', 'serif'],
-        display: ['Fraunces', 'Bricolage Grotesque', 'Georgia', 'serif'],
-        heading: ['Fraunces', 'Bricolage Grotesque', 'serif'],
-        sans: ['DM Sans', 'Instrument Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        heading: ['Bricolage Grotesque', 'Fraunces', 'Georgia', 'serif'],
+        serif: ['Fraunces', 'Bricolage Grotesque', 'Georgia', 'serif'],
+        sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       borderRadius: {
-        sm: '4px',
-        DEFAULT: '6px',
-        md: '6px',
-        lg: '8px',
-        xl: '12px',
-        '2xl': '12px',
-        '3xl': '12px',
+        sm: 'var(--radius-sm)',         /* 10px */
+        DEFAULT: 'var(--radius-sm)',    /* 10px */
+        md: 'var(--radius-sm)',         /* 10px */
+        lg: 'var(--radius-lg)',         /* 20px */
+        xl: 'var(--radius-lg)',         /* 20px */
+        '2xl': 'var(--radius-lg)',      /* 20px */
+        '3xl': 'var(--radius-lg)',      /* 20px */
+        full: 'var(--radius-full)',
       },
       boxShadow: {
-        subtle: '0 1px 2px 0 rgba(28, 43, 36, 0.05)',
-        card: '0 1px 3px 0 rgba(28, 43, 36, 0.06)',
-        dropdown: '0 4px 16px -2px rgba(28, 43, 36, 0.12)',
-        modal: '0 12px 32px -4px rgba(28, 43, 36, 0.18)',
+        sm: 'var(--shadow-sm)',
+        subtle: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        card: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        modal: 'var(--shadow-modal)',
+      },
+      spacing: {
+        1: 'var(--space-1)',
+        2: 'var(--space-2)',
+        3: 'var(--space-3)',
+        4: 'var(--space-4)',
+        6: 'var(--space-6)',
+        8: 'var(--space-8)',
+        12: 'var(--space-12)',
+        16: 'var(--space-16)',
+      },
+      maxWidth: {
+        shell: '1200px',
       },
     },
   },

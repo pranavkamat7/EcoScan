@@ -1,0 +1,108 @@
+/**
+ * GarbageMedia Design Tokens
+ * Single source of truth for the entire application.
+ * No hardcoded hex values or px sizes should appear in components.
+ */
+
+:root {
+  /* ==========================================================================
+     COLOR TOKENS
+     ========================================================================== */
+  
+  /* Primary Forest (Rich dark green for hero strips, primary elements, deep contrast) */
+  --color-forest: #0F291E;
+  --color-forest-dark: #091A13;
+  --color-forest-hover: #153A2B;
+  --color-forest-surface: #143326;
+  --color-forest-border: #1E4634;
+
+  /* Accent Lime (Electric civic highlight, badges, points, underlines, CTAs) */
+  --color-lime: #D4F63D;
+  --color-lime-hover: #C5E92E;
+  --color-lime-subtle: #F2FCC9;
+  --color-lime-text: #0F291E;
+
+  /* Civic Status Colors */
+  /* Coral: Needs clean / Before / Urgent / Warning */
+  --color-coral: #E0533C;
+  --color-coral-hover: #CC442E;
+  --color-coral-subtle: #FDF1EE;
+  --color-coral-text: #FFFFFF;
+
+  /* Mint: Restored / After / Cleaned / Success */
+  --color-mint: #238253;
+  --color-mint-hover: #1C6E45;
+  --color-mint-subtle: #EDF7F1;
+  --color-mint-text: #FFFFFF;
+
+  /* Amber: Open bounties / Featured */
+  --color-amber: #D9822B;
+  --color-amber-subtle: #FEF7EE;
+
+  /* Base Canvas & Surfaces */
+  --color-bg: #F4F1EA;              /* Warm civic paper/linen background */
+  --color-surface: #FFFDF8;         /* Crisp warm parchment card/modal surface */
+  --color-surface-muted: #F7F5EE;   /* Secondary recessed surface */
+  --color-surface-hover: #F2EFE6;
+
+  /* Borders & Dividers */
+  --color-border: #E2DCCD;
+  --color-border-strong: #CFC7B4;
+  --color-border-subtle: #ECE8DD;
+
+  /* Typography / Inks */
+  --color-ink: #14211A;             /* Deep slate-forest primary text */
+  --color-muted: #626F67;           /* Balanced neutral secondary text */
+  --color-faint: #98A39C;           /* Subtle tertiary / meta text */
+  --color-white: #FFFFFF;
+
+  /* ==========================================================================
+     RADIUS SCALE (Strictly 2 values + full for avatars/pills)
+     ========================================================================== */
+  --radius-sm: 10px;                /* Buttons, inputs, chips, badges, small controls */
+  --radius-lg: 20px;                /* Cards, hero strips, modals, containers */
+  --radius-full: 9999px;            /* Avatars, round icons, pill indicators */
+
+  /* ==========================================================================
+     SPACING SCALE (Strictly 4, 8, 12, 16, 24, 32, 48, 64)
+     ========================================================================== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ==========================================================================
+     SHADOWS
+     ========================================================================== */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 41, 30, 0.05);
+  --shadow-md: 0 4px 14px 0 rgba(15, 41, 30, 0.08);
+  --shadow-lg: 0 12px 32px 0 rgba(15, 41, 30, 0.12);
+  --shadow-modal: 0 20px 48px -10px rgba(15, 41, 30, 0.25);
+
+  /* ==========================================================================
+     TYPOGRAPHY
+     ========================================================================== */
+  --font-heading: 'Bricolage Grotesque', 'Fraunces', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ==========================================================================
+     Z-INDEX
+     ========================================================================== */
+  --z-base: 1;
+  --z-sticky: 40;
+  --z-dropdown: 50;
+  --z-modal-backdrop: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+
+  /* ==========================================================================
+     MOTION & EASING (150ms-250ms ease-out)
+     ========================================================================== */
+  --transition-fast: 150ms cubic-bezier(0, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0, 0, 0.2, 1);
+  --transition-slow: 250ms cubic-bezier(0, 0, 0.2, 1);
+}

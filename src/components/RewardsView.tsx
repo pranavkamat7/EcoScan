@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { Award, Gift, UserCog, MapPin, Check } from 'lucide-react';
+import { Award, Gift, UserCog, MapPin, Check, Sparkles, ShieldCheck } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { getUserLevel } from '../utils/rewards';
-import { Avatar } from './Avatar';
+import {
+  PageHeader,
+  Card,
+  Button,
+  Badge,
+  Avatar,
+  ProgressBar,
+  SectionTitle,
+} from './ui';
 
 interface RewardsViewProps {
   currentUser: UserProfile;
   onOpenEditProfile?: () => void;
+  onOpenReportModal?: () => void;
 }
 
 const CIVIC_PERKS = [
@@ -14,7 +23,7 @@ const CIVIC_PERKS = [
     id: 'perk-1',
     cost: 300,
     title: 'Digital Civic Certificate of Commendation',
-    description: 'Personalized verified digital certificate signed by community eco-alliance.',
+    description: 'Personalized verified digital certificate signed by the community eco-alliance.',
     category: 'Accreditation',
     icon: '📜',
   },
@@ -22,7 +31,7 @@ const CIVIC_PERKS = [
     id: 'perk-2',
     cost: 500,
     title: 'Communal Tree Dedication Tag',
-    description: 'Have a newly planted sapling tagged with your civic cleaner handle.',
+    description: 'Have a newly planted community sapling tagged with your civic volunteer handle.',
     category: 'Community',
     icon: '🌱',
   },
@@ -30,7 +39,7 @@ const CIVIC_PERKS = [
     id: 'perk-3',
     cost: 800,
     title: 'Civic Steward Enamel Pin & Patch Kit',
-    description: 'Embroidered civic patch sent via community partner network.',
+    description: 'Embroidered civic patch kit sent directly via our community partner network.',
     category: 'Merch',
     icon: '🎖️',
   },
@@ -38,13 +47,17 @@ const CIVIC_PERKS = [
     id: 'perk-4',
     cost: 1200,
     title: 'Featured Spot Curator Spotlight',
-    description: 'Get your cleanup story pinned on the national GarbageMedia front page.',
+    description: 'Get your cleanup story and before/after slider featured on the city homepage.',
     category: 'Spotlight',
     icon: '⭐',
   },
 ];
 
-export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser, onOpenEditProfile }) => {
+export const RewardsView: React.FC<RewardsViewProps> = ({
+  currentUser,
+  onOpenEditProfile,
+  onOpenReportModal,
+}) => {
   const levelInfo = getUserLevel(currentUser.points);
   const [claimedPerks, setClaimedPerks] = useState<string[]>([]);
 
@@ -54,11 +67,53 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser, onOpenEdi
     }
   };
 
+  const nextTierPoints = levelInfo.nextLevelPoints || 1000;
+  const progressPercent = Math.min(
+    100,
+    Math.round((currentUser.points / nextTierPoints) * 100)
+  );
+
   return (
-    <div className="max-w-4xl mx-auto space-y-5">
-      {/* 1. Civic Profile Card */}
-      <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] p-5 sm:p-6 shadow-subtle space-y-5">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8">
+      {/* 1. SHARED PAGE HEADER WITH POINTS BALANCE & PROGRESS BAR */}
+      <PageHeader
+        title="Civic Rewards & Badges"
+        description="Exchange the points you earned from cleaning littered spaces for verified civic perks, badges, and certificates."
+        action={
+          onOpenEditProfile && (
+            <Button
+              variant="lime"
+              size="md"
+              icon={<UserCog className="w-4 h-4 stroke-[2]" />}
+              onClick={onOpenEditProfile}
+            >
+              Edit profile
+            </Button>
+          )
+        }
+        stats={
+          <div className="pt-2 max-w-xl space-y-2">
+            <div className="flex items-center justify-between text-xs text-white/90">
+              <span>
+                Rank Tier:{' '}
+                <strong className="text-lime font-bold">{currentUser.level}</strong>
+              </span>
+              <span className="tabular-nums font-semibold text-lime">
+                {currentUser.points} / {nextTierPoints} pts to next rank
+              </span>
+            </div>
+            <ProgressBar
+              value={progressPercent}
+              variant="lime"
+              className="mt-1"
+            />
+          </div>
+        }
+      />
+
+      {/* 2. CIVIC VOLUNTEER PROFILE CARD */}
+      <Card variant="default" className="space-y-5">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
             <Avatar
               src={currentUser.avatar}
@@ -66,199 +121,170 @@ export const RewardsView: React.FC<RewardsViewProps> = ({ currentUser, onOpenEdi
               size="xl"
             />
 
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h1 className="font-serif text-xl sm:text-2xl font-bold text-[#1C2B24]">
+                <h2 className="font-heading text-xl sm:text-2xl font-bold text-ink">
                   {currentUser.name}
-                </h1>
-                <span className="px-2 py-0.5 rounded-[4px] bg-[#EAF3EE] text-[#1E6B4B] border border-[#E2DCCD] text-xs font-medium">
+                </h2>
+                <Badge variant="mint" size="sm">
                   {currentUser.level}
-                </span>
+                </Badge>
               </div>
 
-              <p className="text-xs text-[#6B7468]">
-                {currentUser.handle}
+              <p className="text-xs text-muted">
+                {currentUser.handle || `@${currentUser.name.toLowerCase().replace(/\s+/g, '')}`}
               </p>
 
               {currentUser.city && (
-                <p className="text-xs text-[#6B7468] flex items-center justify-center sm:justify-start gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#1E6B4B]" />
+                <p className="text-xs text-muted flex items-center justify-center sm:justify-start gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-forest" />
                   <span>{currentUser.city}</span>
                 </p>
               )}
 
               {currentUser.bio ? (
-                <p className="text-xs text-[#6B7468] max-w-lg leading-relaxed pt-1">
-                  "{currentUser.bio}"
+                <p className="text-xs sm:text-sm text-ink/80 pt-1 max-w-md">
+                  {currentUser.bio}
                 </p>
               ) : (
-                <p className="text-xs text-[#A39E93] italic pt-1">
-                  No bio added yet.
+                <p className="text-xs text-muted italic pt-1">
+                  Neighbourhood volunteer active in civic cleanup missions.
                 </p>
               )}
             </div>
           </div>
 
-          {onOpenEditProfile && (
-            <button
-              type="button"
-              onClick={onOpenEditProfile}
-              className="px-3.5 py-1.5 text-xs font-medium bg-[#FFFDF8] hover:bg-[#F4F1EA] text-[#1C2B24] border border-[#E2DCCD] rounded-[6px] transition-colors flex items-center gap-1.5 flex-shrink-0 shadow-subtle"
-            >
-              <UserCog className="w-3.5 h-3.5 text-[#1E6B4B]" />
-              <span>Edit profile</span>
-            </button>
-          )}
+          <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
+            <div className="text-right">
+              <span className="text-xs text-muted block">Available Balance</span>
+              <span className="font-heading text-2xl font-bold text-forest tabular-nums">
+                {currentUser.points.toLocaleString()} pts
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Civic Metrics Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[#E2DCCD]">
-          <div className="p-3 rounded-[6px] bg-[#F4F1EA] border border-[#E2DCCD] text-center">
-            <span className="text-xs text-[#6B7468] block">Spots cleaned</span>
-            <span className="font-semibold text-base text-[#1C2B24] tabular-nums mt-0.5 block">
+        {/* Civic Impact Metrics Strip */}
+        <div className="pt-4 border-t border-border grid grid-cols-3 gap-2 sm:gap-4 text-center">
+          <div className="p-3 rounded-sm bg-surface-muted border border-border">
+            <span className="font-heading text-lg sm:text-xl font-bold text-ink tabular-nums">
               {currentUser.spotsCleaned}
             </span>
+            <p className="text-[11px] text-muted">Spots Restored</p>
           </div>
 
-          <div className="p-3 rounded-[6px] bg-[#F4F1EA] border border-[#E2DCCD] text-center">
-            <span className="text-xs text-[#6B7468] block">Spots reported</span>
-            <span className="font-semibold text-base text-[#1C2B24] tabular-nums mt-0.5 block">
-              {currentUser.spotsReported}
-            </span>
-          </div>
-
-          <div className="p-3 rounded-[6px] bg-[#F4F1EA] border border-[#E2DCCD] text-center">
-            <span className="text-xs text-[#6B7468] block">Waste collected</span>
-            <span className="font-semibold text-base text-[#1C2B24] tabular-nums mt-0.5 block">
+          <div className="p-3 rounded-sm bg-surface-muted border border-border">
+            <span className="font-heading text-lg sm:text-xl font-bold text-ink tabular-nums">
               {currentUser.wasteClearedKg} kg
             </span>
+            <p className="text-[11px] text-muted">Waste Collected</p>
           </div>
 
-          <div className="p-3 rounded-[6px] bg-[#EAF3EE] border border-[#E2DCCD] text-center">
-            <span className="text-xs text-[#1E6B4B] block font-medium">Bounty points</span>
-            <span className="font-semibold text-base text-[#1E6B4B] tabular-nums mt-0.5 block">
-              {currentUser.points} pts
+          <div className="p-3 rounded-sm bg-surface-muted border border-border">
+            <span className="font-heading text-lg sm:text-xl font-bold text-forest tabular-nums">
+              {currentUser.badges?.length || 2}
             </span>
+            <p className="text-[11px] text-muted">Badges Earned</p>
           </div>
         </div>
+      </Card>
 
-        {/* Tier Progress */}
-        <div className="space-y-1.5 pt-2">
-          <div className="flex justify-between text-xs text-[#6B7468]">
-            <span>Tier progress: Level {levelInfo.levelNumber} ({levelInfo.levelTitle})</span>
-            <span className="font-medium text-[#1C2B24] tabular-nums">
-              {currentUser.points} / {levelInfo.nextLevelPoints} pts
-            </span>
-          </div>
-          <div className="w-full h-2 bg-[#E2DCCD] rounded-[4px] overflow-hidden">
-            <div
-              className="h-full bg-[#1E6B4B] transition-all duration-500 rounded-[4px]"
-              style={{ width: `${levelInfo.progressPercent}%` }}
-            />
-          </div>
-        </div>
-      </div>
+      {/* 3. CIVIC PERKS CATALOG */}
+      <div className="space-y-4">
+        <SectionTitle
+          title="Redeemable Civic Perks"
+          subtitle="Support local restoration and claim volunteer certificates with your bounty points."
+        />
 
-      {/* 2. Earned Badges */}
-      <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] p-5 sm:p-6 shadow-subtle space-y-4">
-        <div className="flex items-center justify-between border-b border-[#E2DCCD] pb-2">
-          <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-[#1E6B4B]" />
-            <h3 className="font-serif text-base font-bold text-[#1C2B24]">
-              Earned badges ({currentUser.badges.length})
-            </h3>
-          </div>
-          <span className="text-xs text-[#6B7468]">
-            Unlock through cleanups
-          </span>
-        </div>
-
-        {currentUser.badges.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {currentUser.badges.map((badge) => (
-              <div
-                key={badge.id}
-                className="p-3 rounded-[6px] border border-[#E2DCCD] bg-[#F4F1EA]/60 flex items-start gap-3"
-              >
-                <div className="w-8 h-8 rounded-[4px] bg-white border border-[#E2DCCD] flex items-center justify-center text-lg flex-shrink-0">
-                  {badge.icon}
-                </div>
-                <div className="min-w-0">
-                  <span className="text-xs font-semibold text-[#1C2B24] block truncate">
-                    {badge.title}
-                  </span>
-                  <p className="text-[11px] text-[#6B7468] leading-relaxed mt-0.5">
-                    {badge.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-[#6B7468] py-2">
-            No badges unlocked yet. Complete cleanup missions to earn badges!
-          </p>
-        )}
-      </div>
-
-      {/* 3. Civic Perks Catalog */}
-      <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] p-5 sm:p-6 shadow-subtle space-y-4">
-        <div className="flex items-center justify-between border-b border-[#E2DCCD] pb-2">
-          <div className="flex items-center gap-2">
-            <Gift className="w-4 h-4 text-[#D9822B]" />
-            <h3 className="font-serif text-base font-bold text-[#1C2B24]">
-              Civic rewards catalog
-            </h3>
-          </div>
-          <span className="text-xs text-[#6B7468]">
-            Redeem points
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {CIVIC_PERKS.map((perk) => {
             const isClaimed = claimedPerks.includes(perk.id);
-            const canAfford = currentUser.points >= perk.cost;
+            const canClaim = currentUser.points >= perk.cost && !isClaimed;
 
             return (
-              <div
+              <Card
                 key={perk.id}
-                className="p-3.5 rounded-[6px] border border-[#E2DCCD] bg-[#F4F1EA]/40 flex flex-col justify-between gap-3"
+                variant="default"
+                interactive
+                className="flex flex-col justify-between p-5 space-y-4"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[#1C2B24]">
-                      {perk.icon} {perk.title}
+                <div className="space-y-2.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="text-2xl p-2 rounded-sm bg-surface-muted border border-border flex-shrink-0">
+                      {perk.icon}
                     </span>
-                    <span className="text-xs font-semibold text-[#1E6B4B] tabular-nums">
+                    <Badge variant="points" size="sm">
                       {perk.cost} pts
-                    </span>
+                    </Badge>
                   </div>
-                  <p className="text-xs text-[#6B7468] leading-relaxed">
-                    {perk.description}
-                  </p>
+
+                  <div>
+                    <h3 className="font-heading font-bold text-base text-ink">
+                      {perk.title}
+                    </h3>
+                    <p className="text-xs text-muted mt-1 leading-relaxed">
+                      {perk.description}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#E2DCCD] flex items-center justify-end">
+                <div className="pt-2 border-t border-border flex items-center justify-between">
+                  <span className="text-[11px] text-muted font-medium">
+                    {perk.category}
+                  </span>
+
                   {isClaimed ? (
-                    <span className="text-xs font-semibold text-[#2F8F5B] flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" />
+                    <Badge variant="mint" size="sm" icon={<Check className="w-3 h-3" />}>
                       Claimed
-                    </span>
+                    </Badge>
                   ) : (
-                    <button
-                      type="button"
-                      disabled={!canAfford}
+                    <Button
+                      variant={canClaim ? 'primary' : 'secondary'}
+                      size="sm"
+                      disabled={!canClaim}
                       onClick={() => handleClaim(perk.id, perk.cost)}
-                      className="px-3 py-1 text-xs font-medium rounded-[4px] transition-colors disabled:opacity-40 bg-[#1E6B4B] hover:bg-[#18553B] text-white disabled:bg-[#A39E93]"
                     >
-                      {canAfford ? 'Redeem' : 'Need more points'}
-                    </button>
+                      {canClaim ? 'Redeem perk' : `${perk.cost - currentUser.points} pts needed`}
+                    </Button>
                   )}
                 </div>
-              </div>
+              </Card>
             );
           })}
+        </div>
+      </div>
+
+      {/* 4. EARNED BADGES CATALOG */}
+      <div className="space-y-4">
+        <SectionTitle
+          title="Civic Achievement Badges"
+          subtitle="Earn badges by reporting dirty spots, verifying on-site cleanups, and leading neighbourhood teams."
+        />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <Card variant="default" className="text-center p-4 space-y-2 border-mint/40 bg-mint-subtle/20">
+            <span className="text-2xl block">🌱</span>
+            <h4 className="font-heading font-bold text-xs text-ink">First Cleanup</h4>
+            <Badge variant="mint" size="sm">Unlocked</Badge>
+          </Card>
+
+          <Card variant="default" className="text-center p-4 space-y-2 border-mint/40 bg-mint-subtle/20">
+            <span className="text-2xl block">📍</span>
+            <h4 className="font-heading font-bold text-xs text-ink">Civic Scout</h4>
+            <Badge variant="mint" size="sm">Unlocked</Badge>
+          </Card>
+
+          <Card variant="default" className="text-center p-4 space-y-2 border-border opacity-70">
+            <span className="text-2xl block">⚖️</span>
+            <h4 className="font-heading font-bold text-xs text-ink">50kg Waste Removed</h4>
+            <Badge variant="neutral" size="sm">In progress</Badge>
+          </Card>
+
+          <Card variant="default" className="text-center p-4 space-y-2 border-border opacity-70">
+            <span className="text-2xl block">👑</span>
+            <h4 className="font-heading font-bold text-xs text-ink">Top 3 Champion</h4>
+            <Badge variant="neutral" size="sm">Locked</Badge>
+          </Card>
         </div>
       </div>
     </div>

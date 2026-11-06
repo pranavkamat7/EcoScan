@@ -1,167 +1,292 @@
 import React, { useState } from 'react';
 import type { UserProfile, LeaderboardItem } from '../types';
-import { Avatar } from './Avatar';
+import { Trophy, Medal, Award, Sparkles, Flame, Plus } from 'lucide-react';
+import {
+  PageHeader,
+  Card,
+  Avatar,
+  Badge,
+  Chip,
+  Button,
+} from './ui';
 
 interface LeaderboardProps {
   currentUser: UserProfile;
   leaderboardData: LeaderboardItem[];
+  onOpenReportModal?: () => void;
 }
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({
   currentUser,
   leaderboardData,
+  onOpenReportModal,
 }) => {
-  const [timeframe, setTimeframe] = useState<'all' | 'month'>('all');
+  const [timeframe, setTimeframe] = useState<'all' | 'month' | 'week'>('all');
 
-  const cleanData = leaderboardData.filter(
-    (item) => item.id !== 'user_current' && item.id !== 'guest'
+  // Filter out any dummy entries and sort by points descending
+  const sortedChampions = [...leaderboardData]
+    .filter((item) => item.id !== 'guest')
+    .sort((a, b) => b.points - a.points);
+
+  const topThree = sortedChampions.slice(0, 3);
+  const remainingList = sortedChampions.slice(3);
+
+  // User rank calculation
+  const currentUserIndex = sortedChampions.findIndex(
+    (c) => c.id === currentUser.id || c.name === currentUser.name
   );
+  const currentUserRank = currentUserIndex !== -1 ? currentUserIndex + 1 : sortedChampions.length + 1;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-5">
-      {/* Top Editorial Header */}
-      <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] p-5 sm:p-6 shadow-subtle space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
-          <div>
-            <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1C2B24] tracking-tight">
-              Community leaderboard
-            </h2>
-            <p className="text-xs sm:text-sm text-[#6B7468] mt-0.5">
-              Neighbours and volunteers keeping our streets, parks, and shorelines litter-free.
-            </p>
-          </div>
+    <div className="space-y-6 sm:space-y-8">
+      {/* 1. SHARED PAGE HEADER */}
+      <PageHeader
+        title="Community Champions"
+        description="Neighbours and local volunteers keeping streets, shores, and public spaces litter-free."
+        action={
+          onOpenReportModal && (
+            <Button
+              variant="lime"
+              size="md"
+              icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
+              onClick={onOpenReportModal}
+            >
+              Report dirty spot
+            </Button>
+          )
+        }
+      />
 
-          {/* Timeframe toggle: Quiet text buttons */}
-          <div className="flex items-center gap-1 border border-[#E2DCCD] p-1 rounded-[6px] self-start bg-[#F4F1EA]">
-            <button
-              type="button"
-              onClick={() => setTimeframe('all')}
-              className={`px-3 py-1 rounded-[4px] text-xs transition-colors ${
-                timeframe === 'all'
-                  ? 'bg-[#FFFDF8] text-[#1C2B24] font-semibold shadow-subtle'
-                  : 'text-[#6B7468] hover:text-[#1C2B24]'
-              }`}
-            >
-              All-time
-            </button>
-            <button
-              type="button"
-              onClick={() => setTimeframe('month')}
-              className={`px-3 py-1 rounded-[4px] text-xs transition-colors ${
-                timeframe === 'month'
-                  ? 'bg-[#FFFDF8] text-[#1C2B24] font-semibold shadow-subtle'
-                  : 'text-[#6B7468] hover:text-[#1C2B24]'
-              }`}
-            >
-              This month
-            </button>
-          </div>
+      {/* 2. TIMEFRAME FILTER ROW */}
+      <div className="flex items-center justify-between gap-4 border-b border-border pb-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <Chip
+            variant="tag"
+            active={timeframe === 'all'}
+            onClick={() => setTimeframe('all')}
+          >
+            All-time
+          </Chip>
+          <Chip
+            variant="tag"
+            active={timeframe === 'month'}
+            onClick={() => setTimeframe('month')}
+          >
+            This month
+          </Chip>
+          <Chip
+            variant="tag"
+            active={timeframe === 'week'}
+            onClick={() => setTimeframe('week')}
+          >
+            This week
+          </Chip>
         </div>
 
-        {/* Current User Quick Summary Strip */}
-        {currentUser && currentUser.id !== 'guest' && (
-          <div className="pt-3 border-t border-[#E2DCCD] flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <Avatar
-                src={currentUser.avatar}
-                name={currentUser.name}
-                size="sm"
-              />
-              <div>
-                <span className="text-xs font-semibold text-[#1C2B24]">
-                  {currentUser.name} (You)
-                </span>
-                <span className="text-xs text-[#6B7468] ml-2">
-                  <span className="tabular-nums">{currentUser.spotsCleaned}</span> cleanups ·{' '}
-                  <span className="tabular-nums">{currentUser.wasteClearedKg} kg</span> collected
-                </span>
-              </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-xs font-semibold text-[#1E6B4B] tabular-nums">
-                {currentUser.points.toLocaleString()} pts
-              </span>
-            </div>
-          </div>
-        )}
+        <span className="text-xs text-muted">
+          <strong className="font-semibold text-ink tabular-nums">{sortedChampions.length}</strong> active champions
+        </span>
       </div>
 
-      {/* Rankings List */}
-      {cleanData.length > 0 ? (
-        <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] overflow-hidden shadow-subtle">
-          <div className="px-4 py-2.5 bg-[#F4F1EA] border-b border-[#E2DCCD] flex items-center justify-between text-xs text-[#6B7468] font-medium">
-            <span>Rank & Volunteer</span>
-            <div className="flex items-center gap-6">
-              <span className="hidden sm:inline">Cleanups</span>
-              <span>Points</span>
+      {/* 3. PODIUM FOR TOP 3 (Lime/Gold accent cards) */}
+      {topThree.length >= 3 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-end pt-4">
+          {/* Rank 2 (Silver) */}
+          <Card
+            variant="default"
+            interactive
+            className="order-2 md:order-1 text-center p-5 border-border hover:border-forest space-y-3"
+          >
+            <div className="relative inline-block mx-auto">
+              <Avatar
+                src={topThree[1].avatar}
+                name={topThree[1].name}
+                size="lg"
+              />
+              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-surface-muted text-ink border border-border flex items-center justify-center text-xs font-bold shadow-sm">
+                2
+              </span>
+            </div>
+            <div>
+              <h4 className="font-heading font-bold text-sm text-ink truncate">
+                {topThree[1].name}
+              </h4>
+              <p className="text-xs text-muted tabular-nums">
+                {topThree[1].cleanupsCount ?? topThree[1].spotsCleaned} cleanups
+              </p>
+            </div>
+            <Badge variant="points" size="md">
+              {topThree[1].points.toLocaleString()} pts
+            </Badge>
+          </Card>
+
+          {/* Rank 1 (Gold / Lime Champion Center - Elevated) */}
+          <Card
+            variant="default"
+            interactive
+            className="order-1 md:order-2 text-center p-6 sm:p-7 border-2 border-forest shadow-md bg-surface space-y-3 md:-translate-y-2"
+          >
+            <div className="inline-flex items-center gap-1 text-xs font-bold text-forest bg-lime px-2.5 py-0.5 rounded-sm mx-auto shadow-sm">
+              <Trophy className="w-3.5 h-3.5 fill-forest" />
+              <span>Civic Champion</span>
+            </div>
+            <div className="relative inline-block mx-auto mt-1">
+              <Avatar
+                src={topThree[0].avatar}
+                name={topThree[0].name}
+                size="xl"
+              />
+              <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-lime text-forest border-2 border-forest flex items-center justify-center text-xs font-extrabold shadow-sm">
+                1
+              </span>
+            </div>
+            <div>
+              <h3 className="font-heading font-extrabold text-base sm:text-lg text-ink truncate">
+                {topThree[0].name}
+              </h3>
+              <p className="text-xs text-muted tabular-nums">
+                {topThree[0].cleanupsCount ?? topThree[0].spotsCleaned} cleanups · {topThree[0].wasteClearedKg ?? topThree[0].wasteKg} kg waste
+              </p>
+            </div>
+            <Badge variant="points" size="md" className="text-sm px-3 py-1">
+              {topThree[0].points.toLocaleString()} pts
+            </Badge>
+          </Card>
+
+          {/* Rank 3 (Bronze) */}
+          <Card
+            variant="default"
+            interactive
+            className="order-3 text-center p-5 border-border hover:border-forest space-y-3"
+          >
+            <div className="relative inline-block mx-auto">
+              <Avatar
+                src={topThree[2].avatar}
+                name={topThree[2].name}
+                size="lg"
+              />
+              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-surface-muted text-ink border border-border flex items-center justify-center text-xs font-bold shadow-sm">
+                3
+              </span>
+            </div>
+            <div>
+              <h4 className="font-heading font-bold text-sm text-ink truncate">
+                {topThree[2].name}
+              </h4>
+              <p className="text-xs text-muted tabular-nums">
+                {topThree[2].cleanupsCount ?? topThree[2].spotsCleaned} cleanups
+              </p>
+            </div>
+            <Badge variant="points" size="md">
+              {topThree[2].points.toLocaleString()} pts
+            </Badge>
+          </Card>
+        </div>
+      )}
+
+      {/* 4. PINNED CURRENT USER ROW (Always visible) */}
+      {currentUser && (
+        <Card
+          variant="dark"
+          className="p-4 sm:p-5 flex items-center justify-between gap-4 border-2 border-lime shadow-md"
+        >
+          <div className="flex items-center gap-3.5 min-w-0">
+            <span className="w-8 h-8 rounded-sm bg-lime text-forest font-heading font-bold flex items-center justify-center text-xs flex-shrink-0 tabular-nums">
+              #{currentUserRank}
+            </span>
+            <Avatar
+              src={currentUser.avatar}
+              name={currentUser.name}
+              size="md"
+            />
+            <div className="min-w-0 text-left">
+              <div className="flex items-center gap-2">
+                <span className="font-heading font-bold text-white text-sm sm:text-base truncate">
+                  {currentUser.name}
+                </span>
+                <span className="text-[11px] text-lime font-semibold uppercase tracking-wider">
+                  (You)
+                </span>
+              </div>
+              <p className="text-xs text-white/70 tabular-nums truncate">
+                {currentUser.spotsCleaned} cleanups · {currentUser.wasteClearedKg} kg collected
+              </p>
             </div>
           </div>
 
-          <div className="divide-y divide-[#E2DCCD]">
-            {cleanData.map((user, idx) => {
-              const isUser = currentUser && (user.id === currentUser.id || user.isCurrentUser);
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="text-right">
+              <span className="font-heading font-bold text-lime text-base sm:text-lg tabular-nums">
+                {currentUser.points.toLocaleString()}
+              </span>
+              <span className="text-xs text-white/70 block -mt-1">pts</span>
+            </div>
+          </div>
+        </Card>
+      )}
 
-              return (
-                <div
-                  key={user.id}
-                  className={`px-4 py-3 sm:py-3.5 flex items-center justify-between gap-3 transition-colors ${
-                    isUser ? 'bg-[#EAF3EE]' : 'hover:bg-[#F4F1EA]/60'
-                  }`}
-                >
-                  {/* Left: Rank & Info */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-5 text-center text-xs font-semibold text-[#6B7468] tabular-nums">
-                      {idx + 1}.
-                    </span>
-
-                    <Avatar
-                      src={user.avatar}
-                      name={user.name}
-                      size="sm"
-                    />
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-xs sm:text-sm text-[#1C2B24] truncate">
-                          {user.name}
-                        </span>
-                        {isUser && (
-                          <span className="text-[10px] font-semibold text-[#1E6B4B] bg-white px-1.5 py-0.5 rounded-[4px] border border-[#E2DCCD]">
-                            You
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-[#6B7468] truncate">
-                        {user.handle}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right: Cleanups & Points */}
-                  <div className="flex items-center gap-6 text-right flex-shrink-0">
-                    <span className="text-xs text-[#6B7468] tabular-nums hidden sm:inline">
-                      {user.spotsCleaned}
-                    </span>
-                    <span className="font-semibold text-xs sm:text-sm text-[#1E6B4B] tabular-nums">
-                      {user.points.toLocaleString()} pts
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+      {/* 5. RANKED TABLE LIST (Cards style) */}
+      <Card variant="default" className="p-0 overflow-hidden shadow-sm">
+        <div className="px-5 py-3 bg-surface-muted border-b border-border flex items-center justify-between text-xs font-semibold text-muted">
+          <span>Rank & Volunteer</span>
+          <div className="flex items-center gap-8 sm:gap-12">
+            <span className="hidden sm:inline">Cleanups</span>
+            <span>Civic Points</span>
           </div>
         </div>
-      ) : (
-        <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] p-8 text-center space-y-2">
-          <p className="font-serif text-base font-bold text-[#1C2B24]">
-            No cleanups recorded yet
-          </p>
-          <p className="text-xs text-[#6B7468] max-w-sm mx-auto">
-            Be the first volunteer to report a littered spot and clean it up to lead the neighbourhood board.
-          </p>
+
+        <div className="divide-y divide-border">
+          {sortedChampions.map((champion, idx) => {
+            const isUser = champion.id === currentUser.id || champion.name === currentUser.name;
+            const rank = idx + 1;
+
+            return (
+              <div
+                key={champion.id}
+                className={`px-5 py-3.5 flex items-center justify-between gap-4 transition-colors ${
+                  isUser
+                    ? 'bg-lime-subtle/40 font-medium'
+                    : 'hover:bg-surface-muted/50'
+                }`}
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <span
+                    className={`w-7 text-xs font-heading font-bold tabular-nums text-center ${
+                      rank <= 3 ? 'text-forest' : 'text-muted'
+                    }`}
+                  >
+                    #{rank}
+                  </span>
+
+                  <Avatar
+                    src={champion.avatar}
+                    name={champion.name}
+                    size="sm"
+                  />
+
+                  <div className="min-w-0 text-left">
+                    <p className="text-xs sm:text-sm font-semibold text-ink truncate">
+                      {champion.name} {isUser && <span className="text-forest text-[11px] font-normal">(You)</span>}
+                    </p>
+                    <p className="text-[11px] text-muted truncate">
+                      {champion.wasteClearedKg ?? champion.wasteKg} kg cleared
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-8 sm:gap-12 flex-shrink-0">
+                  <span className="text-xs text-muted tabular-nums hidden sm:inline">
+                    {champion.cleanupsCount ?? champion.spotsCleaned}
+                  </span>
+                  <Badge variant={isUser ? 'lime' : 'points'} size="sm">
+                    {champion.points.toLocaleString()} pts
+                  </Badge>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      )}
+      </Card>
     </div>
   );
 };

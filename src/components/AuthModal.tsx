@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User as UserIcon, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, AlertCircle, LogIn } from 'lucide-react';
 import { useAuth } from '../firebase/authContext';
+import {
+  Modal,
+  Input,
+  Button,
+} from './ui';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -28,15 +33,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isOpen) return null;
-
   const formatFirebaseError = (err: any): string => {
     const msg = err?.code || err?.message || '';
     if (msg.includes('auth/configuration-not-found')) {
-      return 'Firebase Authentication is not activated in your Firebase Console. Please go to Firebase Console > Authentication > Sign-in method, and enable "Email/Password" and "Google".';
+      return 'Firebase Authentication is not activated in your Firebase Console. Please enable "Email/Password" and "Google" sign-in methods.';
     }
     if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
-      return 'Invalid email or password. If you do not have an account yet, switch to "Sign up" below.';
+      return 'Invalid email or password. If you do not have an account yet, switch to "Sign up".';
     }
     if (msg.includes('auth/email-already-in-use')) {
       return 'An account already exists with this email address. Please switch to "Sign in".';
@@ -48,7 +51,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return 'Google sign-in popup was closed before completing.';
     }
     if (msg.includes('auth/unauthorized-domain')) {
-      return 'This domain is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
+      return 'This domain is not authorized in Firebase Console > Authentication > Settings > Authorized domains.';
     }
     return err?.message || 'Authentication error. Please try again.';
   };
@@ -58,7 +61,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setLoading(true);
     try {
       if (!isFirebaseActive) {
-        throw new Error('Please configure your free Firebase keys first to use Google Sign-In.');
+        throw new Error('Please configure Firebase keys first to use Google Sign-In.');
       }
       await signInWithGoogle();
       onClose();
@@ -96,54 +99,79 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   const handleGuestLogin = async () => {
+    setError(null);
     setLoading(true);
     try {
-      await loginAsGuest('Guest Volunteer');
+      await loginAsGuest();
       onClose();
     } catch (err: any) {
-      setError(formatFirebaseError(err));
+      setError(err?.message || 'Could not log in as guest.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1C2B24]/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-md bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-modal overflow-hidden my-6 text-[#1C2B24]">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2DCCD] bg-[#F4F1EA]">
-          <div>
-            <h2 className="font-serif text-base font-bold text-[#1C2B24]">
-              {mode === 'signin' ? 'Sign in to GarbageMedia' : 'Create civic account'}
-            </h2>
-            <p className="text-xs text-[#6B7468]">
-              {isFirebaseActive ? 'Firebase Auth active' : 'Guest mode active'}
-            </p>
-          </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={mode === 'signin' ? 'Sign in to GarbageMedia' : 'Create volunteer account'}
+      description={
+        mode === 'signin'
+          ? 'Log in to track cleanups, claim bounty rewards, and build your civic profile.'
+          : 'Join your neighbourhood community to post proofs and earn points.'
+      }
+      size="sm"
+    >
+      <div className="space-y-4 text-left">
+        {/* Sign in / Sign up Mode Switcher */}
+        <div className="flex border-b border-border">
           <button
             type="button"
-            onClick={onClose}
-            className="p-1 rounded-[4px] text-[#6B7468] hover:text-[#1C2B24] hover:bg-[#E2DCCD] transition-colors"
+            onClick={() => {
+              setMode('signin');
+              setError(null);
+            }}
+            className={`pb-2 text-xs font-semibold flex-1 text-center border-b-2 transition-colors ${
+              mode === 'signin'
+                ? 'border-forest text-forest'
+                : 'border-transparent text-muted hover:text-ink'
+            }`}
           >
-            <X className="w-5 h-5" />
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMode('signup');
+              setError(null);
+            }}
+            className={`pb-2 text-xs font-semibold flex-1 text-center border-b-2 transition-colors ${
+              mode === 'signup'
+                ? 'border-forest text-forest'
+                : 'border-transparent text-muted hover:text-ink'
+            }`}
+          >
+            Create Account
           </button>
         </div>
 
-        <div className="p-5 sm:p-6 space-y-4">
-          {error && (
-            <div className="p-3 rounded-[6px] bg-[#FDF2F0] border border-[#B3432E]/30 text-xs text-[#B3432E] flex items-start gap-2 leading-relaxed">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#B3432E]" />
-              <span>{error}</span>
-            </div>
-          )}
+        {/* Error Alert */}
+        {error && (
+          <div className="p-3 rounded-sm bg-coral-subtle border border-coral/30 text-coral text-xs flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <span className="leading-tight">{error}</span>
+          </div>
+        )}
 
-          {/* Google Sign In Button */}
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="w-full py-2 px-3 rounded-[6px] border border-[#E2DCCD] bg-[#FFFDF8] hover:bg-[#F4F1EA] text-[#1C2B24] text-xs font-medium flex items-center justify-center gap-2 transition-colors shadow-subtle disabled:opacity-50"
-          >
+        {/* Google One-Click Auth */}
+        <Button
+          variant="secondary"
+          size="md"
+          className="w-full"
+          onClick={handleGoogleSignIn}
+          isLoading={loading}
+          icon={
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -162,132 +190,87 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Continue with Google</span>
+          }
+        >
+          Continue with Google
+        </Button>
+
+        <div className="relative flex items-center justify-center py-1">
+          <div className="border-t border-border w-full" />
+          <span className="bg-surface px-2 text-[11px] text-muted uppercase tracking-wider absolute">
+            or with email
+          </span>
+        </div>
+
+        {/* Email Form */}
+        <form onSubmit={handleEmailAuth} className="space-y-3">
+          {mode === 'signup' && (
+            <Input
+              label="Full name"
+              type="text"
+              placeholder="e.g. Ms dhoni"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              startIcon={<UserIcon className="w-3.5 h-3.5" />}
+              required
+            />
+          )}
+
+          <Input
+            label="Email address"
+            type="email"
+            placeholder="scout@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            startIcon={<Mail className="w-3.5 h-3.5" />}
+            required
+          />
+
+          <Input
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            startIcon={<Lock className="w-3.5 h-3.5" />}
+            required
+          />
+
+          <div className="pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              className="w-full"
+              isLoading={loading}
+              icon={<LogIn className="w-4 h-4 text-lime" />}
+            >
+              {mode === 'signin' ? 'Sign in to account' : 'Create volunteer profile'}
+            </Button>
+          </div>
+        </form>
+
+        {/* Guest & Firebase Config Links */}
+        <div className="pt-3 border-t border-border flex items-center justify-between text-xs">
+          <button
+            type="button"
+            onClick={handleGuestLogin}
+            className="text-muted hover:text-ink underline text-[11px]"
+          >
+            Skip for now, continue as guest
           </button>
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center">
-            <div className="border-t border-[#E2DCCD] w-full"></div>
-            <span className="bg-[#FFFDF8] px-2 text-[11px] text-[#6B7468] absolute">
-              or with email
-            </span>
-          </div>
-
-          {/* Email / Password Form */}
-          <form onSubmit={handleEmailAuth} className="space-y-3">
-            {mode === 'signup' && (
-              <div>
-                <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                  Full name
-                </label>
-                <div className="relative">
-                  <UserIcon className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                  <input
-                    type="text"
-                    required
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="e.g. Sarah Jenkins"
-                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Email address
-              </label>
-              <div className="relative">
-                <Mail className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="scout@example.com"
-                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2 rounded-[6px] bg-[#1E6B4B] hover:bg-[#18553B] text-white text-xs font-medium shadow-subtle transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
-            >
-              {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{mode === 'signin' ? 'Sign in' : 'Create account'}</span>
-            </button>
-          </form>
-
-          {/* Switch Mode */}
-          <div className="text-center text-xs text-[#6B7468] pt-1">
-            {mode === 'signin' ? (
-              <p>
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('signup')}
-                  className="text-[#1E6B4B] font-medium hover:underline"
-                >
-                  Sign up
-                </button>
-              </p>
-            ) : (
-              <p>
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('signin')}
-                  className="text-[#1E6B4B] font-medium hover:underline"
-                >
-                  Sign in
-                </button>
-              </p>
-            )}
-          </div>
-
-          {/* Quick guest option */}
-          <div className="pt-2 border-t border-[#E2DCCD] flex justify-between items-center text-xs">
+          {onOpenFirebaseConfig && (
             <button
               type="button"
-              onClick={handleGuestLogin}
-              className="text-[#6B7468] hover:text-[#1C2B24] underline"
+              onClick={onOpenFirebaseConfig}
+              className="text-forest hover:underline text-[11px]"
             >
-              Continue as guest
+              ⚙️ Firebase setup
             </button>
-
-            {onOpenFirebaseConfig && (
-              <button
-                type="button"
-                onClick={onOpenFirebaseConfig}
-                className="text-[#1E6B4B] hover:underline text-[11px]"
-              >
-                ⚙️ Configure Firebase
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

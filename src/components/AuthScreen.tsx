@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User as UserIcon, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, AlertCircle, ArrowRight, ShieldCheck, Sparkles, MapPin, Camera } from 'lucide-react';
 import { useAuth } from '../firebase/authContext';
+import {
+  Card,
+  Input,
+  Button,
+  Badge,
+} from './ui';
 
 interface AuthScreenProps {
   onContinueAsGuest?: () => void;
@@ -19,13 +25,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const formatFirebaseError = (err: any): string => {
     const msg = err?.code || err?.message || '';
     if (msg.includes('auth/configuration-not-found')) {
-      return 'Firebase Authentication is not activated in your Firebase Console. Please go to Firebase Console > Authentication > Sign-in method, and click "Enable" on Email/Password and Google.';
+      return 'Firebase Authentication is not activated in your Firebase Console. Please enable "Email/Password" and "Google" sign-in methods.';
     }
     if (msg.includes('auth/user-not-found') || msg.includes('auth/invalid-credential')) {
-      return 'Invalid email or password. If you do not have an account yet, click "Register" above.';
+      return 'Invalid email or password. If you do not have an account yet, switch to "Register".';
     }
     if (msg.includes('auth/email-already-in-use')) {
-      return 'An account already exists with this email address. Please click "Sign In".';
+      return 'An account already exists with this email address. Please switch to "Sign in".';
     }
     if (msg.includes('auth/weak-password')) {
       return 'Password must be at least 6 characters.';
@@ -34,10 +40,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       return 'Google sign-in popup was closed before completing.';
     }
     if (msg.includes('auth/unauthorized-domain')) {
-      return 'This domain (onrender.com) is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
-    }
-    if (msg.includes('auth/network-request-failed')) {
-      return 'Network request failed. Please check your internet connection.';
+      return 'This domain is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
     }
     return err?.message || 'Authentication error. Please try again.';
   };
@@ -80,153 +83,149 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       await loginAsGuest('Guest Volunteer');
       if (onContinueAsGuest) onContinueAsGuest();
     } catch (err: any) {
-      setError(formatFirebaseError(err));
+      setError(err?.message || 'Could not continue as guest');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA] text-[#1C2B24] flex flex-col justify-between selection:bg-[#1E6B4B] selection:text-white">
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-[#FFFDF8] border-b border-[#E2DCCD] px-4 sm:px-8 py-3.5">
-        <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-[#1E6B4B] text-white flex items-center justify-center font-serif text-base font-bold shadow-subtle flex-shrink-0">
-              G
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-base sm:text-lg font-bold text-[#1C2B24] tracking-tight leading-none">
-                GarbageMedia
-              </span>
-              <span className="text-[10px] text-[#6B7468] font-sans leading-none mt-0.5">
-                Neighbourhood cleanups
-              </span>
-            </div>
+    <div className="min-h-screen bg-bg flex flex-col justify-between p-4 sm:p-6 lg:p-8">
+      {/* Top Header Bar */}
+      <header className="max-w-shell w-full mx-auto flex items-center justify-between pb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-sm bg-forest text-lime flex items-center justify-center font-heading text-lg font-bold shadow-sm border border-forest-border">
+            G
           </div>
-
-          <button
-            type="button"
-            onClick={handleGuest}
-            className="text-xs font-medium text-[#1C2B24] hover:text-[#1E6B4B] bg-[#FFFDF8] hover:bg-[#F4F1EA] border border-[#E2DCCD] px-3.5 py-1.5 rounded-[6px] transition-colors shadow-subtle flex items-center gap-1.5"
-          >
-            <span>Explore as guest</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#1E6B4B]" />
-          </button>
+          <div>
+            <span className="font-heading text-lg font-bold text-ink leading-tight block">
+              GarbageMedia
+            </span>
+            <span className="text-[11px] text-muted leading-tight">
+              Civic cleanups & verified proofs
+            </span>
+          </div>
         </div>
+
+        <button
+          type="button"
+          onClick={handleGuest}
+          className="text-xs font-medium text-forest hover:underline flex items-center gap-1"
+        >
+          <span>Explore as guest</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
-          {/* Left Hero Civic Overview */}
-          <div className="lg:col-span-7 space-y-5">
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1C2B24] leading-tight">
-              Clean your neighbourhood. <br />
-              <span className="text-[#1E6B4B]">
-                Capture proof. Earn civic bounty.
+      {/* Main Hero & Auth Split */}
+      <main className="max-w-shell w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6">
+        {/* Left: Civic Manifesto */}
+        <div className="lg:col-span-7 space-y-6 text-left">
+          <Badge variant="mint" size="md">
+            Grassroots Civic Movement
+          </Badge>
+
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink tracking-tight leading-[1.15]">
+            Clean your community. <br />
+            <span className="text-forest">Capture proof.</span> <br />
+            Earn civic rewards.
+          </h1>
+
+          <p className="text-sm sm:text-base text-muted max-w-xl leading-relaxed">
+            Found a littered corner, dirty beach, or neglected park? Snap a photo with live GPS.
+            When volunteers clean it up, our app generates verified Before & After comparison sliders
+            and awards community bounty points.
+          </p>
+
+          {/* 3 Step Explainer */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+                1
               </span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-[#6B7468] leading-relaxed max-w-lg">
-              Found a littered park corner, beach strip, or roadside alley? Snap a photo with live GPS.
-              When volunteers clean it up, our community app verifies the before & after proof and awards civic points.
-            </p>
-
-            {/* 3 Step Features */}
-            <div className="space-y-2.5 pt-2">
-              <div className="bg-[#FFFDF8] p-3.5 rounded-[6px] border border-[#E2DCCD] flex items-start gap-3">
-                <span className="w-6 h-6 rounded-[4px] bg-[#F4F1EA] text-[#1C2B24] font-semibold text-xs flex items-center justify-center flex-shrink-0 border border-[#E2DCCD]">
-                  1
-                </span>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#1C2B24]">Pin a dirty spot on the map</h4>
-                  <p className="text-xs text-[#6B7468] mt-0.5 leading-relaxed">
-                    Take a photo with live GPS and location name via open street maps.
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-ink">Pin a dirty area on the map</h3>
+                <p className="text-xs text-muted">Snap a photo with live GPS and locality search.</p>
               </div>
+            </div>
 
-              <div className="bg-[#FFFDF8] p-3.5 rounded-[6px] border border-[#E2DCCD] flex items-start gap-3">
-                <span className="w-6 h-6 rounded-[4px] bg-[#F4F1EA] text-[#1C2B24] font-semibold text-xs flex items-center justify-center flex-shrink-0 border border-[#E2DCCD]">
-                  2
-                </span>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#1C2B24]">Clean & verify on-site</h4>
-                  <p className="text-xs text-[#6B7468] mt-0.5 leading-relaxed">
-                    Volunteers clean up and snap the after photo on-site. Proximity matching checks proof.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+                2
+              </span>
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-ink">Clean & verify on-site</h3>
+                <p className="text-xs text-muted">Submit after photo. Haversine GPS matching confirms proof.</p>
               </div>
+            </div>
 
-              <div className="bg-[#FFFDF8] p-3.5 rounded-[6px] border border-[#E2DCCD] flex items-start gap-3">
-                <span className="w-6 h-6 rounded-[4px] bg-[#F4F1EA] text-[#1C2B24] font-semibold text-xs flex items-center justify-center flex-shrink-0 border border-[#E2DCCD]">
-                  3
-                </span>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#1C2B24]">Interactive proof & community rewards</h4>
-                  <p className="text-xs text-[#6B7468] mt-0.5 leading-relaxed">
-                    A before & after slider is published live, and reward points are credited to your civic passport.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-surface border border-border shadow-sm">
+              <span className="w-7 h-7 rounded-full bg-forest text-lime font-bold text-xs flex items-center justify-center flex-shrink-0">
+                3
+              </span>
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-ink">Interactive proof & civic rewards</h3>
+                <p className="text-xs text-muted">A Before & After split slider is published live and points credited.</p>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Login / Signup Card */}
-          <div className="lg:col-span-5 w-full">
-            <div className="bg-[#FFFDF8] rounded-[12px] border border-[#E2DCCD] shadow-subtle p-6 space-y-4">
-              {/* Card Tabs */}
-              <div className="flex items-center justify-between pb-3 border-b border-[#E2DCCD]">
-                <h2 className="font-serif text-base font-bold text-[#1C2B24]">
-                  {mode === 'signin' ? 'Sign in' : 'Create account'}
+        {/* Right: Auth Card */}
+        <div className="lg:col-span-5">
+          <Card variant="default" className="p-6 sm:p-8 space-y-5 text-left border-border-strong shadow-md">
+            <div>
+              <div className="flex items-center justify-between">
+                <h2 className="font-heading text-xl font-bold text-ink">
+                  {mode === 'signin' ? 'Welcome Back' : 'Join GarbageMedia'}
                 </h2>
-                <div className="flex items-center gap-1 text-xs">
+                <div className="flex border border-border rounded-sm p-0.5 bg-surface-muted text-xs">
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('signin');
-                      setError(null);
-                    }}
-                    className={`px-2.5 py-1 rounded-[4px] font-medium transition-colors ${
+                    onClick={() => setMode('signin')}
+                    className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${
                       mode === 'signin'
-                        ? 'bg-[#1E6B4B] text-white'
-                        : 'text-[#6B7468] hover:text-[#1C2B24]'
+                        ? 'bg-forest text-lime font-semibold'
+                        : 'text-muted hover:text-ink'
                     }`}
                   >
-                    Sign in
+                    Sign In
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('signup');
-                      setError(null);
-                    }}
-                    className={`px-2.5 py-1 rounded-[4px] font-medium transition-colors ${
+                    onClick={() => setMode('signup')}
+                    className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${
                       mode === 'signup'
-                        ? 'bg-[#1E6B4B] text-white'
-                        : 'text-[#6B7468] hover:text-[#1C2B24]'
+                        ? 'bg-forest text-lime font-semibold'
+                        : 'text-muted hover:text-ink'
                     }`}
                   >
                     Register
                   </button>
                 </div>
               </div>
+              <p className="text-xs text-muted mt-1">
+                {mode === 'signin'
+                  ? 'Sign in to access your personal profile and points.'
+                  : 'Create a free volunteer account in 30 seconds.'}
+              </p>
+            </div>
 
-              {error && (
-                <div className="p-3 rounded-[6px] bg-[#FDF2F0] border border-[#B3432E]/30 text-xs text-[#B3432E] flex items-start gap-2 leading-relaxed">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#B3432E]" />
-                  <span>{error}</span>
-                </div>
-              )}
+            {error && (
+              <div className="p-3 rounded-sm bg-coral-subtle border border-coral/30 text-coral text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span className="leading-tight">{error}</span>
+              </div>
+            )}
 
-              {/* Google Button */}
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={loading}
-                className="w-full py-2 px-3 rounded-[6px] border border-[#E2DCCD] bg-[#FFFDF8] hover:bg-[#F4F1EA] text-[#1C2B24] text-xs font-medium flex items-center justify-center gap-2 transition-colors shadow-subtle disabled:opacity-50"
-              >
+            {/* Google One-Click Button */}
+            <Button
+              variant="secondary"
+              size="md"
+              className="w-full"
+              onClick={handleGoogleSignIn}
+              isLoading={loading}
+              icon={
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
@@ -245,101 +244,80 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                   />
                 </svg>
-                <span>Continue with Google</span>
-              </button>
+              }
+            >
+              Continue with Google
+            </Button>
 
-              <div className="relative flex items-center justify-center">
-                <div className="border-t border-[#E2DCCD] w-full"></div>
-                <span className="bg-[#FFFDF8] px-2 text-[11px] text-[#6B7468] absolute">
-                  or with email
-                </span>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={handleEmailAuth} className="space-y-3">
-                {mode === 'signup' && (
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                      Full name
-                    </label>
-                    <div className="relative">
-                      <UserIcon className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                      <input
-                        type="text"
-                        required
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        placeholder="e.g. Jordan Vance"
-                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                    Email address
-                  </label>
-                  <div className="relative">
-                    <Mail className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="scout@example.com"
-                      className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#1C2B24] mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="w-3.5 h-3.5 text-[#6B7468] absolute left-3 top-3" />
-                    <input
-                      type="password"
-                      required
-                      minLength={6}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] bg-[#FFFDF8] border border-[#E2DCCD] text-[#1C2B24] placeholder:text-[#A39E93] focus:outline-none focus:border-[#1E6B4B]"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2 rounded-[6px] bg-[#1E6B4B] hover:bg-[#18553B] text-white text-xs font-medium shadow-subtle transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
-                >
-                  {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{mode === 'signin' ? 'Sign in to account' : 'Register account'}</span>
-                </button>
-              </form>
-
-              {/* Guest Enter */}
-              <div className="pt-2 text-center border-t border-[#E2DCCD]">
-                <button
-                  type="button"
-                  onClick={handleGuest}
-                  className="w-full py-2 px-3 text-xs font-medium text-[#1E6B4B] hover:text-[#18553B] hover:bg-[#F4F1EA] rounded-[6px] transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span>Skip for now, continue as guest volunteer</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#1E6B4B]" />
-                </button>
-              </div>
+            <div className="relative flex items-center justify-center py-1">
+              <div className="border-t border-border w-full" />
+              <span className="bg-surface px-2 text-[11px] text-muted uppercase tracking-wider absolute">
+                or with email
+              </span>
             </div>
-          </div>
+
+            {/* Form */}
+            <form onSubmit={handleEmailAuth} className="space-y-3">
+              {mode === 'signup' && (
+                <Input
+                  label="Full Name"
+                  placeholder="e.g. Ms dhoni"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  startIcon={<UserIcon className="w-3.5 h-3.5" />}
+                  required
+                />
+              )}
+
+              <Input
+                label="Email Address"
+                type="email"
+                placeholder="scout@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                startIcon={<Mail className="w-3.5 h-3.5" />}
+                required
+              />
+
+              <Input
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                startIcon={<Lock className="w-3.5 h-3.5" />}
+                required
+              />
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  className="w-full"
+                  isLoading={loading}
+                >
+                  {mode === 'signin' ? 'Sign In to Account' : 'Create Free Account'}
+                </Button>
+              </div>
+            </form>
+
+            <div className="pt-2 border-t border-border text-center">
+              <button
+                type="button"
+                onClick={handleGuest}
+                className="text-xs text-muted hover:text-ink underline"
+              >
+                Skip for now, continue as Guest Volunteer →
+              </button>
+            </div>
+          </Card>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#E2DCCD] bg-[#FFFDF8] py-3.5 text-center text-xs text-[#6B7468] px-4">
-        GarbageMedia · Grassroots neighbourhood cleanups & verified photographic proofs
+      <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-border">
+        <span>GarbageMedia · Grassroots neighbourhood cleanup registry</span>
       </footer>
     </div>
   );

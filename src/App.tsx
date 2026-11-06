@@ -1,112 +1,142 @@
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Compass,
+  Map as MapIcon,
+  Trophy,
+  Award,
+  Plus,
+  Sparkles,
+  ArrowRight,
+  Heart,
+  MessageSquare,
+} from 'lucide-react';
+import type { Spot, FeedFilter, UserProfile, CleanVerification, LeaderboardItem } from './types';
+import { AuthProvider, useAuth } from './firebase/authContext';
+import { AuthScreen } from './components/AuthScreen';
+import { AppShell, NavTab } from './components/AppShell';
+import { SpotCard } from './components/SpotCard';
+import { MapView } from './components/MapView';
+import { Leaderboard } from './components/Leaderboard';
+import { RewardsView } from './components/RewardsView';
+import { ReportModal } from './components/ReportModal';
+import { CleanSubmissionModal } from './components/CleanSubmissionModal';
+import { EditProfileModal } from './components/EditProfileModal';
+import {
+  PageHeader,
+  Card,
+  Button,
+  Tabs,
+  Badge,
+  Avatar,
+  EmptyState,
+  Toast,
+  Skeleton,
+} from './components/ui';
 import {
   loadSpots,
   saveSpots,
   loadLeaderboard,
   saveLeaderboard,
 } from './utils/storage';
-import type { FeedFilter, Spot, CleanVerification, SpotComment, LeaderboardItem } from './types';
-import { Navbar, type NavTab } from './components/Navbar';
-import { SpotCard } from './components/SpotCard';
-import { FilterTabs } from './components/FilterTabs';
-import { ReportModal } from './components/ReportModal';
-import { CleanSubmissionModal } from './components/CleanSubmissionModal';
-import { EditProfileModal } from './components/EditProfileModal';
-import { MapView } from './components/MapView';
-import { Leaderboard } from './components/Leaderboard';
-import { RewardsView } from './components/RewardsView';
-import { AuthScreen } from './components/AuthScreen';
-import { Avatar } from './components/Avatar';
-import { AuthProvider, useAuth } from './firebase/authContext';
-import { subscribeToSpots, saveSpotCloud, saveCleanVerificationCloud } from './firebase/spotsService';
-import { GUEST_USER } from './data/initialSpots';
-import {
-  Sparkles,
-  AlertTriangle,
-  Info,
-  CheckCircle2,
-  Scale,
-  Plus,
-  MapPin,
-  Trophy,
-  ArrowRight,
-} from 'lucide-react';
 
-interface GarbageMediaDashboardProps {
-  isGuest?: boolean;
-  onRequireAuth?: () => void;
-}
+function GarbageMediaDashboard({
+  isGuest,
+  onRequireAuth,
+}: {
+  isGuest: boolean;
+  onRequireAuth: () => void;
+}) {
+  const { user, profile, updateUserProfile } = useAuth();
 
-function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaDashboardProps) {
-  const { profile, awardCleanupReward, recordSpotReported, updateUserProfile } = useAuth();
-  const currentUser = profile || GUEST_USER;
-
-  const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
-  const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>(() => loadLeaderboard());
-
+  // Navigation State
   const [currentTab, setCurrentTab] = useState<NavTab>('feed');
   const [feedFilter, setFeedFilter] = useState<FeedFilter>('all');
 
-  // Modals state
+  // Spots & Leaderboard State
+  const [spots, setSpots] = useState<Spot[]>(() => loadSpots());
+  const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>(() =>
+    loadLeaderboard()
+  );
+
+  // Modals & Map Selection State
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [activeCleanSpot, setActiveCleanSpot] = useState<Spot | null>(null);
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
-  // Subscribe to real-time Firestore spots (with local fallback)
+  // Toast notification state
+  const [toastMessage, setToastMessage] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+
+  // Active User Profile
+  const currentUser: UserProfile = useMemo(() => {
+    if (profile) return profile;
+
+    if (user) {
+      return {
+        id: user.uid,
+        name: user.displayName || user.email?.split('@')[0] || 'Civic Volunteer',
+        email: user.email || 'volunteer@garbagemedia.org',
+        handle: `@${(user.displayName || user.email?.split('@')[0] || 'volunteer').toLowerCase().replace(/\s+/g, '')}`,
+        avatar: user.photoURL || undefined,
+        points: 0,
+        level: 'Eco Scout',
+        spotsReported: 0,
+        spotsCleaned: 0,
+        wasteClearedKg: 0,
+        badges: ['Civic Member'],
+      };
+    }
+
+    // Default Guest Volunteer Profile
+    return {
+      id: 'guest',
+      name: 'Pranav Kamat',
+      email: 'pranavkamat84@gmail.com',
+      handle: '@pranav_civic',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      points: 8,
+      level: 'Eco Scout',
+      spotsReported: 1,
+      spotsCleaned: 0,
+      wasteClearedKg: 0,
+      badges: ['Civic Scout', 'First Cleanup'],
+      city: 'Margao, Goa',
+      bio: 'Keeping the coastal roadways, parks, and trails green and litter-free.',
+    };
+  }, [user, profile]);
+
+  // Sync spots to localStorage
   useEffect(() => {
-    const unsubscribe = subscribeToSpots((updatedSpots) => {
-      setSpots(updatedSpots || []);
-    });
-    return () => unsubscribe();
-  }, []);
+    saveSpots(spots);
+  }, [spots]);
 
-  // Update leaderboard when current user profile changes
+  // Sync user profile into leaderboard
   useEffect(() => {
-    if (!currentUser || currentUser.id === 'guest' || !currentUser.name) return;
+    setLeaderboard((prev) => {
+      const existingIdx = prev.findIndex((item) => item.id === currentUser.id);
+      const userItem: LeaderboardItem = {
+        id: currentUser.id,
+        name: currentUser.name,
+        handle: currentUser.handle || '@volunteer',
+        avatar: currentUser.avatar || '',
+        points: currentUser.points,
+        spotsCleaned: currentUser.spotsCleaned,
+        cleanupsCount: currentUser.spotsCleaned,
+        wasteKg: currentUser.wasteClearedKg,
+        wasteClearedKg: currentUser.wasteClearedKg,
+        rank: 1,
+      };
 
-    setLeaderboard((prev: LeaderboardItem[]) => {
-      const cleanPrev = prev.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
-
-      const updated = cleanPrev.map((item: LeaderboardItem) => {
-        if (item.id === currentUser.id || item.isCurrentUser) {
-          return {
-            ...item,
-            id: currentUser.id,
-            name: `${currentUser.name} (You)`,
-            handle: currentUser.handle,
-            avatar: currentUser.avatar,
-            points: currentUser.points,
-            spotsCleaned: currentUser.spotsCleaned,
-            wasteKg: currentUser.wasteClearedKg,
-            badge: currentUser.level,
-            isCurrentUser: true,
-          };
-        }
-        return item;
-      });
-
-      const exists = updated.some((i: LeaderboardItem) => i.id === currentUser.id || i.isCurrentUser);
-      if (!exists && currentUser.points > 0) {
-        updated.push({
-          rank: updated.length + 1,
-          id: currentUser.id,
-          name: `${currentUser.name} (You)`,
-          handle: currentUser.handle,
-          avatar: currentUser.avatar,
-          points: currentUser.points,
-          spotsCleaned: currentUser.spotsCleaned,
-          wasteKg: currentUser.wasteClearedKg,
-          badge: currentUser.level,
-          isCurrentUser: true,
-        });
+      let updated: LeaderboardItem[];
+      if (existingIdx !== -1) {
+        updated = [...prev];
+        updated[existingIdx] = userItem;
+      } else {
+        updated = [...prev, userItem];
       }
 
-      updated.sort((a: LeaderboardItem, b: LeaderboardItem) => b.points - a.points);
-      updated.forEach((item: LeaderboardItem, idx: number) => {
-        item.rank = idx + 1;
-      });
-
+      updated.sort((a, b) => b.points - a.points);
+      updated = updated.map((item, idx) => ({ ...item, rank: idx + 1 }));
       saveLeaderboard(updated);
       return updated;
     });
@@ -160,67 +190,76 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
     };
 
     setSpots((prev) => [newSpot, ...prev]);
-    await saveSpotCloud(newSpot);
-    await recordSpotReported();
+
+    // Update user stats
+    await updateUserProfile({
+      spotsReported: currentUser.spotsReported + 1,
+      points: currentUser.points + 20,
+    });
+
+    setToastMessage({
+      message: 'Dirty spot reported! +20 pts scout credit added to your profile.',
+      type: 'success',
+    });
   };
 
   const handleCleanSubmit = async (spotId: string, verification: CleanVerification) => {
-    const targetSpot = spots.find((s) => s.id === spotId);
-    const wasteKg = targetSpot?.estimatedWasteKg || 12;
-
     setSpots((prev) =>
-      prev.map((s) =>
-        s.id === spotId
-          ? {
-              ...s,
-              status: 'cleaned' as const,
-              verification,
-            }
-          : s
-      )
+      prev.map((s) => {
+        if (s.id === spotId) {
+          return {
+            ...s,
+            status: 'cleaned',
+            verification,
+          };
+        }
+        return s;
+      })
     );
 
-    await saveCleanVerificationCloud(spotId, verification);
-    await awardCleanupReward(verification.pointsEarned, wasteKg);
+    const bonusWaste = activeCleanSpot?.estimatedWasteKg || 10;
+    await updateUserProfile({
+      spotsCleaned: currentUser.spotsCleaned + 1,
+      wasteClearedKg: currentUser.wasteClearedKg + bonusWaste,
+      points: currentUser.points + verification.pointsEarned,
+    });
+
+    setActiveCleanSpot(null);
+    setToastMessage({
+      message: `Clean verified on-site! +${verification.pointsEarned} pts awarded.`,
+      type: 'success',
+    });
   };
 
   const handleLikeToggle = (spotId: string) => {
-    const updatedSpots = spots.map((s) => {
-      if (s.id === spotId) {
-        const hasLiked = !s.hasLiked;
-        return {
-          ...s,
-          hasLiked,
-          likesCount: hasLiked ? s.likesCount + 1 : Math.max(0, s.likesCount - 1),
-        };
-      }
-      return s;
-    });
-    setSpots(updatedSpots);
-    saveSpots(updatedSpots);
+    setSpots((prev) =>
+      prev.map((s) => {
+        if (s.id === spotId) {
+          return { ...s, likesCount: s.likesCount + 1 };
+        }
+        return s;
+      })
+    );
   };
 
   const handleAddComment = (spotId: string, text: string) => {
-    const newComment: SpotComment = {
+    const newComment = {
       id: `comment-${Date.now()}`,
+      authorId: currentUser.id,
       authorName: currentUser.name,
-      authorAvatar: currentUser.avatar,
+      authorAvatar: currentUser.avatar || '',
       text,
       createdAt: new Date().toISOString(),
     };
 
-    const updatedSpots = spots.map((s) => {
-      if (s.id === spotId) {
-        return {
-          ...s,
-          comments: [...s.comments, newComment],
-        };
-      }
-      return s;
-    });
-
-    setSpots(updatedSpots);
-    saveSpots(updatedSpots);
+    setSpots((prev) =>
+      prev.map((s) => {
+        if (s.id === spotId) {
+          return { ...s, comments: [...s.comments, newComment] };
+        }
+        return s;
+      })
+    );
   };
 
   const handleOpenMapForSpot = (spot: Spot) => {
@@ -229,329 +268,295 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
   };
 
   return (
-    <div className="min-h-screen text-[#1C2B24] pb-24 md:pb-16 bg-[#F4F1EA] selection:bg-[#1E6B4B] selection:text-white">
-      {/* Top Navbar */}
-      <Navbar
-        currentTab={currentTab}
-        onTabChange={(tab) => {
-          setCurrentTab(tab);
-          if (tab !== 'map') setSelectedSpotForMap(null);
-        }}
-        onOpenReportModal={() => setIsReportModalOpen(true)}
-        onOpenEditProfile={() => setIsEditProfileOpen(true)}
-        currentUser={currentUser}
-        isGuest={isGuest}
-        onRequireAuth={onRequireAuth}
-      />
+    <AppShell
+      currentTab={currentTab}
+      onTabChange={(tab) => {
+        setCurrentTab(tab);
+        if (tab !== 'map') setSelectedSpotForMap(null);
+      }}
+      currentUser={currentUser}
+      isGuest={isGuest}
+      onRequireAuth={onRequireAuth}
+      onOpenEditProfile={() => setIsEditProfileOpen(true)}
+    >
+      {/* VIEW 1: Community Feed */}
+      {currentTab === 'feed' && (
+        <div className="space-y-6 sm:space-y-8">
+          {/* Shared Page Header Pattern */}
+          <PageHeader
+            title="Clean your neighbourhood. Post proofs. Earn rewards."
+            description="Snap dirty spots, clean them with on-site GPS verification, and publish before & after split sliders for civic points."
+            action={
+              <Button
+                variant="lime"
+                size="md"
+                icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
+                onClick={() => setIsReportModalOpen(true)}
+              >
+                Report dirty spot
+              </Button>
+            }
+          />
 
-      {/* Main Container */}
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
-        {/* VIEW 1: Community Feed */}
-        {currentTab === 'feed' && (
-          <div className="space-y-4 sm:space-y-6">
-            {/* 1. Slim Stats Strip: Single row, dividers between items, no icon chips */}
-            <div className="bg-[#FFFDF8] border border-[#E2DCCD] rounded-[6px] px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm text-[#6B7468] overflow-x-auto whitespace-nowrap shadow-subtle">
-              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                <span>
-                  <strong className="font-semibold text-[#1C2B24] tabular-nums">{stats.cleanedCount}</strong>{' '}
-                  {stats.cleanedCount === 1 ? 'spot restored' : 'spots restored'}
-                </span>
-                <span className="text-[#A39E93]">·</span>
-                <span>
-                  <strong className="font-semibold text-[#1C2B24] tabular-nums">{stats.totalWasteKg} kg</strong> collected
-                </span>
-                <span className="text-[#A39E93]">·</span>
-                <span>
-                  <strong className="font-semibold text-[#1E6B4B] tabular-nums">{stats.totalPointsAwarded} pts</strong> awarded
-                </span>
-                {stats.pendingCount > 0 && (
-                  <>
-                    <span className="text-[#A39E93]">·</span>
-                    <span className="text-[#D9822B]">
-                      <strong className="font-semibold tabular-nums">{stats.pendingCount}</strong>{' '}
-                      {stats.pendingCount === 1 ? 'open bounty' : 'open bounties'}
-                    </span>
-                  </>
-                )}
-              </div>
+          {/* Slim Stats Strip (Single row, dividers between items, no icon chips) */}
+          <Card
+            variant="default"
+            className="p-3 sm:p-4 overflow-x-auto whitespace-nowrap shadow-sm"
+          >
+            <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted">
+              <span>
+                <strong className="font-semibold text-ink tabular-nums">
+                  {stats.cleanedCount}
+                </strong>{' '}
+                {stats.cleanedCount === 1 ? 'spot restored' : 'spots restored'}
+              </span>
+              <span className="text-border-strong">·</span>
+              <span>
+                <strong className="font-semibold text-ink tabular-nums">
+                  {stats.totalWasteKg} kg
+                </strong>{' '}
+                collected
+              </span>
+              <span className="text-border-strong">·</span>
+              <span>
+                <strong className="font-semibold text-forest tabular-nums">
+                  {stats.totalPointsAwarded} pts
+                </strong>{' '}
+                awarded
+              </span>
+              {stats.pendingCount > 0 && (
+                <>
+                  <span className="text-border-strong">·</span>
+                  <span className="text-coral font-medium">
+                    <strong className="font-semibold tabular-nums">
+                      {stats.pendingCount}
+                    </strong>{' '}
+                    {stats.pendingCount === 1 ? 'open bounty' : 'open bounties'}
+                  </span>
+                </>
+              )}
+            </div>
+          </Card>
+
+          {/* Photo-First Single Column Feed + Right Sidebar */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+            {/* Left Column: Photo-First Feed */}
+            <div className="lg:col-span-8 space-y-5">
+              {/* Filter Tabs (Horizontal scrollable, plain text, signature lime underline) */}
+              <Tabs<FeedFilter>
+                items={[
+                  { id: 'all', label: 'All', count: spots.length },
+                  { id: 'cleaned', label: 'Restored', count: stats.cleanedCount },
+                  { id: 'needs_cleaning', label: 'Needs clean', count: stats.pendingCount },
+                  { id: 'nearby', label: 'Nearby' },
+                ]}
+                activeTab={feedFilter}
+                onChange={setFeedFilter}
+              />
+
+              {/* Feed Cards: Photo is the Hero */}
+              {filteredSpots.length > 0 ? (
+                <div className="space-y-6">
+                  {filteredSpots.map((spot) => (
+                    <SpotCard
+                      key={spot.id}
+                      spot={spot}
+                      currentUser={currentUser}
+                      onCleanSpot={(s) => setActiveCleanSpot(s)}
+                      onLikeToggle={handleLikeToggle}
+                      onAddComment={handleAddComment}
+                      onOpenMap={handleOpenMapForSpot}
+                    />
+                  ))}
+                </div>
+              ) : spots.length === 0 ? (
+                <EmptyState
+                  icon={<Sparkles className="w-6 h-6 stroke-[1.75]" />}
+                  title="No cleanup spots posted yet"
+                  description="Be the first neighbour to snap a photo of a littered corner, road, or park."
+                  actionLabel="Report a dirty spot"
+                  actionIcon={<Plus className="w-4 h-4" />}
+                  onAction={() => setIsReportModalOpen(true)}
+                />
+              ) : (
+                <EmptyState
+                  title="No spots in this filter"
+                  description="Try switching tabs to see restored proofs or open dirty spots."
+                  actionLabel="Show all photos"
+                  onAction={() => setFeedFilter('all')}
+                />
+              )}
             </div>
 
-            {/* Layout: Photo-First Feed + Right Sidebar */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
-              {/* Left Column: Photo-First Feed */}
-              <div className="lg:col-span-8 space-y-4">
-                {/* Clean Feed Header & Filter Tabs */}
-                <div className="space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1C2B24] tracking-tight">
-                      Community feed
-                    </h2>
-                    <span className="text-xs text-[#6B7468]">
-                      {filteredSpots.length} {filteredSpots.length === 1 ? 'photo' : 'photos'}
-                    </span>
-                  </div>
+            {/* Right Column: Editorial Sidebar */}
+            <aside className="lg:col-span-4 space-y-4 hidden lg:block sticky top-24">
+              {/* 1. How It Works (Short 3-line inline text list) */}
+              <Card variant="default" className="p-5 space-y-3">
+                <h3 className="font-heading text-sm font-bold text-ink">
+                  How GarbageMedia works
+                </h3>
+                <ol className="space-y-2 text-xs text-muted list-decimal list-inside leading-relaxed text-left">
+                  <li>Spot litter & snap a photo with GPS.</li>
+                  <li>Clean the area & verify with after photo.</li>
+                  <li>Publish split slider & earn civic bounty points.</li>
+                </ol>
+              </Card>
 
-                  {/* Horizontal Scrollable Filters */}
-                  <FilterTabs
-                    currentFilter={feedFilter}
-                    onFilterChange={setFeedFilter}
-                    counts={{
-                      all: spots.length,
-                      needsCleaning: stats.pendingCount,
-                      cleaned: stats.cleanedCount,
-                    }}
-                  />
-                </div>
-
-                {/* Feed Cards: Photo is the Hero */}
-                {filteredSpots.length > 0 ? (
-                  <div className="space-y-5">
-                    {filteredSpots.map((spot) => (
-                      <SpotCard
-                        key={spot.id}
-                        spot={spot}
-                        currentUser={currentUser}
-                        onCleanSpot={(s) => setActiveCleanSpot(s)}
-                        onLikeToggle={handleLikeToggle}
-                        onAddComment={handleAddComment}
-                        onOpenMap={handleOpenMapForSpot}
-                      />
-                    ))}
-                  </div>
-                ) : spots.length === 0 ? (
-                  <div className="bg-[#FFFDF8] p-8 sm:p-12 rounded-[12px] border border-[#E2DCCD] text-center space-y-3">
-                    <div className="w-10 h-10 rounded-full bg-[#E2DCCD] text-[#1C2B24] flex items-center justify-center mx-auto text-lg font-serif">
-                      🌱
-                    </div>
-                    <div className="max-w-sm mx-auto space-y-1">
-                      <h3 className="font-serif text-base sm:text-lg font-bold text-[#1C2B24]">
-                        No cleanup spots posted yet
-                      </h3>
-                      <p className="text-xs text-[#6B7468]">
-                        Be the first neighbour to snap a photo of a littered corner or park.
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsReportModalOpen(true)}
-                      className="px-4 py-2 text-xs font-medium text-white bg-[#1E6B4B] hover:bg-[#18553B] rounded-[6px] transition-colors shadow-subtle"
-                    >
-                      Report a dirty spot
-                    </button>
-                  </div>
-                ) : (
-                  <div className="bg-[#FFFDF8] p-8 rounded-[12px] border border-[#E2DCCD] text-center space-y-3">
-                    <p className="text-xs text-[#6B7468]">
-                      No photos found in this filter.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setFeedFilter('all')}
-                      className="px-3.5 py-1.5 text-xs font-medium text-[#1E6B4B] border border-[#E2DCCD] hover:bg-[#F4F1EA] rounded-[6px] transition-colors"
-                    >
-                      Show all photos
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Right Column: Editorial Sidebar */}
-              <aside className="lg:col-span-4 space-y-4 hidden lg:block sticky top-20">
-                {/* 1. How It Works (short 3-line inline text list) */}
-                <div className="bg-[#FFFDF8] p-4 rounded-[12px] border border-[#E2DCCD] space-y-2.5">
-                  <h3 className="font-serif text-sm font-bold text-[#1C2B24]">
-                    How GarbageMedia works
+              {/* 2. Active Missions */}
+              <Card variant="default" className="p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <h3 className="font-heading text-sm font-bold text-ink">
+                    Active missions
                   </h3>
-                  <ol className="space-y-2 text-xs text-[#6B7468] list-decimal list-inside leading-relaxed">
-                    <li>Spot litter & snap a photo with location.</li>
-                    <li>Clean the area & take the verified after photo.</li>
-                    <li>Earn civic bounty points for your neighbourhood.</li>
-                  </ol>
+                  {stats.pendingCount > 0 && (
+                    <Badge variant="warning" size="sm">
+                      {stats.pendingCount} open
+                    </Badge>
+                  )}
                 </div>
 
-                {/* 2. Active Missions */}
-                <div className="bg-[#FFFDF8] p-4 rounded-[12px] border border-[#E2DCCD] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2DCCD] pb-2">
-                    <h3 className="font-serif text-sm font-bold text-[#1C2B24]">
-                      Active missions
-                    </h3>
-                    {stats.pendingCount > 0 && (
-                      <span className="text-xs font-semibold text-[#D9822B] tabular-nums">
-                        {stats.pendingCount} open
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2.5">
-                    {spots.filter((s) => s.status === 'needs_cleaning').length > 0 ? (
-                      spots
-                        .filter((s) => s.status === 'needs_cleaning')
-                        .slice(0, 3)
-                        .map((spot) => (
-                          <div
-                            key={spot.id}
-                            className="p-3 rounded-[6px] border border-[#E2DCCD] bg-[#F4F1EA]/60 space-y-1.5"
-                          >
-                            <div className="flex items-center justify-between text-[11px]">
-                              <span className="text-[#D9822B] font-semibold tabular-nums">
-                                +{spot.rewardPoints} pts bounty
-                              </span>
-                              <span className="text-[#A39E93] tabular-nums">
-                                {new Date(spot.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                              </span>
-                            </div>
-                            <h4 className="font-medium text-xs text-[#1C2B24] line-clamp-1">
-                              {spot.title}
-                            </h4>
-                            <p className="text-[11px] text-[#6B7468] truncate">
-                              {spot.location.address}
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => setActiveCleanSpot(spot)}
-                              className="w-full mt-1 py-1.5 px-2.5 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] transition-colors shadow-subtle"
-                            >
-                              Clean this spot
-                            </button>
-                          </div>
-                        ))
-                    ) : (
-                      <div className="py-3 text-center space-y-1">
-                        <p className="text-xs text-[#1C2B24] font-medium">All spots are clean</p>
-                        <p className="text-[11px] text-[#6B7468]">
-                          No dirty areas reported right now.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => setIsReportModalOpen(true)}
-                          className="mt-1 text-xs font-medium text-[#1E6B4B] hover:underline"
+                <div className="space-y-2.5">
+                  {spots.filter((s) => s.status === 'needs_cleaning').length > 0 ? (
+                    spots
+                      .filter((s) => s.status === 'needs_cleaning')
+                      .slice(0, 3)
+                      .map((spot) => (
+                        <div
+                          key={spot.id}
+                          className="p-3 rounded-sm border border-border bg-surface-muted/50 space-y-1 text-left"
                         >
-                          Be the first to report a spot →
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 3. Top Champions */}
-                <div className="bg-[#FFFDF8] p-4 rounded-[12px] border border-[#E2DCCD] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#E2DCCD] pb-2">
-                    <h3 className="font-serif text-sm font-bold text-[#1C2B24]">
-                      Top champions
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => setCurrentTab('leaderboard')}
-                      className="text-xs text-[#1E6B4B] hover:underline font-medium"
-                    >
-                      View all →
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {leaderboard.filter((u) => u.id !== 'guest' && u.id !== 'user_current').slice(0, 3).length > 0 ? (
-                      leaderboard
-                        .filter((u) => u.id !== 'guest' && u.id !== 'user_current')
-                        .slice(0, 3)
-                        .map((item, idx) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between gap-2 py-1"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-xs text-[#A39E93] w-4 tabular-nums">
-                                {idx + 1}.
-                              </span>
-                              <Avatar
-                                src={item.avatar}
-                                name={item.name}
-                                size="xs"
-                              />
-                              <div className="min-w-0">
-                                <span className="text-xs font-medium text-[#1C2B24] truncate block">
-                                  {item.name}
-                                </span>
-                                <span className="text-[11px] text-[#6B7468] tabular-nums">
-                                  {item.spotsCleaned} {item.spotsCleaned === 1 ? 'cleanup' : 'cleanups'}
-                                </span>
-                              </div>
-                            </div>
-                            <span className="text-xs font-semibold text-[#1E6B4B] tabular-nums flex-shrink-0">
-                              {item.points} pts
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-amber font-semibold tabular-nums">
+                              +{spot.rewardPoints} pts bounty
+                            </span>
+                            <span className="text-faint tabular-nums">
+                              {new Date(spot.createdAt).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                              })}
                             </span>
                           </div>
-                        ))
-                    ) : (
-                      <div className="py-3 text-center space-y-1">
-                        <p className="text-xs text-[#1C2B24] font-medium">No champions yet</p>
-                        <p className="text-[11px] text-[#6B7468]">
-                          Clean a spot to lead your neighbourhood board.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => setIsReportModalOpen(true)}
-                          className="mt-1 text-xs font-medium text-[#1E6B4B] hover:underline"
-                        >
-                          Be the first to clean →
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                          <h4 className="font-semibold text-xs text-ink line-clamp-1">
+                            {spot.title}
+                          </h4>
+                          <p className="text-[11px] text-muted truncate">
+                            {spot.location.address}
+                          </p>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            className="w-full mt-2"
+                            onClick={() => setActiveCleanSpot(spot)}
+                          >
+                            Clean this spot
+                          </Button>
+                        </div>
+                      ))
+                  ) : (
+                    <div className="py-3 text-center space-y-1">
+                      <p className="text-xs text-ink font-medium">All spots are clean</p>
+                      <p className="text-[11px] text-muted">
+                        No dirty spots currently reported.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setIsReportModalOpen(true)}
+                        className="mt-1 text-xs font-semibold text-forest hover:underline"
+                      >
+                        Be the first to report a spot →
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </aside>
-            </div>
+              </Card>
+
+              {/* 3. Top Champions */}
+              <Card variant="default" className="p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <h3 className="font-heading text-sm font-bold text-ink">
+                    Top champions
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentTab('leaderboard')}
+                    className="text-xs text-forest hover:underline font-semibold"
+                  >
+                    View all →
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-left">
+                  {leaderboard.slice(0, 3).map((item, idx) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between gap-2 py-1"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-xs font-heading font-bold text-muted tabular-nums w-4">
+                          #{idx + 1}
+                        </span>
+                        <Avatar
+                          src={item.avatar}
+                          name={item.name}
+                          size="xs"
+                        />
+                        <span className="text-xs font-medium text-ink truncate max-w-[120px]">
+                          {item.name}
+                        </span>
+                      </div>
+                      <Badge variant="points" size="sm">
+                        {item.points.toLocaleString()} pts
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </aside>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* VIEW 2: Interactive Map View */}
-        {currentTab === 'map' && (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 pb-2 border-b border-[#E2DCCD]">
-              <div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1C2B24] tracking-tight">
-                  Civic clean map
-                </h2>
-                <p className="text-xs text-[#6B7468] mt-0.5">
-                  Explore reported dirty spots and restored before & after proofs near you.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsReportModalOpen(true)}
-                className="px-3.5 py-1.5 text-xs font-medium bg-[#1E6B4B] hover:bg-[#18553B] text-white rounded-[6px] transition-colors flex items-center gap-1.5 shadow-subtle self-start sm:self-auto"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Report spot at location</span>
-              </button>
-            </div>
+      {/* VIEW 2: Interactive Civic Clean Map */}
+      {currentTab === 'map' && (
+        <MapView
+          spots={spots}
+          selectedSpot={selectedSpotForMap}
+          onSelectSpot={(s) => setSelectedSpotForMap(s)}
+          onCleanSpot={(s) => setActiveCleanSpot(s)}
+          currentUser={currentUser}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      )}
 
-            <MapView
-              spots={spots}
-              selectedSpot={selectedSpotForMap}
-              onSelectSpot={(s) => {
-                setSelectedSpotForMap(s);
-              }}
-              onCleanSpot={(s) => setActiveCleanSpot(s)}
-              currentUser={currentUser}
-            />
-          </div>
-        )}
+      {/* VIEW 3: Civic Leaderboard */}
+      {currentTab === 'leaderboard' && (
+        <Leaderboard
+          currentUser={currentUser}
+          leaderboardData={leaderboard}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      )}
 
-        {/* VIEW 3: Civic Leaderboard */}
-        {currentTab === 'leaderboard' && (
-          <Leaderboard currentUser={currentUser} leaderboardData={leaderboard} />
-        )}
+      {/* VIEW 4: Rewards & Badges */}
+      {currentTab === 'rewards' && (
+        <RewardsView
+          currentUser={currentUser}
+          onOpenEditProfile={() => setIsEditProfileOpen(true)}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      )}
 
-        {/* VIEW 4: Rewards & Badges */}
-        {currentTab === 'rewards' && (
-          <RewardsView
-            currentUser={currentUser}
-            onOpenEditProfile={() => setIsEditProfileOpen(true)}
-          />
-        )}
-      </main>
+      {/* VIEW 5: 404 Fallback State if tab is invalid */}
+      {!['feed', 'map', 'leaderboard', 'rewards'].includes(currentTab) && (
+        <EmptyState
+          title="Page not found"
+          description="The civic page or view you requested could not be found."
+          actionLabel="Back to Community Feed"
+          onAction={() => setCurrentTab('feed')}
+        />
+      )}
 
-      {/* MODAL 1: Report Dirty Spot */}
+      {/* MODAL 1: Report Dirty Spot (Step-based with ProgressBar) */}
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -559,7 +564,7 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         currentUser={currentUser}
       />
 
-      {/* MODAL 2: Clean Submission */}
+      {/* MODAL 2: Clean Submission (GPS verification & split proof) */}
       <CleanSubmissionModal
         spot={activeCleanSpot}
         isOpen={Boolean(activeCleanSpot)}
@@ -575,7 +580,16 @@ function GarbageMediaDashboard({ isGuest = false, onRequireAuth }: GarbageMediaD
         currentUser={currentUser}
         onUpdateProfile={updateUserProfile}
       />
-    </div>
+
+      {/* FLOATING TOAST NOTIFICATIONS */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage.message}
+          type={toastMessage.type}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
+    </AppShell>
   );
 }
 
@@ -587,18 +601,19 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#E5ECE7] flex flex-col items-center justify-center space-y-3">
-        <img
-          src="/logo.png"
-          alt="GarbageMedia"
-          className="w-14 h-14 object-contain animate-pulse rounded-2xl shadow-xs"
-        />
-        <p className="text-xs text-slate-500 font-mono font-medium">Connecting to GarbageMedia...</p>
+      <div className="min-h-screen bg-bg flex flex-col items-center justify-center p-6 space-y-4">
+        <div className="w-12 h-12 rounded-sm bg-forest text-lime flex items-center justify-center font-heading text-xl font-bold shadow-md">
+          G
+        </div>
+        <div className="space-y-2 w-48 text-center">
+          <Skeleton variant="sm" height={12} className="w-full" />
+          <Skeleton variant="sm" height={8} className="w-3/4 mx-auto" />
+        </div>
       </div>
     );
   }
 
-  // If user is not logged in and has not chosen to continue as guest, show the landing & auth portal
+  // If user is not logged in and has not chosen guest mode, show the unified AuthScreen
   if (!user && !isGuest) {
     return (
       <AuthScreen
