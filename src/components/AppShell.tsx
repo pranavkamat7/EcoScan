@@ -51,7 +51,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-bg text-ink">
       {/* 1. SHARED STICKY HEADER */}
-      <header className="sticky top-0 z-sticky bg-white/95 backdrop-blur-md border-b border-line transition-colors">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-line transition-colors">
         <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
           {/* Left: Official Brand Logo with Clear Space (Clicking goes to Feed) */}
           <div className="flex items-center flex-shrink-0">

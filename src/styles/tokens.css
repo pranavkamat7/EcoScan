@@ -7,43 +7,43 @@
   /* ==========================================================================
      CORE BRAND PALETTE
      ========================================================================== */
-  --navy: #172536;       /* Primary dark: headings, body text, hero/header strips, footer */
-  --navy-2: #22364D;     /* Slightly lighter navy for hover, cards and gradients */
+  --navy: #0E1A27;       /* Primary dark: headings, body text, hero/header strips, footer */
+  --navy-2: #162638;     /* Slightly lighter navy for hover, cards and gradients */
   --emerald: #00B86B;    /* Primary brand color: buttons, links, active states */
-  --lime: #55D62E;       /* Highlight: points, rewards, success, progress bars */
-  --sky: #38BDF8;        /* Secondary accent: "After"/clean info, map, links */
+  --lime: #45D124;       /* Highlight: points, rewards, success, progress bars */
+  --sky: #0284C7;        /* Secondary accent: "After"/clean info, map, links */
   --white: #FFFFFF;      /* Cards and surfaces */
-  --coral: #F0533D;      /* Status-only: "Before", needs clean, errors, danger */
+  --coral: #EF4444;      /* Status-only: "Before", needs clean, errors, danger */
 
-  /* Supporting neutrals (derived from navy) */
-  --bg: #F4F8F7;         /* Page background (very light cool white with subtle green tint) */
-  --ink: #172536;        /* Main text */
-  --muted: #5B6B7A;      /* Secondary text */
-  --line: #E3EBEA;       /* Borders and dividers */
-  --line-strong: #CBD8D6;
+  /* Supporting neutrals: Crisp, modern, ultra-clean slate canvas (NO murky green) */
+  --bg: #F8FAFC;         /* Clean bright slate-50 canvas */
+  --ink: #0F172A;        /* Deep slate-900 primary text */
+  --muted: #64748B;      /* Slate-500 secondary text */
+  --line: #E2E8F0;       /* Slate-200 clean borders */
+  --line-strong: #CBD5E1;
 
   /* ==========================================================================
      FULL TINT SCALES (50 to 900)
      ========================================================================== */
   /* Navy Tints */
-  --navy-50: #F2F5F8;
-  --navy-100: #E1E8EE;
-  --navy-200: #C3D1DC;
-  --navy-300: #99B2C5;
-  --navy-400: #6F90AB;
-  --navy-500: #4B6E8C;
-  --navy-600: #33506B;
-  --navy-700: #22364D;
-  --navy-800: #172536;
-  --navy-900: #0E1722;
-  --navy-950: #080E16;
+  --navy-50: #F1F5F9;
+  --navy-100: #E2E8F0;
+  --navy-200: #CBD5E1;
+  --navy-300: #94A3B8;
+  --navy-400: #64748B;
+  --navy-500: #334155;
+  --navy-600: #1E293B;
+  --navy-700: #162638;
+  --navy-800: #0E1A27;
+  --navy-900: #08101A;
+  --navy-950: #04080D;
 
   /* Emerald Tints */
-  --emerald-50: #E6F8F0;
-  --emerald-100: #C2F1DC;
-  --emerald-200: #8FE5BF;
-  --emerald-300: #54D59E;
-  --emerald-400: #23C382;
+  --emerald-50: #ECFDF5;
+  --emerald-100: #D1FAE5;
+  --emerald-200: #A7F3D0;
+  --emerald-300: #6EE7B7;
+  --emerald-400: #34D399;
   --emerald-500: #00B86B;
   --emerald-600: #009E5B;
   --emerald-700: #007D48;
@@ -51,16 +51,16 @@
   --emerald-900: #004F2F;
 
   /* Lime Tints */
-  --lime-50: #F0FCEB;
-  --lime-100: #DCF7CE;
-  --lime-200: #BCEFA2;
-  --lime-300: #96E56E;
-  --lime-400: #74DC47;
-  --lime-500: #55D62E;
-  --lime-600: #41B320;
-  --lime-700: #338C19;
-  --lime-800: #286F15;
-  --lime-900: #205912;
+  --lime-50: #F4FDE8;
+  --lime-100: #E4FCCB;
+  --lime-200: #CBF99E;
+  --lime-300: #ABF368;
+  --lime-400: #85EB33;
+  --lime-500: #45D124;
+  --lime-600: #34A818;
+  --lime-700: #298314;
+  --lime-800: #216513;
+  --lime-900: #1B5113;
 
   /* Sky Tints */
   --sky-50: #F0F9FF;
@@ -75,16 +75,16 @@
   --sky-900: #0C4A6E;
 
   /* Coral Tints */
-  --coral-50: #FEF2F0;
-  --coral-100: #FDE2DD;
-  --coral-200: #FBC7BE;
-  --coral-300: #F7A394;
-  --coral-400: #F37864;
-  --coral-500: #F0533D;
-  --coral-600: #D83A24;
-  --coral-700: #B52C18;
-  --coral-800: #932617;
-  --coral-900: #7A2317;
+  --coral-50: #FEF2F2;
+  --coral-100: #FEE2E2;
+  --coral-200: #FECACA;
+  --coral-300: #FCA5A5;
+  --coral-400: #F87171;
+  --coral-500: #EF4444;
+  --coral-600: #DC2626;
+  --coral-700: #B91C1C;
+  --coral-800: #991B1B;
+  --coral-900: #7F1D1D;
 
   /* ==========================================================================
      RADIUS SCALE (12px inputs/buttons, 20px cards, full for avatars/chips)

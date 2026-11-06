@@ -21,13 +21,13 @@ export const Logo: React.FC<LogoProps> = ({
   // Size specifications: 40-48px on desktop, 32-36px on mobile
   const heightClasses = {
     sm: 'h-8 sm:h-9',          /* 32-36px */
-    md: 'h-9 sm:h-11',         /* 36-44px */
-    lg: 'h-12 sm:h-14',        /* 48-56px */
-    icon: 'w-9 h-9 sm:w-10 sm:h-10',
+    md: 'h-10 sm:h-12',        /* 40-48px */
+    lg: 'h-12 sm:h-16',        /* 48-64px */
+    icon: 'w-10 h-10 sm:w-12 sm:h-12',
   }[size];
 
   const isIcon = size === 'icon';
-  const src = isIcon ? '/images/logo-icon.png' : '/images/logo.png';
+  const src = isIcon ? '/images/logo-icon.png' : '/images/logo-web.png';
 
   const imageElement = (
     <img

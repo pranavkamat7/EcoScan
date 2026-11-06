@@ -24,9 +24,9 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const variantClasses = {
       default:
         'bg-white text-ink border border-line shadow-sm rounded-lg p-5 sm:p-6',
-      // Navy hero gradient from navy to navy-2 only
+      // Solid rich navy with subtle gradient depth
       dark:
-        'bg-gradient-to-r from-navy to-navy-2 text-white border border-navy-700 shadow-md rounded-lg p-6 sm:p-8',
+        'bg-navy bg-gradient-to-r from-navy to-navy-2 text-white border border-navy-700 shadow-md rounded-lg p-6 sm:p-8',
       stat:
         'bg-white text-ink border border-line shadow-sm rounded-lg p-4 sm:p-5',
       muted:

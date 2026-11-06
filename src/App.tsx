@@ -285,6 +285,11 @@ function GarbageMediaDashboard({
         <div className="space-y-6 sm:space-y-8">
           {/* Shared Page Header Pattern */}
           <PageHeader
+            badge={
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                🌱 Grassroots Civic Transformations
+              </span>
+            }
             title="Clean your neighbourhood. Post proofs. Earn rewards."
             description="Snap dirty spots, clean them with on-site GPS verification, and publish before & after split sliders for civic points."
             action={
