@@ -12,6 +12,8 @@ import {
   CheckCircle2,
   Trash2,
   Flame,
+  ShieldCheck,
+  Truck,
 } from 'lucide-react';
 import type { Spot, FeedFilter, UserProfile, CleanVerification, LeaderboardItem } from './types';
 import { AuthProvider, useAuth } from './firebase/authContext';
@@ -42,6 +44,13 @@ import {
   loadLeaderboard,
   saveLeaderboard,
 } from './utils/storage';
+import {
+  subscribeToSpots,
+  saveSpotCloud,
+  saveCleanVerificationCloud,
+  saveSpotLikeCloud,
+  saveSpotCommentCloud,
+} from './firebase/spotsService';
 
 function EcoScanDashboard({
   isGuest,
@@ -113,6 +122,17 @@ function EcoScanDashboard({
   useEffect(() => {
     saveSpots(spots);
   }, [spots]);
+
+  // Real-time synchronization: subscribe to global community feed from cloud
+  // All spots reported by any user on any device appear instantly!
+  useEffect(() => {
+    const unsubscribe = subscribeToSpots((cloudSpots) => {
+      if (cloudSpots && cloudSpots.length > 0) {
+        setSpots(cloudSpots);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Sync user profile into leaderboard
   useEffect(() => {
@@ -195,6 +215,9 @@ function EcoScanDashboard({
 
     setSpots((prev) => [newSpot, ...prev]);
 
+    // Save to shared cloud database so all users on any device see it!
+    await saveSpotCloud(newSpot);
+
     // Update user stats
     await updateUserProfile({
       spotsReported: currentUser.spotsReported + 1,
@@ -202,7 +225,7 @@ function EcoScanDashboard({
     });
 
     setToastMessage({
-      message: 'Dirty spot reported! +20 pts scout credit added to your profile.',
+      message: 'Dirty spot posted to shared community registry! EcoScaners Team backup active.',
       type: 'success',
     });
   };
@@ -220,6 +243,9 @@ function EcoScanDashboard({
         return s;
       })
     );
+
+    // Sync clean verification to shared cloud database
+    await saveCleanVerificationCloud(spotId, verification);
 
     const bonusWaste = activeCleanSpot?.estimatedWasteKg || 10;
     await updateUserProfile({
@@ -244,6 +270,7 @@ function EcoScanDashboard({
         return s;
       })
     );
+    saveSpotLikeCloud(spotId);
   };
 
   const handleAddComment = (spotId: string, text: string) => {
@@ -264,6 +291,7 @@ function EcoScanDashboard({
         return s;
       })
     );
+    saveSpotCommentCloud(spotId, newComment);
   };
 
   const handleOpenMapForSpot = (spot: Spot) => {
@@ -308,11 +336,11 @@ function EcoScanDashboard({
           />
 
           {/* Vibrant Civic Impact Stats Grid (4 colorful micro-cards to bring energy & life) */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-2">
             {/* Card 1: Restored Spots (Signature Emerald Green) */}
-            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-emerald/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-emerald/40 transition-all group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-emerald-50 text-emerald flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-emerald/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-emerald/40 transition-all group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-emerald-50 text-emerald flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -323,14 +351,14 @@ function EcoScanDashboard({
                     Restored
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-muted truncate">Civic spots cleaned</p>
+                <p className="text-[10px] sm:text-xs text-muted truncate">Civic spots cleaned</p>
               </div>
             </div>
 
             {/* Card 2: Waste Diverted (Ocean Sky Blue) */}
-            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-sky/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-sky/40 transition-all group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Trash2 className="w-5 h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-sky/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-sky/40 transition-all group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -341,14 +369,14 @@ function EcoScanDashboard({
                     kg
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-muted truncate">Diverted from nature</p>
+                <p className="text-[10px] sm:text-xs text-muted truncate">Diverted from nature</p>
               </div>
             </div>
 
             {/* Card 3: Civic Points Awarded (Lime Green) */}
-            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-lime-500/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-lime-500/40 transition-all group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-lime-50 text-lime-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Award className="w-5 h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-lime-500/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-lime-500/40 transition-all group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-lime-50 text-lime-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Award className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -359,14 +387,14 @@ function EcoScanDashboard({
                     pts
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-muted truncate">Earned bounties</p>
+                <p className="text-[10px] sm:text-xs text-muted truncate">Earned bounties</p>
               </div>
             </div>
 
             {/* Card 4: Open Missions / Active Bounties (Coral Alert) */}
-            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-coral/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-coral/40 transition-all group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-coral-50 text-coral flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Flame className="w-5 h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-coral/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-coral/40 transition-all group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-coral-50 text-coral flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Flame className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -377,7 +405,7 @@ function EcoScanDashboard({
                     Bounties
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-muted truncate">Open missions</p>
+                <p className="text-[10px] sm:text-xs text-muted truncate">Open missions</p>
               </div>
             </div>
           </div>
@@ -486,7 +514,31 @@ function EcoScanDashboard({
                 </p>
               </Card>
 
-              {/* 3. Active Missions */}
+              {/* 3. EcoScaners Team Civic Guarantee */}
+              <Card variant="default" className="p-4 sm:p-5 space-y-2.5 border-emerald/25 bg-gradient-to-br from-white via-emerald-50/20 to-emerald-50/40 shadow-sm text-left">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-emerald text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <Truck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-heading text-xs sm:text-sm font-bold text-navy flex items-center gap-1.5">
+                      EcoScaners Team Backup
+                    </h4>
+                    <p className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" /> Active Rapid Patrol
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted leading-relaxed">
+                  Even if no local volunteer cleans a reported dirty spot, our dedicated <strong className="text-navy">EcoScaners Team</strong> will deploy within 48 hours to clean and restore it. Zero dirty spots left behind!
+                </p>
+                <div className="pt-2 border-t border-emerald/15 flex items-center justify-between text-[11px]">
+                  <span className="text-muted">Zero-Neglect SLA:</span>
+                  <span className="font-bold text-emerald">48 Hours Max</span>
+                </div>
+              </Card>
+
+              {/* 4. Active Missions */}
               <Card variant="default" className="p-5 space-y-3 border-line shadow-sm">
                 <div className="flex items-center justify-between border-b border-line pb-2.5">
                   <h3 className="font-heading text-sm font-bold text-navy flex items-center gap-1.5">

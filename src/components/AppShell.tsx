@@ -206,19 +206,19 @@ export const AppShell: React.FC<AppShellProps> = ({
         {children}
       </main>
 
-      {/* 3. SHARED FOOTER (True Jet Black with Emerald Accent) */}
-      <footer className="border-t border-[#1C2420] bg-[#0A0D0C] text-white/80 py-8 text-center text-xs relative overflow-hidden">
+      {/* 3. SHARED FOOTER (True Jet Black with Emerald Accent - Extra mobile bottom padding so it never hides behind the bottom nav) */}
+      <footer className="border-t border-[#1C2420] bg-[#0A0D0C] text-white/80 pt-8 pb-28 md:py-8 text-center text-xs relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-emerald/40 via-lime/30 to-emerald/10 pointer-events-none" />
-        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-5 relative z-10">
-          <div className="flex items-center gap-3">
+        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-5 relative z-10">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
             <Logo size="sm" variant="onDark" onClick={() => onTabChange('feed')} />
-            <span className="text-white/40">·</span>
+            <span className="hidden sm:inline text-white/40">·</span>
             <span className="text-xs text-white/80 font-medium">Grassroots Civic Transformations</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px] text-white/70">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px] text-white/70">
             <span>Verified photo proofs</span>
             <span className="text-white/30">·</span>
-            <span>Open community registry</span>
+            <span className="text-emerald-400 font-medium">EcoScaners 48h Team Backup</span>
             <span className="text-white/30">·</span>
             <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
               <Heart className="w-3.5 h-3.5 text-coral fill-coral" /> Powered by Volunteers
@@ -227,8 +227,8 @@ export const AppShell: React.FC<AppShellProps> = ({
         </div>
       </footer>
 
-      {/* 4. SHARED MOBILE BOTTOM TAB BAR */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line pb-safe">
+      {/* 4. SHARED MOBILE BOTTOM TAB BAR (Elevated with soft shadow & backdrop blur) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-line shadow-[0_-4px_16px_rgba(0,0,0,0.06)] pb-safe">
         <nav className="grid grid-cols-4 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
@@ -238,7 +238,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 type="button"
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`relative flex flex-col items-center justify-center gap-1 transition-colors select-none outline-none ${
+                className={`relative flex flex-col items-center justify-center gap-1 transition-colors select-none outline-none active:scale-95 ${
                   isActive ? 'text-emerald font-bold' : 'text-muted hover:text-navy'
                 }`}
               >

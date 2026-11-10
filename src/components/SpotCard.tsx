@@ -5,6 +5,7 @@ import {
   Share2,
   Send,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 import type { Spot, UserProfile } from '../types';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
@@ -166,6 +167,28 @@ export const SpotCard: React.FC<SpotCardProps> = ({
               <p className="text-xs text-muted italic border-l-2 border-emerald pl-3 py-0.5">
                 "{spot.verification.notes}"
               </p>
+            </div>
+          )}
+
+          {/* EcoScaners Team 48h Backup Guarantee Banner for Open Bounties */}
+          {isNeedsCleaning && (
+            <div className="mt-3 p-3 rounded-lg bg-emerald-50/80 border border-emerald/25 flex items-start gap-2.5 text-left">
+              <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald flex items-center justify-center flex-shrink-0 mt-0.5">
+                <ShieldCheck className="w-3.5 h-3.5" />
+              </div>
+              <div className="text-xs leading-relaxed text-ink space-y-0.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-heading font-bold text-navy text-[11px] sm:text-xs">
+                    EcoScaners Team Guarantee
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" /> 48h SLA Backup
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted leading-snug">
+                  If no neighbour claims this spot within 48 hours, our dedicated <strong className="text-navy">EcoScaners Team</strong> will deploy with equipment to clean it. Claim this bounty now to clean it first and earn <strong className="text-emerald font-bold">+{spot.rewardPoints} pts</strong>!
+                </p>
+              </div>
             </div>
           )}
         </div>

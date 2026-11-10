@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Upload,
+  ShieldCheck,
 } from 'lucide-react';
 import { GeoLocation, SeverityLevel, Spot, UserProfile } from '../types';
 import {
@@ -544,6 +545,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               <Badge variant="points" size="md">
                 +{calculateBounty()} pts
               </Badge>
+            </div>
+
+            {/* EcoScaners Team 48h Backup Guarantee Notice */}
+            <div className="p-3 rounded-lg bg-emerald-50/80 border border-emerald/25 flex items-start gap-2.5 text-left">
+              <ShieldCheck className="w-4 h-4 text-emerald flex-shrink-0 mt-0.5" />
+              <div className="text-[11px] leading-relaxed text-ink">
+                <strong className="text-emerald font-bold">EcoScaners Team Guarantee:</strong> All reported spots enter the open community registry for anyone to clean. If no volunteer claims this spot within 48 hours, our dedicated <strong className="text-navy">EcoScaners Team</strong> will deploy with equipment to clean and restore it.
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-3">
