@@ -16,7 +16,7 @@ export const Logo: React.FC<LogoProps> = ({
   variant = 'default',
   onClick,
   className = '',
-  alt = 'GarbageMedia',
+  alt = 'EcoScan',
 }) => {
   // Size specifications: 40-48px on desktop, 32-36px on mobile
   const heightClasses = {

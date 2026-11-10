@@ -151,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginAsGuest = async (name = 'Guest Volunteer') => {
-    sessionStorage.setItem('garbagemedia_guest_session', 'true');
+    sessionStorage.setItem('ecoscan_guest_session', 'true');
     if (auth && isFirebaseConfigured) {
       try {
         const res = await signInAnonymously(auth);
@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Check if customized guest profile exists
     try {
-      const savedGuest = localStorage.getItem('garbagemedia_guest_custom');
+      const savedGuest = localStorage.getItem('ecoscan_guest_custom') || localStorage.getItem('garbagemedia_guest_custom');
       if (savedGuest) {
         const parsed = JSON.parse(savedGuest);
         if (parsed && parsed.name) {
@@ -198,6 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setProfile(null);
     clearUserProfile();
+    sessionStorage.removeItem('ecoscan_guest_session');
     sessionStorage.removeItem('garbagemedia_guest_session');
   };
 
@@ -275,6 +276,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Save custom guest profile locally
     if (updatedProfile.id.startsWith('guest') || updatedProfile.id === 'guest') {
       try {
+        localStorage.setItem('ecoscan_guest_custom', JSON.stringify(updatedProfile));
         localStorage.setItem('garbagemedia_guest_custom', JSON.stringify(updatedProfile));
       } catch {
         // ignore

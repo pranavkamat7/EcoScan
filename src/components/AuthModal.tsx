@@ -115,7 +115,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'signin' ? 'Sign in to GarbageMedia' : 'Create volunteer account'}
+      title={mode === 'signin' ? 'Sign in to EcoScan' : 'Create volunteer account'}
       description={
         mode === 'signin'
           ? 'Log in to track cleanups, claim bounty rewards, and build your civic profile.'

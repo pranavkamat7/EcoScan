@@ -1,9 +1,9 @@
 import { Spot, UserProfile, LeaderboardItem } from '../types';
 import { INITIAL_SPOTS, INITIAL_LEADERBOARD } from '../data/initialSpots';
 
-const SPOTS_STORAGE_KEY = 'garbagemedia_spots_v3';
-const USER_STORAGE_KEY = 'garbagemedia_user_v3';
-const LEADERBOARD_STORAGE_KEY = 'garbagemedia_leaderboard_v3';
+const SPOTS_STORAGE_KEY = 'ecoscan_spots_v3';
+const USER_STORAGE_KEY = 'ecoscan_user_v3';
+const LEADERBOARD_STORAGE_KEY = 'ecoscan_leaderboard_v3';
 
 // Purge obsolete dummy mock entries from previous sessions
 export function purgeOldDummyStorage(): void {
@@ -24,7 +24,7 @@ purgeOldDummyStorage();
 
 export function loadSpots(): Spot[] {
   try {
-    const raw = localStorage.getItem(SPOTS_STORAGE_KEY);
+    const raw = localStorage.getItem(SPOTS_STORAGE_KEY) || localStorage.getItem('garbagemedia_spots_v3');
     if (raw) {
       return JSON.parse(raw);
     }
@@ -44,7 +44,7 @@ export function saveSpots(spots: Spot[]): void {
 
 export function loadUserProfile(): UserProfile | null {
   try {
-    const raw = localStorage.getItem(USER_STORAGE_KEY);
+    const raw = localStorage.getItem(USER_STORAGE_KEY) || localStorage.getItem('garbagemedia_user_v3');
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.id && parsed.id !== 'user_current' && parsed.id !== 'guest') {
@@ -72,6 +72,8 @@ export function saveUserProfile(user: UserProfile | null): void {
 export function clearUserProfile(): void {
   try {
     localStorage.removeItem(USER_STORAGE_KEY);
+    localStorage.removeItem('garbagemedia_user_v3');
+    sessionStorage.removeItem('ecoscan_guest_session');
     sessionStorage.removeItem('garbagemedia_guest_session');
   } catch (err) {
     console.error('Failed to clear user from localStorage', err);
@@ -80,7 +82,7 @@ export function clearUserProfile(): void {
 
 export function loadLeaderboard(): LeaderboardItem[] {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY) || localStorage.getItem('garbagemedia_leaderboard_v3');
     if (raw) {
       const parsed: LeaderboardItem[] = JSON.parse(raw);
       return parsed.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
@@ -105,5 +107,6 @@ export function resetToDemoData(): void {
   localStorage.removeItem(SPOTS_STORAGE_KEY);
   localStorage.removeItem(USER_STORAGE_KEY);
   localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
+  sessionStorage.removeItem('ecoscan_guest_session');
   sessionStorage.removeItem('garbagemedia_guest_session');
 }

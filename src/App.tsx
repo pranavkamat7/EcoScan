@@ -40,7 +40,7 @@ import {
   saveLeaderboard,
 } from './utils/storage';
 
-function GarbageMediaDashboard({
+function EcoScanDashboard({
   isGuest,
   onRequireAuth,
 }: {
@@ -76,7 +76,7 @@ function GarbageMediaDashboard({
       return {
         id: user.uid,
         name: user.displayName || user.email?.split('@')[0] || 'Civic Volunteer',
-        email: user.email || 'volunteer@garbagemedia.org',
+        email: user.email || 'volunteer@ecoscan.org',
         handle: `@${(user.displayName || user.email?.split('@')[0] || 'volunteer').toLowerCase().replace(/\s+/g, '')}`,
         avatar: user.photoURL || undefined,
         points: 0,
@@ -399,7 +399,7 @@ function GarbageMediaDashboard({
               {/* 1. How It Works (Short 3-line inline text list) */}
               <Card variant="default" className="p-5 space-y-3">
                 <h3 className="font-heading text-sm font-bold text-navy">
-                  How GarbageMedia works
+                  How EcoScan works
                 </h3>
                 <ol className="space-y-2 text-xs text-muted list-decimal list-inside leading-relaxed text-left">
                   <li>Spot litter & snap a photo with GPS.</li>
@@ -602,7 +602,7 @@ function GarbageMediaDashboard({
 function AppContent() {
   const { user, loading } = useAuth();
   const [isGuest, setIsGuest] = useState(() => {
-    return sessionStorage.getItem('garbagemedia_guest_session') === 'true';
+    return sessionStorage.getItem('ecoscan_guest_session') === 'true';
   });
 
   if (loading) {
@@ -622,7 +622,7 @@ function AppContent() {
     return (
       <AuthScreen
         onContinueAsGuest={() => {
-          sessionStorage.setItem('garbagemedia_guest_session', 'true');
+          sessionStorage.setItem('ecoscan_guest_session', 'true');
           setIsGuest(true);
         }}
       />
@@ -630,10 +630,10 @@ function AppContent() {
   }
 
   return (
-    <GarbageMediaDashboard
+    <EcoScanDashboard
       isGuest={!user && isGuest}
       onRequireAuth={() => {
-        sessionStorage.removeItem('garbagemedia_guest_session');
+        sessionStorage.removeItem('ecoscan_guest_session');
         setIsGuest(false);
       }}
     />

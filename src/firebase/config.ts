@@ -16,7 +16,7 @@ export interface FirebaseConfigParams {
 export function getFirebaseConfig(): FirebaseConfigParams | null {
   // Check localStorage first (allows setting via in-app dialog)
   try {
-    const saved = localStorage.getItem('garbagemedia_firebase_config');
+    const saved = localStorage.getItem('ecoscan_firebase_config') || localStorage.getItem('garbagemedia_firebase_config');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.apiKey && parsed.projectId) {
@@ -44,10 +44,12 @@ export function getFirebaseConfig(): FirebaseConfigParams | null {
 }
 
 export function saveLocalFirebaseConfig(config: FirebaseConfigParams) {
+  localStorage.setItem('ecoscan_firebase_config', JSON.stringify(config));
   localStorage.setItem('garbagemedia_firebase_config', JSON.stringify(config));
 }
 
 export function clearLocalFirebaseConfig() {
+  localStorage.removeItem('ecoscan_firebase_config');
   localStorage.removeItem('garbagemedia_firebase_config');
 }
 

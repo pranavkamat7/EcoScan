@@ -41,7 +41,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       return 'Google sign-in popup was closed before completing.';
     }
     if (msg.includes('auth/unauthorized-domain')) {
-      return 'This domain is not authorized in Firebase. Add garbagemedia.onrender.com to Firebase Console > Authentication > Settings > Authorized domains.';
+      return 'This domain is not authorized in Firebase. Add your deployment domain to Firebase Console > Authentication > Settings > Authorized domains.';
     }
     return err?.message || 'Authentication error. Please try again.';
   };
@@ -80,7 +80,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   const handleGuest = async () => {
     setLoading(true);
     try {
-      sessionStorage.setItem('garbagemedia_guest_session', 'true');
+      sessionStorage.setItem('ecoscan_guest_session', 'true');
       await loginAsGuest('Guest Volunteer');
       if (onContinueAsGuest) onContinueAsGuest();
     } catch (err: any) {
@@ -168,7 +168,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
             <div>
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-xl font-bold text-navy">
-                  {mode === 'signin' ? 'Welcome Back' : 'Join GarbageMedia'}
+                  {mode === 'signin' ? 'Welcome Back' : 'Join EcoScan'}
                 </h2>
                 <div className="flex border border-line rounded-sm p-0.5 bg-navy-50 text-xs">
                   <button
@@ -308,7 +308,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
 
       {/* Footer */}
       <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-line">
-        <span>GarbageMedia · Grassroots neighbourhood cleanup registry</span>
+        <span>EcoScan · Grassroots neighbourhood cleanup registry</span>
       </footer>
     </div>
   );
