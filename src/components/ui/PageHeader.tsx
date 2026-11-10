@@ -19,10 +19,10 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   return (
     <div
-      className={`relative overflow-hidden mb-5 sm:mb-8 rounded-lg bg-[#0A0D0C] text-white border border-[#1C2420] shadow-xl p-4 sm:p-6 lg:p-8 ${className}`}
+      className={`relative overflow-hidden mb-5 sm:mb-8 rounded-lg bg-[#0A0D0C] text-white border border-[#222825] shadow-md p-5 sm:p-6 lg:p-8 ${className}`}
     >
-      {/* Top Emerald-Lime Active Glow Line */}
-      <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-emerald via-lime to-emerald/20 pointer-events-none" />
+      {/* Top Crisp Solid Emerald Stripe */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-emerald pointer-events-none" />
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative z-10">
         {/* Left: Title + Description */}
@@ -44,10 +44,6 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
         )}
       </div>
-
-      {/* Signature EcoScan Emerald Ambient Lighting (No Dark Blue) */}
-      <div className="absolute -right-16 -top-16 w-96 h-96 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
-      <div className="absolute right-40 -bottom-24 w-72 h-72 rounded-full bg-lime-500/10 blur-3xl pointer-events-none" />
     </div>
   );
 };

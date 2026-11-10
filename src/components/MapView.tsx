@@ -316,8 +316,8 @@ export const MapView: React.FC<MapViewProps> = ({
         <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
           {/* Left: Filter Chips & Search Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
-            {/* Filter Chips Container */}
-            <div className="bg-white/95 backdrop-blur-sm p-1.5 rounded-sm border border-line shadow-sm flex items-center gap-1.5">
+            {/* Filter Chips Container (Solid White, Crisp & High-Contrast) */}
+            <div className="bg-white p-1.5 rounded-sm border border-line shadow-sm flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setMapFilter('all')}
@@ -359,7 +359,7 @@ export const MapView: React.FC<MapViewProps> = ({
 
             {/* Place Search Bar */}
             <div className="relative min-w-[220px] sm:w-64">
-              <div className="bg-white/95 backdrop-blur-sm flex items-center gap-2 px-3.5 py-2 rounded-sm border border-line shadow-sm">
+              <div className="bg-white flex items-center gap-2 px-3.5 py-2 rounded-sm border border-line shadow-sm">
                 {isSearching ? (
                   <Loader2 className="w-3.5 h-3.5 text-emerald animate-spin flex-shrink-0" />
                 ) : (
@@ -417,7 +417,7 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowLayerMenu(!showLayerMenu)}
-                className="h-9 px-3 bg-white/95 backdrop-blur-sm hover:bg-white border border-line rounded-sm shadow-sm text-xs font-semibold text-navy flex items-center gap-1.5 transition-colors"
+                className="h-9 px-3 bg-white hover:bg-navy-50 border border-line rounded-sm shadow-sm text-xs font-semibold text-navy flex items-center gap-1.5 transition-colors"
               >
                 <Layers className="w-3.5 h-3.5 text-emerald" />
                 <span>{TILE_PROVIDERS[tileStyle].name}</span>
@@ -461,7 +461,7 @@ export const MapView: React.FC<MapViewProps> = ({
               size="sm"
               variant="secondary"
               onClick={handleFitAllSpots}
-              className="bg-white/95 backdrop-blur-sm"
+              className="bg-white shadow-sm border border-line"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </IconButton>
@@ -472,7 +472,7 @@ export const MapView: React.FC<MapViewProps> = ({
               size="sm"
               variant="secondary"
               onClick={handleLocateMe}
-              className="bg-white/95 backdrop-blur-sm"
+              className="bg-white shadow-sm border border-line"
             >
               <Crosshair className="w-3.5 h-3.5 text-emerald" />
             </IconButton>

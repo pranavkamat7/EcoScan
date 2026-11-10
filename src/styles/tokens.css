@@ -19,12 +19,12 @@
   --white: #FFFFFF;       /* Cards and surfaces */
   --coral: #EF4444;       /* Status-only: "Before", needs clean, errors, danger */
 
-  /* Supporting neutrals: Fresh, organic, lively eco-canvas (Never spacey/blank) */
-  --bg: #F3F8F5;          /* Fresh energetic eco-tint canvas */
+  /* Supporting neutrals: Crisp, bright, high-contrast canvas (Solid & Beautiful) */
+  --bg: #F8FAF9;          /* Crisp bright solid canvas that makes white cards stand out */
   --ink: #0A0D0C;         /* Jet black primary text - maximum contrast */
-  --muted: #526058;       /* Balanced slate-green secondary text */
-  --line: #DFECE4;        /* Soft crisp green-tinted borders */
-  --line-strong: #C1DACB;
+  --muted: #4B5563;       /* Balanced neutral slate secondary text */
+  --line: #E2E8F0;        /* Crisp solid borders */
+  --line-strong: #CBD5E1;
 
   /* ==========================================================================
      FULL TINT SCALES (50 to 900)

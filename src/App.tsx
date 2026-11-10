@@ -317,7 +317,7 @@ function EcoScanDashboard({
           {/* Shared Page Header Pattern */}
           <PageHeader
             badge={
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald text-white shadow-xs">
                 🌱 Grassroots Civic Transformations
               </span>
             }
@@ -335,12 +335,12 @@ function EcoScanDashboard({
             }
           />
 
-          {/* Vibrant Civic Impact Stats Grid (4 colorful micro-cards to bring energy & life) */}
+          {/* Vibrant Civic Impact Stats Grid (Solid, High-Contrast & Impressive) */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-2">
             {/* Card 1: Restored Spots (Signature Emerald Green) */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-emerald/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-emerald/40 transition-all group">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-emerald-50 text-emerald flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-line shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-emerald transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-emerald text-white flex items-center justify-center flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -356,16 +356,16 @@ function EcoScanDashboard({
             </div>
 
             {/* Card 2: Waste Diverted (Ocean Sky Blue) */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-sky/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-sky/40 transition-all group">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-line shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-sky transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-sky text-white flex items-center justify-center flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <Trash2 className="w-5 h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
                   <span className="font-heading text-lg sm:text-2xl font-extrabold text-[#0A0D0C] tabular-nums">
                     {stats.totalWasteKg}
                   </span>
-                  <span className="text-[10px] sm:text-[11px] font-bold text-sky-600 uppercase tracking-wider">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-sky uppercase tracking-wider">
                     kg
                   </span>
                 </div>
@@ -374,9 +374,9 @@ function EcoScanDashboard({
             </div>
 
             {/* Card 3: Civic Points Awarded (Lime Green) */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-lime-500/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-lime-500/40 transition-all group">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-lime-50 text-lime-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Award className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-line shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-lime transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-lime text-[#0A0D0C] flex items-center justify-center flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <Award className="w-5 h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -392,9 +392,9 @@ function EcoScanDashboard({
             </div>
 
             {/* Card 4: Open Missions / Active Bounties (Coral Alert) */}
-            <div className="bg-white rounded-lg p-3 sm:p-4 border border-coral/20 shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-coral/40 transition-all group">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-md bg-coral-50 text-coral flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                <Flame className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            <div className="bg-white rounded-lg p-3 sm:p-4 border border-line shadow-sm flex items-center gap-2.5 sm:gap-3.5 hover:border-coral transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-coral text-white flex items-center justify-center flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <Flame className="w-5 h-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 sm:gap-1.5">
@@ -499,15 +499,15 @@ function EcoScanDashboard({
               </Card>
 
               {/* 2. Community Clean Target Progress */}
-              <Card variant="default" className="p-5 space-y-3 border-emerald/20 bg-gradient-to-br from-white to-emerald-50/50 shadow-sm text-left">
+              <Card variant="default" className="p-5 space-y-3 border-line shadow-sm text-left bg-white">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-navy uppercase tracking-wider flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-emerald" /> Monthly Clean Goal
                   </span>
                   <span className="text-xs font-extrabold text-emerald tabular-nums">75%</span>
                 </div>
-                <div className="w-full bg-emerald-100 rounded-full h-2.5 overflow-hidden">
-                  <div className="bg-gradient-to-r from-emerald via-emerald-400 to-lime h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
+                <div className="w-full bg-[#E2E8F0] rounded-full h-2.5 overflow-hidden">
+                  <div className="bg-emerald h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
                 </div>
                 <p className="text-[11px] text-muted leading-tight">
                   <strong className="text-navy font-semibold tabular-nums">{stats.totalWasteKg} kg</strong> diverted towards this month's 60 kg community goal.
@@ -515,7 +515,7 @@ function EcoScanDashboard({
               </Card>
 
               {/* 3. EcoScaners Team Civic Guarantee */}
-              <Card variant="default" className="p-4 sm:p-5 space-y-2.5 border-emerald/25 bg-gradient-to-br from-white via-emerald-50/20 to-emerald-50/40 shadow-sm text-left">
+              <Card variant="default" className="p-4 sm:p-5 space-y-2.5 border-line shadow-sm text-left bg-white">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-emerald text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                     <Truck className="w-4 h-4" />
@@ -524,22 +524,22 @@ function EcoScanDashboard({
                     <h4 className="font-heading text-xs sm:text-sm font-bold text-navy flex items-center gap-1.5">
                       EcoScaners Team Backup
                     </h4>
-                    <p className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                    <p className="text-[10px] text-emerald-800 font-bold flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" /> Active Rapid Patrol
                     </p>
                   </div>
                 </div>
                 <p className="text-xs text-muted leading-relaxed">
-                  Even if no local volunteer cleans a reported dirty spot, our dedicated <strong className="text-navy">EcoScaners Team</strong> will deploy within 48 hours to clean and restore it. Zero dirty spots left behind!
+                  Even if no local volunteer cleans a reported dirty spot, our dedicated <strong className="text-navy font-bold">EcoScaners Team</strong> will deploy within 48 hours to clean and restore it. Zero dirty spots left behind!
                 </p>
-                <div className="pt-2 border-t border-emerald/15 flex items-center justify-between text-[11px]">
-                  <span className="text-muted">Zero-Neglect SLA:</span>
-                  <span className="font-bold text-emerald">48 Hours Max</span>
+                <div className="pt-2 border-t border-line flex items-center justify-between text-[11px]">
+                  <span className="text-muted font-medium">Zero-Neglect SLA:</span>
+                  <span className="font-extrabold text-emerald">48 Hours Max</span>
                 </div>
               </Card>
 
               {/* 4. Active Missions */}
-              <Card variant="default" className="p-5 space-y-3 border-line shadow-sm">
+              <Card variant="default" className="p-5 space-y-3 border-line shadow-sm bg-white">
                 <div className="flex items-center justify-between border-b border-line pb-2.5">
                   <h3 className="font-heading text-sm font-bold text-navy flex items-center gap-1.5">
                     <Flame className="w-4 h-4 text-coral" /> Active missions
@@ -561,7 +561,7 @@ function EcoScanDashboard({
                       .map((spot) => (
                         <div
                           key={spot.id}
-                          className="p-3 rounded-lg border border-coral/30 bg-coral-50/20 space-y-1 text-left hover:border-coral/60 transition-all"
+                          className="p-3 rounded-lg border border-coral-200 bg-white space-y-1 text-left hover:border-coral transition-all shadow-xs"
                         >
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="text-coral font-bold tabular-nums">

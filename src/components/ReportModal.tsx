@@ -547,11 +547,13 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </Badge>
             </div>
 
-            {/* EcoScaners Team 48h Backup Guarantee Notice */}
-            <div className="p-3 rounded-lg bg-emerald-50/80 border border-emerald/25 flex items-start gap-2.5 text-left">
-              <ShieldCheck className="w-4 h-4 text-emerald flex-shrink-0 mt-0.5" />
+            {/* EcoScaners Team 48h Backup Guarantee Notice (Solid, High-Contrast) */}
+            <div className="p-3.5 rounded-lg bg-white border border-emerald-500 shadow-sm flex items-start gap-3 text-left">
+              <div className="w-7 h-7 rounded-full bg-emerald text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
               <div className="text-[11px] leading-relaxed text-ink">
-                <strong className="text-emerald font-bold">EcoScaners Team Guarantee:</strong> All reported spots enter the open community registry for anyone to clean. If no volunteer claims this spot within 48 hours, our dedicated <strong className="text-navy">EcoScaners Team</strong> will deploy with equipment to clean and restore it.
+                <strong className="text-emerald font-bold">EcoScaners Team Guarantee:</strong> All reported spots enter the open community registry for anyone to clean. If no volunteer claims this spot within 48 hours, our dedicated <strong className="text-navy font-bold">EcoScaners Team</strong> will deploy with equipment to clean and restore it.
               </div>
             </div>
 

@@ -164,27 +164,27 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
           </div>
         </div>
 
-        {/* Civic Impact Metrics Strip */}
-        <div className="pt-4 border-t border-line grid grid-cols-3 gap-2 sm:gap-4 text-center">
-          <div className="p-3 sm:p-3.5 rounded-lg bg-emerald-50/60 border border-emerald/25 shadow-xs">
-            <span className="font-heading text-lg sm:text-2xl font-extrabold text-emerald-700 tabular-nums">
+        {/* Civic Impact Metrics Strip (Solid White, Clean & Crisp) */}
+        <div className="pt-4 border-t border-line grid grid-cols-3 gap-2.5 sm:gap-4 text-center">
+          <div className="p-3 sm:p-4 rounded-lg bg-white border border-line shadow-sm">
+            <span className="font-heading text-lg sm:text-2xl font-extrabold text-emerald tabular-nums">
               {currentUser.spotsCleaned}
             </span>
-            <p className="text-[11px] font-semibold text-emerald-800">Spots Restored</p>
+            <p className="text-[11px] font-bold text-navy uppercase tracking-wider mt-0.5">Spots Restored</p>
           </div>
 
-          <div className="p-3 sm:p-3.5 rounded-lg bg-sky-50/60 border border-sky/25 shadow-xs">
-            <span className="font-heading text-lg sm:text-2xl font-extrabold text-sky-700 tabular-nums">
+          <div className="p-3 sm:p-4 rounded-lg bg-white border border-line shadow-sm">
+            <span className="font-heading text-lg sm:text-2xl font-extrabold text-sky tabular-nums">
               {currentUser.wasteClearedKg} kg
             </span>
-            <p className="text-[11px] font-semibold text-sky-800">Waste Collected</p>
+            <p className="text-[11px] font-bold text-navy uppercase tracking-wider mt-0.5">Waste Diverted</p>
           </div>
 
-          <div className="p-3 sm:p-3.5 rounded-lg bg-lime-50/60 border border-lime-500/25 shadow-xs">
-            <span className="font-heading text-lg sm:text-2xl font-extrabold text-lime-800 tabular-nums">
+          <div className="p-3 sm:p-4 rounded-lg bg-white border border-line shadow-sm">
+            <span className="font-heading text-lg sm:text-2xl font-extrabold text-lime-700 tabular-nums">
               {currentUser.badges?.length || 2}
             </span>
-            <p className="text-[11px] font-semibold text-lime-900">Badges Earned</p>
+            <p className="text-[11px] font-bold text-navy uppercase tracking-wider mt-0.5">Badges Earned</p>
           </div>
         </div>
       </Card>

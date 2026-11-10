@@ -24,13 +24,13 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const variantClasses = {
       default:
         'bg-white text-ink border border-line shadow-sm rounded-lg p-5 sm:p-6',
-      // Solid Jet Black with emerald border tone (No Blue)
+      // Solid Jet Black (No Blue, Crisp Border)
       dark:
-        'bg-[#0A0D0C] text-white border border-[#1C2420] shadow-md rounded-lg p-6 sm:p-8',
+        'bg-[#0A0D0C] text-white border border-[#222825] shadow-md rounded-lg p-6 sm:p-8',
       stat:
         'bg-white text-ink border border-line shadow-sm rounded-lg p-4 sm:p-5',
       muted:
-        'bg-[#F3F8F5] text-ink border border-line rounded-lg p-4 sm:p-5',
+        'bg-[#F8FAF9] text-ink border border-line rounded-lg p-4 sm:p-5',
     }[variant];
 
     const interactiveClasses = isInteractive
