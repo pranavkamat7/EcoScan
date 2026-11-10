@@ -5,38 +5,42 @@
 
 :root {
   /* ==========================================================================
-     CORE BRAND PALETTE
+     CORE BRAND PALETTE (Green & True Black - No Blue)
      ========================================================================== */
-  --navy: #0E1A27;       /* Primary dark: headings, body text, hero/header strips, footer */
-  --navy-2: #162638;     /* Slightly lighter navy for hover, cards and gradients */
-  --emerald: #00B86B;    /* Primary brand color: buttons, links, active states */
-  --lime: #45D124;       /* Highlight: points, rewards, success, progress bars */
-  --sky: #0284C7;        /* Secondary accent: "After"/clean info, map, links */
-  --white: #FFFFFF;      /* Cards and surfaces */
-  --coral: #EF4444;      /* Status-only: "Before", needs clean, errors, danger */
+  --black: #0A0D0C;       /* Primary dark: Pure Jet Black for hero/header strips & footer */
+  --black-2: #141816;     /* Slightly lighter black for cards & subtle depth */
+  --navy: #0A0D0C;        /* Aliased to black so all legacy components render black */
+  --navy-2: #141816;
+  --emerald: #00B86B;     /* Primary brand color: buttons, links, active states */
+  --emerald-hover: #009E5B;
+  --emerald-surface: #E8F8F0;
+  --lime: #40D326;        /* Highlight: points, rewards, success, progress bars */
+  --sky: #0EA5E9;         /* Clean sky/info accent */
+  --white: #FFFFFF;       /* Cards and surfaces */
+  --coral: #EF4444;       /* Status-only: "Before", needs clean, errors, danger */
 
-  /* Supporting neutrals: Crisp, modern, ultra-clean slate canvas (NO murky green) */
-  --bg: #F8FAFC;         /* Clean bright slate-50 canvas */
-  --ink: #0F172A;        /* Deep slate-900 primary text */
-  --muted: #64748B;      /* Slate-500 secondary text */
-  --line: #E2E8F0;       /* Slate-200 clean borders */
-  --line-strong: #CBD5E1;
+  /* Supporting neutrals: Fresh, organic, lively eco-canvas (Never spacey/blank) */
+  --bg: #F3F8F5;          /* Fresh energetic eco-tint canvas */
+  --ink: #0A0D0C;         /* Jet black primary text - maximum contrast */
+  --muted: #526058;       /* Balanced slate-green secondary text */
+  --line: #DFECE4;        /* Soft crisp green-tinted borders */
+  --line-strong: #C1DACB;
 
   /* ==========================================================================
      FULL TINT SCALES (50 to 900)
      ========================================================================== */
-  /* Navy Tints */
-  --navy-50: #F1F5F9;
-  --navy-100: #E2E8F0;
-  --navy-200: #CBD5E1;
-  --navy-300: #94A3B8;
-  --navy-400: #64748B;
-  --navy-500: #334155;
-  --navy-600: #1E293B;
-  --navy-700: #162638;
-  --navy-800: #0E1A27;
-  --navy-900: #08101A;
-  --navy-950: #04080D;
+  /* Black Tints */
+  --navy-50: #F3F5F4;
+  --navy-100: #E4E8E6;
+  --navy-200: #C9CFCC;
+  --navy-300: #9BA4A0;
+  --navy-400: #6B7570;
+  --navy-500: #464E4A;
+  --navy-600: #2C332F;
+  --navy-700: #1B211E;
+  --navy-800: #121614;
+  --navy-900: #0A0D0C;
+  --navy-950: #050706;
 
   /* Emerald Tints */
   --emerald-50: #ECFDF5;

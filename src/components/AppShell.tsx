@@ -206,9 +206,10 @@ export const AppShell: React.FC<AppShellProps> = ({
         {children}
       </main>
 
-      {/* 3. SHARED FOOTER (Navy Dark Strip) */}
-      <footer className="border-t border-navy-700 bg-navy text-white/80 py-8 text-center text-xs">
-        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-5">
+      {/* 3. SHARED FOOTER (True Jet Black with Emerald Accent) */}
+      <footer className="border-t border-[#1C2420] bg-[#0A0D0C] text-white/80 py-8 text-center text-xs relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-emerald/40 via-lime/30 to-emerald/10 pointer-events-none" />
+        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-5 relative z-10">
           <div className="flex items-center gap-3">
             <Logo size="sm" variant="onDark" onClick={() => onTabChange('feed')} />
             <span className="text-white/40">·</span>

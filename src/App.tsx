@@ -9,6 +9,9 @@ import {
   ArrowRight,
   Heart,
   MessageSquare,
+  CheckCircle2,
+  Trash2,
+  Flame,
 } from 'lucide-react';
 import type { Spot, FeedFilter, UserProfile, CleanVerification, LeaderboardItem } from './types';
 import { AuthProvider, useAuth } from './firebase/authContext';
@@ -304,45 +307,80 @@ function EcoScanDashboard({
             }
           />
 
-          {/* Slim Stats Strip (Single row, dividers between items, no icon chips) */}
-          <Card
-            variant="default"
-            className="p-3 sm:p-4 overflow-x-auto whitespace-nowrap shadow-sm"
-          >
-            <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted">
-              <span>
-                <strong className="font-semibold text-navy tabular-nums">
-                  {stats.cleanedCount}
-                </strong>{' '}
-                {stats.cleanedCount === 1 ? 'spot restored' : 'spots restored'}
-              </span>
-              <span className="text-line-strong">·</span>
-              <span>
-                <strong className="font-semibold text-navy tabular-nums">
-                  {stats.totalWasteKg} kg
-                </strong>{' '}
-                collected
-              </span>
-              <span className="text-line-strong">·</span>
-              <span>
-                <strong className="font-semibold text-emerald tabular-nums">
-                  {stats.totalPointsAwarded} pts
-                </strong>{' '}
-                awarded
-              </span>
-              {stats.pendingCount > 0 && (
-                <>
-                  <span className="text-line-strong">·</span>
-                  <span className="text-coral font-medium">
-                    <strong className="font-semibold tabular-nums">
-                      {stats.pendingCount}
-                    </strong>{' '}
-                    {stats.pendingCount === 1 ? 'open bounty' : 'open bounties'}
+          {/* Vibrant Civic Impact Stats Grid (4 colorful micro-cards to bring energy & life) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-2">
+            {/* Card 1: Restored Spots (Signature Emerald Green) */}
+            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-emerald/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-emerald/40 transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-emerald-50 text-emerald flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-heading text-lg sm:text-2xl font-extrabold text-[#0A0D0C] tabular-nums">
+                    {stats.cleanedCount}
                   </span>
-                </>
-              )}
+                  <span className="text-[10px] sm:text-[11px] font-bold text-emerald uppercase tracking-wider">
+                    Restored
+                  </span>
+                </div>
+                <p className="text-[11px] sm:text-xs text-muted truncate">Civic spots cleaned</p>
+              </div>
             </div>
-          </Card>
+
+            {/* Card 2: Waste Diverted (Ocean Sky Blue) */}
+            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-sky/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-sky/40 transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Trash2 className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-heading text-lg sm:text-2xl font-extrabold text-[#0A0D0C] tabular-nums">
+                    {stats.totalWasteKg}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-sky-600 uppercase tracking-wider">
+                    kg
+                  </span>
+                </div>
+                <p className="text-[11px] sm:text-xs text-muted truncate">Diverted from nature</p>
+              </div>
+            </div>
+
+            {/* Card 3: Civic Points Awarded (Lime Green) */}
+            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-lime-500/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-lime-500/40 transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-lime-50 text-lime-700 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Award className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-heading text-lg sm:text-2xl font-extrabold text-[#0A0D0C] tabular-nums">
+                    {stats.totalPointsAwarded}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-lime-700 uppercase tracking-wider">
+                    pts
+                  </span>
+                </div>
+                <p className="text-[11px] sm:text-xs text-muted truncate">Earned bounties</p>
+              </div>
+            </div>
+
+            {/* Card 4: Open Missions / Active Bounties (Coral Alert) */}
+            <div className="bg-white rounded-lg p-3.5 sm:p-4 border border-coral/20 shadow-sm flex items-center gap-3 sm:gap-3.5 hover:border-coral/40 transition-all group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-coral-50 text-coral flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                <Flame className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-1 sm:gap-1.5">
+                  <span className="font-heading text-lg sm:text-2xl font-extrabold text-[#0A0D0C] tabular-nums">
+                    {stats.pendingCount}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-coral uppercase tracking-wider">
+                    Bounties
+                  </span>
+                </div>
+                <p className="text-[11px] sm:text-xs text-muted truncate">Open missions</p>
+              </div>
+            </div>
+          </div>
 
           {/* Photo-First Single Column Feed + Right Sidebar */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
@@ -396,28 +434,70 @@ function EcoScanDashboard({
 
             {/* Right Column: Editorial Sidebar */}
             <aside className="lg:col-span-4 space-y-4 hidden lg:block sticky top-24">
-              {/* 1. How It Works (Short 3-line inline text list) */}
-              <Card variant="default" className="p-5 space-y-3">
-                <h3 className="font-heading text-sm font-bold text-navy">
-                  How EcoScan works
-                </h3>
-                <ol className="space-y-2 text-xs text-muted list-decimal list-inside leading-relaxed text-left">
-                  <li>Spot litter & snap a photo with GPS.</li>
-                  <li>Clean the area & verify with after photo.</li>
-                  <li>Publish split slider & earn civic bounty points.</li>
-                </ol>
+              {/* 1. How It Works (Colorful numbered steps) */}
+              <Card variant="default" className="p-5 space-y-3.5 border-emerald/20 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🌱</span>
+                  <h3 className="font-heading text-sm font-bold text-navy">
+                    How EcoScan works
+                  </h3>
+                </div>
+                <div className="space-y-2.5 text-xs text-muted text-left">
+                  <div className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+                      1
+                    </span>
+                    <p className="leading-snug">
+                      <strong className="text-navy font-semibold">Spot & Snap:</strong> Capture dirty spots with automatic GPS verification.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-sky text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+                      2
+                    </span>
+                    <p className="leading-snug">
+                      <strong className="text-navy font-semibold">Clean & Verify:</strong> Clear the waste and take a verified "After" photo.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-lime text-[#0A0D0C] flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+                      3
+                    </span>
+                    <p className="leading-snug">
+                      <strong className="text-navy font-semibold">Earn Bounties:</strong> Publish split slider & claim real civic rewards!
+                    </p>
+                  </div>
+                </div>
               </Card>
 
-              {/* 2. Active Missions */}
-              <Card variant="default" className="p-5 space-y-3">
+              {/* 2. Community Clean Target Progress */}
+              <Card variant="default" className="p-5 space-y-3 border-emerald/20 bg-gradient-to-br from-white to-emerald-50/50 shadow-sm text-left">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-navy uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald" /> Monthly Clean Goal
+                  </span>
+                  <span className="text-xs font-extrabold text-emerald tabular-nums">75%</span>
+                </div>
+                <div className="w-full bg-emerald-100 rounded-full h-2.5 overflow-hidden">
+                  <div className="bg-gradient-to-r from-emerald via-emerald-400 to-lime h-full rounded-full transition-all duration-500" style={{ width: '75%' }} />
+                </div>
+                <p className="text-[11px] text-muted leading-tight">
+                  <strong className="text-navy font-semibold tabular-nums">{stats.totalWasteKg} kg</strong> diverted towards this month's 60 kg community goal.
+                </p>
+              </Card>
+
+              {/* 3. Active Missions */}
+              <Card variant="default" className="p-5 space-y-3 border-line shadow-sm">
                 <div className="flex items-center justify-between border-b border-line pb-2.5">
-                  <h3 className="font-heading text-sm font-bold text-navy">
-                    Active missions
+                  <h3 className="font-heading text-sm font-bold text-navy flex items-center gap-1.5">
+                    <Flame className="w-4 h-4 text-coral" /> Active missions
                   </h3>
-                  {stats.pendingCount > 0 && (
-                    <Badge variant="needs_clean" size="sm">
+                  {stats.pendingCount > 0 ? (
+                    <Badge variant="coral" size="sm">
                       {stats.pendingCount} open
                     </Badge>
+                  ) : (
+                    <span className="text-[11px] text-emerald font-semibold">All clean</span>
                   )}
                 </div>
 
@@ -429,10 +509,10 @@ function EcoScanDashboard({
                       .map((spot) => (
                         <div
                           key={spot.id}
-                          className="p-3 rounded-sm border border-line bg-navy-50/50 space-y-1 text-left"
+                          className="p-3 rounded-lg border border-coral/30 bg-coral-50/20 space-y-1 text-left hover:border-coral/60 transition-all"
                         >
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-emerald font-semibold tabular-nums">
+                            <span className="text-coral font-bold tabular-nums">
                               +{spot.rewardPoints} pts bounty
                             </span>
                             <span className="text-muted tabular-nums">

@@ -1,9 +1,9 @@
 import { Spot, UserProfile, LeaderboardItem } from '../types';
 import { INITIAL_SPOTS, INITIAL_LEADERBOARD } from '../data/initialSpots';
 
-const SPOTS_STORAGE_KEY = 'ecoscan_spots_v3';
-const USER_STORAGE_KEY = 'ecoscan_user_v3';
-const LEADERBOARD_STORAGE_KEY = 'ecoscan_leaderboard_v3';
+const SPOTS_STORAGE_KEY = 'ecoscan_spots_v4';
+const USER_STORAGE_KEY = 'ecoscan_user_v4';
+const LEADERBOARD_STORAGE_KEY = 'ecoscan_leaderboard_v4';
 
 // Purge obsolete dummy mock entries from previous sessions
 export function purgeOldDummyStorage(): void {
@@ -14,6 +14,11 @@ export function purgeOldDummyStorage(): void {
     localStorage.removeItem('garbagemedia_spots_v2');
     localStorage.removeItem('garbagemedia_user_v2');
     localStorage.removeItem('garbagemedia_leaderboard_v2');
+    localStorage.removeItem('garbagemedia_spots_v3');
+    localStorage.removeItem('garbagemedia_user_v3');
+    localStorage.removeItem('garbagemedia_leaderboard_v3');
+    localStorage.removeItem('ecoscan_spots_v3');
+    localStorage.removeItem('ecoscan_leaderboard_v3');
   } catch {
     // Ignore error in restricted environments
   }
@@ -24,9 +29,12 @@ purgeOldDummyStorage();
 
 export function loadSpots(): Spot[] {
   try {
-    const raw = localStorage.getItem(SPOTS_STORAGE_KEY) || localStorage.getItem('garbagemedia_spots_v3');
+    const raw = localStorage.getItem(SPOTS_STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
   } catch (err) {
     console.error('Failed to load spots from localStorage', err);
@@ -82,10 +90,13 @@ export function clearUserProfile(): void {
 
 export function loadLeaderboard(): LeaderboardItem[] {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY) || localStorage.getItem('garbagemedia_leaderboard_v3');
+    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
     if (raw) {
       const parsed: LeaderboardItem[] = JSON.parse(raw);
-      return parsed.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
+      const filtered = parsed.filter((item) => item.id !== 'user_current' && item.id !== 'guest');
+      if (filtered.length > 0) {
+        return filtered;
+      }
     }
   } catch (err) {
     console.error('Failed to load leaderboard', err);

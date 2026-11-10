@@ -157,3 +157,4 @@ By combining community volunteerism with modern digital tools—and future AI in
 ---
 *Report prepared for school presentation and community demonstration.*  
 *App: **EcoScan — Civic Cleanups & Photo Proofs***
+
