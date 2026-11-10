@@ -8,6 +8,7 @@ import {
   orderBy,
   arrayUnion,
   increment,
+  type Firestore,
 } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from './config';
 import type { Spot, CleanVerification, SpotComment } from '../types';
@@ -28,8 +29,10 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
     return () => {};
   }
 
+  const firestore: Firestore = db;
+
   try {
-    const spotsCol = collection(db, 'spots');
+    const spotsCol = collection(firestore, 'spots');
     const q = query(spotsCol, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(
@@ -37,9 +40,10 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
       (snapshot) => {
         if (snapshot.empty && !hasAttemptedSeed) {
           hasAttemptedSeed = true;
-          // Seed the initial community spots to Firestore so all new users share them
+          // Seed initial community spots to Firestore so all new users share them
           INITIAL_SPOTS.forEach((spot) => {
-            setDoc(doc(db, 'spots', spot.id), spot).catch((err) => {
+            const spotRef = doc(firestore, 'spots', spot.id);
+            setDoc(spotRef, spot).catch((err) => {
               console.warn('Seeding spot error:', err);
             });
           });
@@ -84,13 +88,14 @@ export async function saveSpotCloud(spot: Spot): Promise<void> {
   const current = loadSpots();
   saveSpots([spot, ...current]);
 
-  if (isFirebaseConfigured && db) {
-    try {
-      await setDoc(doc(db, 'spots', spot.id), spot);
-      return;
-    } catch (err) {
-      console.error('Error saving spot to Firestore cloud:', err);
-    }
+  if (!isFirebaseConfigured || !db) return;
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spot.id);
+    await setDoc(spotRef, spot);
+  } catch (err) {
+    console.error('Error saving spot to Firestore cloud:', err);
   }
 }
 
@@ -108,17 +113,17 @@ export async function saveCleanVerificationCloud(
   );
   saveSpots(updated);
 
-  if (isFirebaseConfigured && db) {
-    try {
-      const spotRef = doc(db, 'spots', spotId);
-      await updateDoc(spotRef, {
-        status: 'cleaned',
-        verification,
-      });
-      return;
-    } catch (err) {
-      console.error('Error updating spot in Firestore cloud:', err);
-    }
+  if (!isFirebaseConfigured || !db) return;
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spotId);
+    await updateDoc(spotRef, {
+      status: 'cleaned',
+      verification,
+    });
+  } catch (err) {
+    console.error('Error updating spot in Firestore cloud:', err);
   }
 }
 
@@ -132,15 +137,16 @@ export async function saveSpotLikeCloud(spotId: string): Promise<void> {
   );
   saveSpots(updated);
 
-  if (isFirebaseConfigured && db) {
-    try {
-      const spotRef = doc(db, 'spots', spotId);
-      await updateDoc(spotRef, {
-        likesCount: increment(1),
-      });
-    } catch (err) {
-      console.warn('Failed to increment like on Firestore:', err);
-    }
+  if (!isFirebaseConfigured || !db) return;
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spotId);
+    await updateDoc(spotRef, {
+      likesCount: increment(1),
+    });
+  } catch (err) {
+    console.warn('Failed to increment like on Firestore:', err);
   }
 }
 
@@ -157,14 +163,15 @@ export async function saveSpotCommentCloud(
   );
   saveSpots(updated);
 
-  if (isFirebaseConfigured && db) {
-    try {
-      const spotRef = doc(db, 'spots', spotId);
-      await updateDoc(spotRef, {
-        comments: arrayUnion(comment),
-      });
-    } catch (err) {
-      console.warn('Failed to append comment on Firestore:', err);
-    }
+  if (!isFirebaseConfigured || !db) return;
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spotId);
+    await updateDoc(spotRef, {
+      comments: arrayUnion(comment),
+    });
+  } catch (err) {
+    console.warn('Failed to append comment on Firestore:', err);
   }
 }
