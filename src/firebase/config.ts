@@ -12,14 +12,27 @@ export interface FirebaseConfigParams {
   appId: string;
 }
 
-// Retrieve configuration from Vite environment variables or localStorage override
-export function getFirebaseConfig(): FirebaseConfigParams | null {
-  // Check localStorage first (allows setting via in-app dialog)
+// Built-in public web project credentials ensure cloud sync works seamlessly on Render,
+// local dev, mobile, and across different user accounts without needing manual .env configuration.
+const DEFAULT_FIREBASE_CONFIG: FirebaseConfigParams = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyDyr6fBiCOjPxoMoooted__heSq-JLsvh4',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'garbagemedia-908ce.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'garbagemedia-908ce',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'garbagemedia-908ce.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '556706713900',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:556706713900:web:2e9cdf679917efd0a99c89',
+};
+
+// Retrieve configuration from localStorage override, Vite env, or default credentials
+export function getFirebaseConfig(): FirebaseConfigParams {
+  // Check localStorage first (allows custom runtime override if needed)
   try {
-    const saved = localStorage.getItem('ecoscan_firebase_config') || localStorage.getItem('garbagemedia_firebase_config');
+    const saved =
+      localStorage.getItem('ecoscan_firebase_config') ||
+      localStorage.getItem('garbagemedia_firebase_config');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed.apiKey && parsed.projectId) {
+      if (parsed.apiKey && parsed.projectId && !parsed.apiKey.includes('YOUR_')) {
         return parsed;
       }
     }
@@ -34,13 +47,14 @@ export function getFirebaseConfig(): FirebaseConfigParams | null {
       apiKey: env.VITE_FIREBASE_API_KEY,
       authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || `${env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
       projectId: env.VITE_FIREBASE_PROJECT_ID,
-      storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || `${env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
+      storageBucket:
+        env.VITE_FIREBASE_STORAGE_BUCKET || `${env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
       messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
       appId: env.VITE_FIREBASE_APP_ID || '',
     };
   }
 
-  return null;
+  return DEFAULT_FIREBASE_CONFIG;
 }
 
 export function saveLocalFirebaseConfig(config: FirebaseConfigParams) {
@@ -75,4 +89,3 @@ if (config && config.apiKey && !config.apiKey.includes('YOUR_')) {
 export const isFirebaseConfigured = Boolean(app && auth && db);
 
 export { app, auth, db, storage, googleProvider };
-

@@ -100,21 +100,21 @@ function EcoScanDashboard({
       };
     }
 
-    // Default Guest Volunteer Profile
+    // Default Guest Volunteer Profile (clean 0 state, no dummy data)
     return {
       id: 'guest',
-      name: 'Pranav Kamat',
-      email: 'pranavkamat84@gmail.com',
-      handle: '@pranav_civic',
+      name: 'Civic Volunteer',
+      email: 'volunteer@ecoscan.org',
+      handle: '@volunteer',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      points: 8,
+      points: 0,
       level: 'Eco Scout',
-      spotsReported: 1,
+      spotsReported: 0,
       spotsCleaned: 0,
       wasteClearedKg: 0,
-      badges: ['Civic Scout', 'First Cleanup'],
-      city: 'Margao, Goa',
-      bio: 'Keeping the coastal roadways, parks, and trails green and litter-free.',
+      badges: ['Eco Scout'],
+      city: 'Local Neighbourhood',
+      bio: 'Keeping the community green and litter-free.',
     };
   }, [user, profile]);
 
@@ -127,9 +127,7 @@ function EcoScanDashboard({
   // All spots reported by any user on any device appear instantly!
   useEffect(() => {
     const unsubscribe = subscribeToSpots((cloudSpots) => {
-      if (cloudSpots && cloudSpots.length > 0) {
-        setSpots(cloudSpots);
-      }
+      setSpots(cloudSpots || []);
     });
     return () => unsubscribe();
   }, []);

@@ -235,57 +235,67 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
         </div>
 
-        <div className="divide-y divide-line">
-          {sortedChampions.map((champion, idx) => {
-            const isUser = champion.id === currentUser.id || champion.name === currentUser.name;
-            const rank = idx + 1;
+        {sortedChampions.length === 0 ? (
+          <div className="p-8 text-center space-y-3">
+            <Trophy className="w-8 h-8 text-muted mx-auto stroke-[1.5]" />
+            <p className="font-heading font-bold text-navy text-sm">No leaderboard champions yet</p>
+            <p className="text-xs text-muted max-w-sm mx-auto">
+              Be the first community member to clean a dirty spot and claim civic bounty points!
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-line">
+            {sortedChampions.map((champion, idx) => {
+              const isUser = champion.id === currentUser.id || champion.name === currentUser.name;
+              const rank = idx + 1;
 
-            return (
-              <div
-                key={champion.id}
-                className={`px-5 py-3.5 flex items-center justify-between gap-4 transition-colors ${
-                  isUser
-                    ? 'bg-emerald-50/40 font-medium'
-                    : 'hover:bg-navy-50/50'
-                }`}
-              >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <span
-                    className={`w-7 text-xs font-heading font-bold tabular-nums text-center ${
-                      rank <= 3 ? 'text-emerald' : 'text-muted'
-                    }`}
-                  >
-                    #{rank}
-                  </span>
+              return (
+                <div
+                  key={champion.id}
+                  className={`px-5 py-3.5 flex items-center justify-between gap-4 transition-colors ${
+                    isUser
+                      ? 'bg-emerald-50/40 font-medium'
+                      : 'hover:bg-navy-50/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <span
+                      className={`w-7 text-xs font-heading font-bold tabular-nums text-center ${
+                        rank <= 3 ? 'text-emerald' : 'text-muted'
+                      }`}
+                    >
+                      #{rank}
+                    </span>
 
-                  <Avatar
-                    src={champion.avatar}
-                    name={champion.name}
-                    size="sm"
-                  />
+                    <Avatar
+                      src={champion.avatar}
+                      name={champion.name}
+                      size="sm"
+                    />
 
-                  <div className="min-w-0 text-left">
-                    <p className="text-xs sm:text-sm font-semibold text-navy truncate">
-                      {champion.name} {isUser && <span className="text-emerald text-[11px] font-semibold">(You)</span>}
-                    </p>
-                    <p className="text-[11px] text-muted truncate">
-                      {champion.wasteClearedKg ?? champion.wasteKg} kg cleared
-                    </p>
+                    <div className="min-w-0 text-left">
+                      <p className="text-xs sm:text-sm font-semibold text-navy truncate">
+                        {champion.name} {isUser && <span className="text-emerald text-[11px] font-semibold">(You)</span>}
+                      </p>
+                      <p className="text-[11px] text-muted truncate">
+                        {champion.wasteClearedKg ?? champion.wasteKg} kg cleared
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-8 sm:gap-12 flex-shrink-0">
+                    <span className="text-xs text-muted tabular-nums hidden sm:inline">
+                      {champion.cleanupsCount ?? champion.spotsCleaned}
+                    </span>
+                    <Badge variant="points" size="sm">
+                      {champion.points.toLocaleString()} pts
+                    </Badge>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-8 sm:gap-12 flex-shrink-0">
-                  <span className="text-xs text-muted tabular-nums hidden sm:inline">
-                    {champion.cleanupsCount ?? champion.spotsCleaned}
-                  </span>
-                  <Badge variant="points" size="sm">
-                    {champion.points.toLocaleString()} pts
-                  </Badge>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </Card>
     </div>
   );
