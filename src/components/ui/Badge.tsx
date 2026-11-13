@@ -11,7 +11,8 @@ export type BadgeVariant =
   | 'neutral'
   | 'coral'
   | 'emerald'
-  | 'warning';
+  | 'warning'
+  | 'bounty';
 
 export interface BadgeProps {
   children: React.ReactNode;
@@ -42,6 +43,7 @@ export const Badge: React.FC<BadgeProps> = ({
     // Before / Needs clean / Urgent: Coral
     needs_clean: 'bg-coral text-white font-bold shadow-sm',
     coral: 'bg-coral text-white font-bold shadow-sm',
+    bounty: 'bg-coral text-white font-bold shadow-sm',
     danger: 'bg-coral-50 text-coral-800 border border-coral-200 font-semibold',
     warning: 'bg-coral-50 text-coral-800 border border-coral-200 font-semibold',
 

@@ -147,11 +147,20 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
                       Restored & Verified
                     </Badge>
                   ) : (
-                    <Badge variant="bounty" size="sm" icon={<Clock className="w-3.5 h-3.5" />}>
+                    <Badge variant="needs_clean" size="sm" icon={<Clock className="w-3.5 h-3.5" />}>
                       Needs Clean · Active Bounty
                     </Badge>
                   )}
-                  <Badge variant="severity" severity={spot.severity} size="sm">
+                  <Badge
+                    variant={
+                      spot.severity === 'high'
+                        ? 'coral'
+                        : spot.severity === 'medium'
+                        ? 'warning'
+                        : 'neutral'
+                    }
+                    size="sm"
+                  >
                     {spot.severity}
                   </Badge>
                 </div>
