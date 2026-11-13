@@ -15,6 +15,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { GeoLocation, SeverityLevel, Spot, UserProfile } from '../types';
+import { compressImageFile } from '../utils/imageCompressor';
 import {
   requestDeviceLocation,
   reverseGeocode,
@@ -67,6 +68,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 }) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [photoUrl, setPhotoUrl] = useState('');
+  const [isCompressingPhoto, setIsCompressingPhoto] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState<SeverityLevel>('medium');
@@ -227,16 +229,27 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setPhotoUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsCompressingPhoto(true);
+        // Automatically optimize photo to lightweight crisp JPEG (<100KB)
+        // so it reliably syncs to Firestore cloud without size errors
+        const compressed = await compressImageFile(file, 1200, 0.75);
+        setPhotoUrl(compressed);
+      } catch (err) {
+        console.warn('Compression fallback to standard read:', err);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setPhotoUrl(event.target.result as string);
+          }
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsCompressingPhoto(false);
+      }
     }
   };
 
@@ -330,6 +343,16 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                     </Badge>
                   </div>
                 </div>
+              ) : isCompressingPhoto ? (
+                <div className="flex flex-col items-center justify-center w-full aspect-[16/10] border border-line rounded-sm bg-navy-50/50 p-6 text-center">
+                  <Loader2 className="w-8 h-8 text-emerald animate-spin mb-3" />
+                  <p className="text-sm font-semibold text-navy">
+                    Optimizing photo for cloud feed...
+                  </p>
+                  <p className="text-xs text-muted mt-1">
+                    Compressing image payload to ensure instant syncing
+                  </p>
+                </div>
               ) : (
                 <label className="flex flex-col items-center justify-center w-full aspect-[16/10] border-2 border-dashed border-line hover:border-emerald rounded-sm cursor-pointer bg-navy-50/50 hover:bg-navy-50 transition-colors p-6 text-center">
                   <div className="w-12 h-12 rounded-full bg-emerald text-white flex items-center justify-center mb-3 shadow-sm">
@@ -388,7 +411,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               <Button
                 variant="primary"
                 size="md"
-                disabled={!photoUrl}
+                disabled={!photoUrl || isCompressingPhoto}
                 iconRight={<ArrowRight className="w-4 h-4" />}
                 onClick={() => setStep(2)}
               >

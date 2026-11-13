@@ -6,9 +6,11 @@ import {
   Sparkles,
   ShieldCheck,
   Navigation,
+  Loader2,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Spot, UserProfile, CleanVerification, GeoLocation } from '../types';
+import { compressImageFile } from '../utils/imageCompressor';
 import {
   calculateHaversineDistance,
   formatDistance,
@@ -58,6 +60,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
   if (!isOpen || !spot) return null;
 
   const [afterPhotoUrl, setAfterPhotoUrl] = useState('');
+  const [isCompressingPhoto, setIsCompressingPhoto] = useState(false);
   const [cleanerNotes, setCleanerNotes] = useState('');
   const [cleanerLocation, setCleanerLocation] = useState<GeoLocation>({
     lat: spot.location.lat + 0.0001,
@@ -77,16 +80,25 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
     distanceMeters
   );
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setAfterPhotoUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsCompressingPhoto(true);
+        const compressed = await compressImageFile(file, 1200, 0.75);
+        setAfterPhotoUrl(compressed);
+      } catch (err) {
+        console.warn('Compression fallback:', err);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setAfterPhotoUrl(event.target.result as string);
+          }
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsCompressingPhoto(false);
+      }
     }
   };
 
@@ -193,6 +205,11 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
                     After
                   </Badge>
                 </div>
+              </div>
+            ) : isCompressingPhoto ? (
+              <div className="flex flex-col items-center justify-center aspect-[4/3] border border-line rounded-sm bg-navy-50/50 p-4 text-center">
+                <Loader2 className="w-8 h-8 text-emerald animate-spin mb-2" />
+                <p className="text-xs font-semibold text-navy">Optimizing after proof...</p>
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center aspect-[4/3] border-2 border-dashed border-line hover:border-emerald rounded-sm cursor-pointer bg-navy-50/50 hover:bg-navy-50 transition-colors p-4 text-center">

@@ -214,7 +214,7 @@ function EcoScanDashboard({
     setSpots((prev) => [newSpot, ...prev]);
 
     // Save to shared cloud database so all users on any device see it!
-    await saveSpotCloud(newSpot);
+    const result = await saveSpotCloud(newSpot);
 
     // Update user stats
     await updateUserProfile({
@@ -222,10 +222,17 @@ function EcoScanDashboard({
       points: currentUser.points + 20,
     });
 
-    setToastMessage({
-      message: 'Dirty spot posted to shared community registry! EcoScaners Team backup active.',
-      type: 'success',
-    });
+    if (result && !result.success) {
+      setToastMessage({
+        message: `Saved locally! (Cloud sync notice: ${result.error})`,
+        type: 'info',
+      });
+    } else {
+      setToastMessage({
+        message: 'Dirty spot posted to shared community registry! EcoScaners Team backup active.',
+        type: 'success',
+      });
+    }
   };
 
   const handleCleanSubmit = async (spotId: string, verification: CleanVerification) => {

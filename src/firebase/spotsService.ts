@@ -37,8 +37,12 @@ function cleanForFirestore<T extends Record<string, any>>(obj: T): T {
  */
 function isRealUserSpot(spot: Spot): boolean {
   if (!spot || !spot.id) return false;
-  // Discard early mock IDs
-  if (spot.id === 'spot-101' || spot.id === 'spot-102' || spot.id === 'spot-103' || spot.id === 'spot-104') {
+  if (
+    spot.id === 'spot-101' ||
+    spot.id === 'spot-102' ||
+    spot.id === 'spot-103' ||
+    spot.id === 'spot-104'
+  ) {
     return false;
   }
   if (spot.title === 'Miramar Coastal Walkway & Dunes Restoration') {
@@ -75,9 +79,20 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
           }
         });
 
-        // Always update local storage and notify listener with real cloud data (even if empty)
-        saveSpots(cloudSpots);
-        onUpdate(cloudSpots);
+        // Retain any pending locally submitted spots created in the last 3 minutes
+        // so that new uploads never flash or vanish while cloud transactions commit
+        const localCached = loadSpots().filter(isRealUserSpot);
+        const cloudIds = new Set(cloudSpots.map((s) => s.id));
+        const now = Date.now();
+        const pendingLocal = localCached.filter((s) => {
+          if (cloudIds.has(s.id)) return false;
+          const createdTime = new Date(s.createdAt).getTime();
+          return !isNaN(createdTime) && now - createdTime < 180000;
+        });
+
+        const merged = [...pendingLocal, ...cloudSpots];
+        saveSpots(merged);
+        onUpdate(merged);
       },
       (error) => {
         console.warn('Firestore real-time listener error, falling back to local storage:', error);
@@ -97,20 +112,27 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
 /**
  * Save a newly reported spot to the shared global cloud database.
  */
-export async function saveSpotCloud(spot: Spot): Promise<void> {
+export async function saveSpotCloud(
+  spot: Spot
+): Promise<{ success: boolean; error?: string }> {
   // Always update local cache immediately for snappy UI
   const current = loadSpots().filter(isRealUserSpot);
   saveSpots([spot, ...current.filter((s) => s.id !== spot.id)]);
 
-  if (!isFirebaseConfigured || !db) return;
+  if (!isFirebaseConfigured || !db) {
+    return { success: true };
+  }
   const firestore: Firestore = db;
 
   try {
     const spotRef = doc(firestore, 'spots', spot.id);
     const sanitized = cleanForFirestore(spot);
     await setDoc(spotRef, sanitized, { merge: true });
-  } catch (err) {
-    console.error('Error saving spot to Firestore cloud:', err);
+    console.log('✅ Successfully published spot to Firestore cloud:', spot.id);
+    return { success: true };
+  } catch (err: any) {
+    console.error('❌ Error saving spot to Firestore cloud:', err);
+    return { success: false, error: err?.message || 'Failed to sync to cloud' };
   }
 }
 
@@ -120,14 +142,16 @@ export async function saveSpotCloud(spot: Spot): Promise<void> {
 export async function saveCleanVerificationCloud(
   spotId: string,
   verification: CleanVerification
-): Promise<void> {
+): Promise<{ success: boolean; error?: string }> {
   const current = loadSpots().filter(isRealUserSpot);
   const updated = current.map((s) =>
     s.id === spotId ? { ...s, status: 'cleaned' as const, verification } : s
   );
   saveSpots(updated);
 
-  if (!isFirebaseConfigured || !db) return;
+  if (!isFirebaseConfigured || !db) {
+    return { success: true };
+  }
   const firestore: Firestore = db;
 
   try {
@@ -137,8 +161,11 @@ export async function saveCleanVerificationCloud(
       status: 'cleaned',
       verification: sanitizedVerification,
     });
-  } catch (err) {
-    console.error('Error updating spot in Firestore cloud:', err);
+    console.log('✅ Successfully updated clean verification on Firestore:', spotId);
+    return { success: true };
+  } catch (err: any) {
+    console.error('❌ Error updating clean verification in Firestore:', err);
+    return { success: false, error: err?.message || 'Failed to sync to cloud' };
   }
 }
 
