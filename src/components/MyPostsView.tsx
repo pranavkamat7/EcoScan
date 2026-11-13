@@ -182,8 +182,8 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
                 <div className="md:col-span-5 rounded-lg overflow-hidden border border-line bg-navy-50/50 aspect-[16/10] relative">
                   {spot.status === 'cleaned' && spot.verification?.afterPhotoUrl ? (
                     <BeforeAfterSlider
-                      beforeUrl={spot.beforePhotoUrl}
-                      afterUrl={spot.verification.afterPhotoUrl}
+                      beforeImage={spot.beforePhotoUrl}
+                      afterImage={spot.verification.afterPhotoUrl}
                       className="w-full h-full"
                     />
                   ) : (

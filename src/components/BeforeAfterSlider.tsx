@@ -3,8 +3,10 @@ import { Columns, MoveHorizontal, Maximize2, X } from 'lucide-react';
 import { Badge } from './ui';
 
 interface BeforeAfterSliderProps {
-  beforeImage: string;
-  afterImage: string;
+  beforeImage?: string;
+  afterImage?: string;
+  beforeUrl?: string;
+  afterUrl?: string;
   beforeLabel?: string;
   afterLabel?: string;
   aspectRatioClass?: string;
@@ -14,11 +16,15 @@ interface BeforeAfterSliderProps {
 export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
   beforeImage,
   afterImage,
+  beforeUrl,
+  afterUrl,
   beforeLabel = 'Before',
   afterLabel = 'After',
   aspectRatioClass = 'aspect-[16/10] sm:aspect-[16/9]',
   className = '',
 }) => {
+  const finalBefore = beforeImage || beforeUrl || '';
+  const finalAfter = afterImage || afterUrl || '';
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [viewMode, setViewMode] = useState<'slider' | 'side-by-side'>('slider');
@@ -127,7 +133,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
         >
           {/* Base Layer: AFTER (Restored) Image */}
           <img
-            src={afterImage}
+            src={finalAfter}
             alt={afterLabel}
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
@@ -139,7 +145,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             style={{ width: `${sliderPosition}%` }}
           >
             <img
-              src={beforeImage}
+              src={finalBefore}
               alt={beforeLabel}
               className="absolute inset-0 w-full h-full object-cover max-w-none"
               style={{
@@ -193,7 +199,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
         <div className={`relative w-full ${aspectRatioClass} grid grid-cols-2 divide-x divide-white/20`}>
           <div className="relative h-full overflow-hidden">
             <img
-              src={beforeImage}
+              src={finalBefore}
               alt={beforeLabel}
               className="w-full h-full object-cover"
               loading="lazy"
@@ -207,7 +213,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
           <div className="relative h-full overflow-hidden">
             <img
-              src={afterImage}
+              src={finalAfter}
               alt={afterLabel}
               className="w-full h-full object-cover"
               loading="lazy"
