@@ -9,6 +9,7 @@ import {
   LogOut,
   UserCog,
   Heart,
+  FileText,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
@@ -16,7 +17,7 @@ import { Avatar } from './ui/Avatar';
 import { Badge } from './ui/Badge';
 import { Logo } from './ui/Logo';
 
-export type NavTab = 'feed' | 'map' | 'leaderboard' | 'rewards';
+export type NavTab = 'feed' | 'map' | 'my_posts' | 'leaderboard' | 'rewards';
 
 export interface AppShellProps {
   currentTab: NavTab;
@@ -44,6 +45,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const navItems: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'feed', label: 'Feed', icon: Compass },
     { id: 'map', label: 'Map', icon: Map },
+    { id: 'my_posts', label: 'My Posts', icon: FileText },
     { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
     { id: 'rewards', label: 'Rewards', icon: Award },
   ];
@@ -152,6 +154,18 @@ export const AppShell: React.FC<AppShellProps> = ({
                       </div>
                     </div>
 
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onTabChange('my_posts');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-xs text-navy hover:bg-navy-50 flex items-center gap-2.5 transition-colors font-medium border-b border-line"
+                    >
+                      <FileText className="w-4 h-4 text-emerald" />
+                      <span>My Reported Posts</span>
+                    </button>
+
                     {onOpenEditProfile && (
                       <button
                         type="button"
@@ -208,7 +222,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       {/* 3. SHARED MOBILE BOTTOM TAB BAR (Solid White, Clean & Crisp) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line shadow-md pb-safe">
-        <nav className="grid grid-cols-4 h-14" aria-label="Mobile navigation">
+        <nav className="grid grid-cols-5 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
             const Icon = item.icon;

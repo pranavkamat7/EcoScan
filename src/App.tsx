@@ -26,6 +26,8 @@ import { RewardsView } from './components/RewardsView';
 import { ReportModal } from './components/ReportModal';
 import { CleanSubmissionModal } from './components/CleanSubmissionModal';
 import { EditProfileModal } from './components/EditProfileModal';
+import { MyPostsView } from './components/MyPostsView';
+import { EditSpotModal } from './components/EditSpotModal';
 import {
   PageHeader,
   Card,
@@ -50,6 +52,8 @@ import {
   saveCleanVerificationCloud,
   saveSpotLikeCloud,
   saveSpotCommentCloud,
+  updateSpotCloud,
+  deleteSpotCloud,
 } from './firebase/spotsService';
 
 function EcoScanDashboard({
@@ -76,6 +80,7 @@ function EcoScanDashboard({
   const [activeCleanSpot, setActiveCleanSpot] = useState<Spot | null>(null);
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [editingSpot, setEditingSpot] = useState<Spot | null>(null);
 
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -302,6 +307,40 @@ function EcoScanDashboard({
   const handleOpenMapForSpot = (spot: Spot) => {
     setSelectedSpotForMap(spot);
     setCurrentTab('map');
+  };
+
+  const handleSaveEditedSpot = async (updatedSpot: Spot) => {
+    setSpots((prev) =>
+      prev.map((s) => (s.id === updatedSpot.id ? updatedSpot : s))
+    );
+    const result = await updateSpotCloud(updatedSpot.id, updatedSpot);
+    if (result && !result.success) {
+      setToastMessage({
+        message: `Updated locally! (Cloud notice: ${result.error})`,
+        type: 'info',
+      });
+    } else {
+      setToastMessage({
+        message: 'Spot details updated and synced across the community registry!',
+        type: 'success',
+      });
+    }
+  };
+
+  const handleDeleteSpot = async (spotId: string) => {
+    setSpots((prev) => prev.filter((s) => s.id !== spotId));
+    const result = await deleteSpotCloud(spotId);
+    if (result && !result.success) {
+      setToastMessage({
+        message: `Removed locally! (Cloud notice: ${result.error})`,
+        type: 'info',
+      });
+    } else {
+      setToastMessage({
+        message: 'Spot permanently deleted from community registry and cloud database.',
+        type: 'success',
+      });
+    }
   };
 
   return (
@@ -689,8 +728,21 @@ function EcoScanDashboard({
         />
       )}
 
-      {/* VIEW 5: 404 Fallback State if tab is invalid */}
-      {!['feed', 'map', 'leaderboard', 'rewards'].includes(currentTab) && (
+      {/* VIEW 5: My Reported Posts */}
+      {currentTab === 'my_posts' && (
+        <MyPostsView
+          currentUser={currentUser}
+          spots={spots}
+          onEditSpot={(spot) => setEditingSpot(spot)}
+          onDeleteSpot={handleDeleteSpot}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+          onCleanSpot={(spot) => setActiveCleanSpot(spot)}
+          onOpenMapForSpot={handleOpenMapForSpot}
+        />
+      )}
+
+      {/* VIEW 6: 404 Fallback State if tab is invalid */}
+      {!['feed', 'map', 'my_posts', 'leaderboard', 'rewards'].includes(currentTab) && (
         <EmptyState
           title="Page not found"
           description="The civic page or view you requested could not be found."
@@ -722,6 +774,14 @@ function EcoScanDashboard({
         onClose={() => setIsEditProfileOpen(false)}
         currentUser={currentUser}
         onUpdateProfile={updateUserProfile}
+      />
+
+      {/* MODAL 4: Edit Reported Spot */}
+      <EditSpotModal
+        spot={editingSpot}
+        isOpen={Boolean(editingSpot)}
+        onClose={() => setEditingSpot(null)}
+        onSave={handleSaveEditedSpot}
       />
 
       {/* FLOATING TOAST NOTIFICATIONS */}

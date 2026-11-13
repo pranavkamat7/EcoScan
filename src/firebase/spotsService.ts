@@ -3,6 +3,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
   onSnapshot,
   query,
   orderBy,
@@ -216,5 +217,60 @@ export async function saveSpotCommentCloud(
     });
   } catch (err) {
     console.warn('Failed to append comment on Firestore:', err);
+  }
+}
+
+/**
+ * Permanently delete a spot from local storage and Cloud Firestore.
+ */
+export async function deleteSpotCloud(
+  spotId: string
+): Promise<{ success: boolean; error?: string }> {
+  // Update local cache immediately
+  const current = loadSpots();
+  saveSpots(current.filter((s) => s.id !== spotId));
+
+  if (!isFirebaseConfigured || !db) {
+    return { success: true };
+  }
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spotId);
+    await deleteDoc(spotRef);
+    console.log('✅ Successfully permanently deleted spot from Firestore:', spotId);
+    return { success: true };
+  } catch (err: any) {
+    console.error('❌ Error deleting spot from Firestore cloud:', err);
+    return { success: false, error: err?.message || 'Failed to delete from cloud' };
+  }
+}
+
+/**
+ * Update an existing spot's details (title, description, photos, severity) in local storage & Firestore.
+ */
+export async function updateSpotCloud(
+  spotId: string,
+  updates: Partial<Spot>
+): Promise<{ success: boolean; error?: string }> {
+  // Update local cache immediately
+  const current = loadSpots();
+  const updated = current.map((s) => (s.id === spotId ? { ...s, ...updates } : s));
+  saveSpots(updated);
+
+  if (!isFirebaseConfigured || !db) {
+    return { success: true };
+  }
+  const firestore: Firestore = db;
+
+  try {
+    const spotRef = doc(firestore, 'spots', spotId);
+    const sanitized = cleanForFirestore(updates);
+    await updateDoc(spotRef, sanitized);
+    console.log('✅ Successfully updated spot in Firestore cloud:', spotId);
+    return { success: true };
+  } catch (err: any) {
+    console.error('❌ Error updating spot in Firestore cloud:', err);
+    return { success: false, error: err?.message || 'Failed to update spot on cloud' };
   }
 }
