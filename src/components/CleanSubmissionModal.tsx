@@ -325,8 +325,8 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 pt-2">
-          <Button variant="ghost" size="md" onClick={onClose}>
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-3 pb-3 sm:pb-0 border-t border-line">
+          <Button type="button" variant="ghost" size="md" className="w-full sm:w-auto" onClick={onClose}>
             Cancel
           </Button>
 
@@ -334,6 +334,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
             type="submit"
             variant="primary"
             size="md"
+            className="w-full sm:w-auto"
             disabled={!afterPhotoUrl}
             icon={<Sparkles className="w-4 h-4 text-lime" />}
           >

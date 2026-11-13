@@ -202,11 +202,12 @@ export const EditSpotModal: React.FC<EditSpotModalProps> = ({
         />
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-line">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-3 pb-3 sm:pb-0 border-t border-line">
           <Button
             type="button"
             variant="ghost"
             size="md"
+            className="w-full sm:w-auto"
             onClick={onClose}
             disabled={isSaving}
           >
@@ -216,6 +217,7 @@ export const EditSpotModal: React.FC<EditSpotModalProps> = ({
             type="submit"
             variant="primary"
             size="md"
+            className="w-full sm:w-auto"
             disabled={!title.trim() || isSaving || isCompressingPhoto}
             icon={isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           >

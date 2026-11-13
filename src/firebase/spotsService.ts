@@ -15,6 +15,38 @@ import { db, isFirebaseConfigured } from './config';
 import type { Spot, CleanVerification, SpotComment } from '../types';
 import { loadSpots, saveSpots } from '../utils/storage';
 
+const DELETED_SPOTS_STORAGE_KEY = 'ecoscan_deleted_spots_v5';
+
+// Track deleted spot IDs locally and in localStorage so listener snapshots never re-add them
+export function getDeletedSpotIds(): Set<string> {
+  try {
+    const raw = localStorage.getItem(DELETED_SPOTS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return new Set(parsed);
+      }
+    }
+  } catch {
+    // fallback
+  }
+  return new Set();
+}
+
+export function markSpotAsDeleted(spotId: string): void {
+  try {
+    const deleted = getDeletedSpotIds();
+    deleted.add(spotId);
+    localStorage.setItem(DELETED_SPOTS_STORAGE_KEY, JSON.stringify([...deleted]));
+  } catch (err) {
+    console.warn('Failed to save deleted spot blacklist:', err);
+  }
+}
+
+export function isSpotDeleted(spotId: string): boolean {
+  return getDeletedSpotIds().has(spotId);
+}
+
 /**
  * Strips undefined properties recursively so Firestore does not reject documents.
  */
@@ -35,9 +67,11 @@ function cleanForFirestore<T extends Record<string, any>>(obj: T): T {
 
 /**
  * Filter out legacy dummy spots (e.g. mock spots created during early testing)
+ * and any spots that have been permanently deleted by the user.
  */
 function isRealUserSpot(spot: Spot): boolean {
   if (!spot || !spot.id) return false;
+  if (isSpotDeleted(spot.id)) return false;
   if (
     spot.id === 'spot-101' ||
     spot.id === 'spot-102' ||
@@ -75,18 +109,18 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
         const cloudSpots: Spot[] = [];
         snapshot.forEach((docSnap) => {
           const data = docSnap.data() as Spot;
-          if (isRealUserSpot(data)) {
+          if (isRealUserSpot(data) && !isSpotDeleted(data.id)) {
             cloudSpots.push(data);
           }
         });
 
         // Retain any pending locally submitted spots created in the last 3 minutes
-        // so that new uploads never flash or vanish while cloud transactions commit
-        const localCached = loadSpots().filter(isRealUserSpot);
+        // while strictly excluding any spot that was deleted
+        const localCached = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
         const cloudIds = new Set(cloudSpots.map((s) => s.id));
         const now = Date.now();
         const pendingLocal = localCached.filter((s) => {
-          if (cloudIds.has(s.id)) return false;
+          if (cloudIds.has(s.id) || isSpotDeleted(s.id)) return false;
           const createdTime = new Date(s.createdAt).getTime();
           return !isNaN(createdTime) && now - createdTime < 180000;
         });
@@ -97,14 +131,14 @@ export function subscribeToSpots(onUpdate: (spots: Spot[]) => void): () => void 
       },
       (error) => {
         console.warn('Firestore real-time listener error, falling back to local storage:', error);
-        const fallback = loadSpots().filter(isRealUserSpot);
+        const fallback = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
         onUpdate(fallback);
       }
     );
     return unsubscribe;
   } catch (err) {
     console.error('Failed to set up Firestore listener:', err);
-    const fallback = loadSpots().filter(isRealUserSpot);
+    const fallback = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
     onUpdate(fallback);
     return () => {};
   }
@@ -117,7 +151,7 @@ export async function saveSpotCloud(
   spot: Spot
 ): Promise<{ success: boolean; error?: string }> {
   // Always update local cache immediately for snappy UI
-  const current = loadSpots().filter(isRealUserSpot);
+  const current = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
   saveSpots([spot, ...current.filter((s) => s.id !== spot.id)]);
 
   if (!isFirebaseConfigured || !db) {
@@ -144,7 +178,7 @@ export async function saveCleanVerificationCloud(
   spotId: string,
   verification: CleanVerification
 ): Promise<{ success: boolean; error?: string }> {
-  const current = loadSpots().filter(isRealUserSpot);
+  const current = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
   const updated = current.map((s) =>
     s.id === spotId ? { ...s, status: 'cleaned' as const, verification } : s
   );
@@ -174,7 +208,7 @@ export async function saveCleanVerificationCloud(
  * Sync like increments to the shared global cloud database.
  */
 export async function saveSpotLikeCloud(spotId: string): Promise<void> {
-  const current = loadSpots().filter(isRealUserSpot);
+  const current = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
   const updated = current.map((s) =>
     s.id === spotId ? { ...s, likesCount: (s.likesCount || 0) + 1, hasLiked: true } : s
   );
@@ -200,7 +234,7 @@ export async function saveSpotCommentCloud(
   spotId: string,
   comment: SpotComment
 ): Promise<void> {
-  const current = loadSpots().filter(isRealUserSpot);
+  const current = loadSpots().filter((s) => isRealUserSpot(s) && !isSpotDeleted(s.id));
   const updated = current.map((s) =>
     s.id === spotId ? { ...s, comments: [...(s.comments || []), comment] } : s
   );
@@ -226,9 +260,12 @@ export async function saveSpotCommentCloud(
 export async function deleteSpotCloud(
   spotId: string
 ): Promise<{ success: boolean; error?: string }> {
-  // Update local cache immediately
+  // 1. Mark in permanent deletion blacklist
+  markSpotAsDeleted(spotId);
+
+  // 2. Immediately remove from local cache
   const current = loadSpots();
-  saveSpots(current.filter((s) => s.id !== spotId));
+  saveSpots(current.filter((s) => s.id !== spotId && !isSpotDeleted(s.id)));
 
   if (!isFirebaseConfigured || !db) {
     return { success: true };

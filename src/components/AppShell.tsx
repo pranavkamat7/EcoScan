@@ -216,7 +216,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       </header>
 
       {/* 2. SHARED MAIN CONTENT (Max width 1200px, consistent padding) */}
-      <main className="flex-1 max-w-shell w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-20 md:pb-12 relative z-0">
+      <main className="flex-1 max-w-shell w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-20 md:pb-12">
         {children}
       </main>
 

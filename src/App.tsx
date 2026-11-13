@@ -54,6 +54,7 @@ import {
   saveSpotCommentCloud,
   updateSpotCloud,
   deleteSpotCloud,
+  markSpotAsDeleted,
 } from './firebase/spotsService';
 
 function EcoScanDashboard({
@@ -328,7 +329,24 @@ function EcoScanDashboard({
   };
 
   const handleDeleteSpot = async (spotId: string) => {
+    // 1. Immediately blacklist ID so listener snapshots never re-add it
+    markSpotAsDeleted(spotId);
+
+    // 2. Immediately remove from React state (Feed, Map, My Posts)
     setSpots((prev) => prev.filter((s) => s.id !== spotId));
+
+    // 3. Immediately purge from local storage cache
+    const remaining = loadSpots().filter((s) => s.id !== spotId);
+    saveSpots(remaining);
+
+    // 4. Update user profile spot count if user had reported spots
+    if (currentUser.spotsReported > 0) {
+      await updateUserProfile({
+        spotsReported: Math.max(0, currentUser.spotsReported - 1),
+      });
+    }
+
+    // 5. Delete permanently from Cloud Firestore
     const result = await deleteSpotCloud(spotId);
     if (result && !result.success) {
       setToastMessage({
@@ -337,7 +355,7 @@ function EcoScanDashboard({
       });
     } else {
       setToastMessage({
-        message: 'Spot permanently deleted from community registry and cloud database.',
+        message: 'Spot permanently deleted from community feed and cloud database.',
         type: 'success',
       });
     }

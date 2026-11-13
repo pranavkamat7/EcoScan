@@ -407,10 +407,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             </div>
 
-            <div className="flex justify-end pt-3">
+            <div className="flex justify-end pt-3 pb-2 sm:pb-0">
               <Button
                 variant="primary"
                 size="md"
+                className="w-full sm:w-auto"
                 disabled={!photoUrl || isCompressingPhoto}
                 iconRight={<ArrowRight className="w-4 h-4" />}
                 onClick={() => setStep(2)}
@@ -476,10 +477,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 pt-3 pb-2 sm:pb-0">
               <Button
                 variant="ghost"
                 size="md"
+                className="w-full sm:w-auto"
                 icon={<ArrowLeft className="w-4 h-4" />}
                 onClick={() => setStep(1)}
               >
@@ -489,6 +491,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               <Button
                 variant="primary"
                 size="md"
+                className="w-full sm:w-auto"
                 iconRight={<ArrowRight className="w-4 h-4" />}
                 onClick={() => setStep(3)}
               >
@@ -580,10 +583,12 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 pt-4 pb-4 sm:pb-1 border-t border-line">
               <Button
+                type="button"
                 variant="ghost"
                 size="md"
+                className="w-full sm:w-auto"
                 icon={<ArrowLeft className="w-4 h-4" />}
                 onClick={() => setStep(2)}
               >
@@ -594,6 +599,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 type="submit"
                 variant="primary"
                 size="md"
+                className="w-full sm:w-auto"
                 disabled={!title.trim()}
                 icon={<Sparkles className="w-4 h-4" />}
               >

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { IconButton } from './IconButton';
 
@@ -21,6 +22,12 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'md',
   className = '',
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -37,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const sizeClasses = {
     sm: 'max-w-md',
@@ -46,34 +53,34 @@ export const Modal: React.FC<ModalProps> = ({
     xl: 'max-w-4xl',
   }[size];
 
-  return (
+  const modalNode = (
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-modal flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fadeIn"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-hidden animate-fadeIn"
     >
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-navy/60 backdrop-blur-[2px] transition-opacity duration-180"
+        className="fixed inset-0 bg-navy/70 backdrop-blur-xs transition-opacity duration-180"
         aria-hidden="true"
       />
 
-      {/* Modal Dialog Card (20px radius) */}
+      {/* Modal Dialog Card (Centered, never exceeds viewport, internal smooth scroll) */}
       <div
-        className={`relative w-full ${sizeClasses} bg-white rounded-lg border border-line shadow-modal overflow-hidden z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left ${className}`}
+        className={`relative w-full ${sizeClasses} max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-3rem)] flex flex-col bg-white rounded-lg border border-line shadow-2xl z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left overflow-hidden ${className}`}
       >
-        {/* Header */}
+        {/* Header - Fixed at top */}
         {(title || description) && (
-          <div className="flex items-start justify-between p-5 sm:p-6 border-b border-line bg-navy-50/50">
-            <div className="space-y-1 pr-6">
+          <div className="flex-shrink-0 flex items-start justify-between p-4 sm:p-5 border-b border-line bg-navy-50/60">
+            <div className="space-y-0.5 pr-6">
               {title && (
-                <h3 className="font-heading text-lg sm:text-xl font-bold text-navy leading-tight">
+                <h3 className="font-heading text-base sm:text-lg font-bold text-navy leading-tight">
                   {title}
                 </h3>
               )}
               {description && (
-                <p className="text-xs sm:text-sm text-muted">{description}</p>
+                <p className="text-xs text-muted leading-relaxed">{description}</p>
               )}
             </div>
             <IconButton
@@ -81,16 +88,20 @@ export const Modal: React.FC<ModalProps> = ({
               size="sm"
               variant="ghost"
               onClick={onClose}
-              className="-mr-1.5 -mt-1.5 text-muted hover:text-navy"
+              className="-mr-1.5 -mt-1 text-muted hover:text-navy"
             >
               <X className="w-4 h-4" />
             </IconButton>
           </div>
         )}
 
-        {/* Content */}
-        <div className="p-5 sm:p-6">{children}</div>
+        {/* Scrollable Content Body with proper padding & bottom clearance */}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
+          {children}
+        </div>
       </div>
     </div>
   );
+
+  return createPortal(modalNode, document.body);
 };
