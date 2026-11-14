@@ -9,6 +9,7 @@ export interface ModalProps {
   title?: React.ReactNode;
   description?: string;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -19,6 +20,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   description,
   children,
+  footer,
   size = 'md',
   className = '',
 }) => {
@@ -68,11 +70,11 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog Card (Centered, never exceeds viewport, internal smooth scroll) */}
       <div
-        className={`relative w-full ${sizeClasses} max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-3rem)] flex flex-col bg-white rounded-lg border border-line shadow-2xl z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left overflow-hidden ${className}`}
+        className={`relative w-full ${sizeClasses} max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2.5rem)] flex flex-col bg-white rounded-lg border border-line shadow-2xl z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left overflow-hidden ${className}`}
       >
         {/* Header - Fixed at top */}
         {(title || description) && (
-          <div className="flex-shrink-0 flex items-start justify-between p-4 sm:p-5 border-b border-line bg-navy-50/60">
+          <div className="flex-shrink-0 flex items-start justify-between p-3.5 sm:p-5 border-b border-line bg-navy-50/60">
             <div className="space-y-0.5 pr-6">
               {title && (
                 <h3 className="font-heading text-base sm:text-lg font-bold text-navy leading-tight">
@@ -96,9 +98,16 @@ export const Modal: React.FC<ModalProps> = ({
         )}
 
         {/* Scrollable Content Body with proper padding & bottom clearance */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6">
           {children}
         </div>
+
+        {/* Fixed Pinned Footer - Never hidden or pushed off screen on mobile */}
+        {footer && (
+          <div className="flex-shrink-0 px-3.5 sm:px-6 py-3 sm:py-3.5 bg-white border-t border-line z-20">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

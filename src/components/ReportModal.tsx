@@ -265,8 +265,8 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!photoUrl || !title.trim()) return;
 
     const tags = tagsInput
@@ -293,6 +293,79 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
   const stepProgress = step === 1 ? 33 : step === 2 ? 66 : 100;
 
+  // Fixed bottom action bar - Always pinned and responsive across all devices
+  const modalFooter = (
+    <div className="w-full">
+      {step === 1 && (
+        <div className="flex items-center justify-end w-full">
+          <Button
+            variant="primary"
+            size="md"
+            className="w-full sm:w-auto"
+            disabled={!photoUrl || isCompressingPhoto}
+            iconRight={<ArrowRight className="w-4 h-4" />}
+            onClick={() => setStep(2)}
+          >
+            Next: Pin location
+          </Button>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="flex items-center justify-between gap-2.5 w-full">
+          <Button
+            variant="ghost"
+            size="md"
+            icon={<ArrowLeft className="w-4 h-4" />}
+            onClick={() => setStep(1)}
+          >
+            Back
+          </Button>
+
+          <Button
+            variant="primary"
+            size="md"
+            className="flex-1 sm:flex-initial"
+            iconRight={<ArrowRight className="w-4 h-4" />}
+            onClick={() => setStep(3)}
+          >
+            Next: Spot details
+          </Button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="flex items-center justify-between gap-2.5 w-full">
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
+            icon={<ArrowLeft className="w-4 h-4" />}
+            onClick={() => setStep(2)}
+          >
+            Back
+          </Button>
+
+          <Button
+            form="report-spot-form"
+            type="submit"
+            variant="primary"
+            size="md"
+            disabled={!title.trim()}
+            onClick={(e) => {
+              if (title.trim()) handleSubmit(e);
+            }}
+            icon={<Sparkles className="w-4 h-4 text-lime" />}
+            className="flex-1 sm:flex-initial shadow-sm"
+          >
+            <span className="hidden sm:inline">Submit dirty spot & launch bounty</span>
+            <span className="sm:hidden">Submit & launch</span>
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -306,8 +379,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           : 'Spot description & estimated waste'
       }`}
       size="lg"
+      footer={modalFooter}
     >
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Step Progress Bar */}
         <ProgressBar
           value={stepProgress}
@@ -317,14 +391,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
         {/* STEP 1: PHOTO CAPTURE & UPLOAD */}
         {step === 1 && (
-          <div className="space-y-4 animate-fadeIn">
-            <div className="space-y-2">
+          <div className="space-y-3.5 animate-fadeIn">
+            <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-navy">
                 Take or upload dirty spot photo
               </label>
 
               {photoUrl ? (
-                <div className="relative w-full aspect-[16/10] rounded-sm overflow-hidden border border-line group bg-navy-50/50">
+                <div className="relative w-full aspect-[16/10] max-h-56 rounded-sm overflow-hidden border border-line group bg-navy-50/50">
                   <img
                     src={photoUrl}
                     alt="Preview of dirty spot"
@@ -333,18 +407,18 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setPhotoUrl('')}
-                    className="absolute top-3 right-3 px-3 py-1 bg-navy/80 hover:bg-navy text-white text-xs rounded-sm transition-colors shadow-sm"
+                    className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-navy/80 hover:bg-navy text-white text-xs rounded-sm transition-colors shadow-sm"
                   >
                     Replace photo
                   </button>
-                  <div className="absolute bottom-3 left-3">
+                  <div className="absolute bottom-2.5 left-2.5">
                     <Badge variant="coral" size="sm">
                       Before Proof
                     </Badge>
                   </div>
                 </div>
               ) : isCompressingPhoto ? (
-                <div className="flex flex-col items-center justify-center w-full aspect-[16/10] border border-line rounded-sm bg-navy-50/50 p-6 text-center">
+                <div className="flex flex-col items-center justify-center w-full aspect-[16/10] max-h-56 border border-line rounded-sm bg-navy-50/50 p-6 text-center">
                   <Loader2 className="w-8 h-8 text-emerald animate-spin mb-3" />
                   <p className="text-sm font-semibold text-navy">
                     Optimizing photo for cloud feed...
@@ -354,14 +428,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   </p>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full aspect-[16/10] border-2 border-dashed border-line hover:border-emerald rounded-sm cursor-pointer bg-navy-50/50 hover:bg-navy-50 transition-colors p-6 text-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald text-white flex items-center justify-center mb-3 shadow-sm">
-                    <Camera className="w-6 h-6 stroke-[1.75]" />
+                <label className="flex flex-col items-center justify-center w-full aspect-[16/10] max-h-52 border-2 border-dashed border-line hover:border-emerald rounded-sm cursor-pointer bg-navy-50/50 hover:bg-navy-50 transition-colors p-4 text-center">
+                  <div className="w-10 h-10 rounded-full bg-emerald text-white flex items-center justify-center mb-2 shadow-sm">
+                    <Camera className="w-5 h-5 stroke-[1.75]" />
                   </div>
                   <p className="text-sm font-semibold text-navy">
                     Snap a photo or browse device
                   </p>
-                  <p className="text-xs text-muted mt-1">
+                  <p className="text-xs text-muted mt-0.5">
                     JPEG, PNG, WebP up to 10MB
                   </p>
                   <input
@@ -376,7 +450,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             {/* Quick Photo URL or Presets */}
-            <div className="pt-2 border-t border-line space-y-2">
+            <div className="pt-2 border-t border-line space-y-1.5">
               <span className="text-xs font-medium text-muted block">
                 Or pick a quick demo mess to test:
               </span>
@@ -390,41 +464,28 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                       setTitle(preset.title);
                       setSeverity(preset.severity);
                     }}
-                    className="p-2 text-left rounded-sm border border-line bg-white hover:bg-navy-50 transition-colors text-xs space-y-1"
+                    className="p-1.5 text-left rounded-sm border border-line bg-white hover:bg-navy-50 transition-colors text-xs space-y-1"
                   >
-                    <div className="h-14 rounded-sm overflow-hidden bg-navy-50">
+                    <div className="h-12 sm:h-14 rounded-sm overflow-hidden bg-navy-50">
                       <img
                         src={preset.url}
                         alt={preset.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="font-semibold text-navy truncate text-[11px]">
+                    <p className="font-semibold text-navy truncate text-[10px] sm:text-[11px]">
                       {preset.name}
                     </p>
                   </button>
                 ))}
               </div>
             </div>
-
-            <div className="flex justify-end pt-3 pb-2 sm:pb-0">
-              <Button
-                variant="primary"
-                size="md"
-                className="w-full sm:w-auto"
-                disabled={!photoUrl || isCompressingPhoto}
-                iconRight={<ArrowRight className="w-4 h-4" />}
-                onClick={() => setStep(2)}
-              >
-                Next: Pin location
-              </Button>
-            </div>
           </div>
         )}
 
         {/* STEP 2: LOCATION PICKER */}
         {step === 2 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-3 animate-fadeIn">
             {/* Search and GPS Bar */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -462,48 +523,26 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
 
             {/* Interactive Leaflet Pin Picker */}
-            <div className="relative w-full h-56 rounded-sm border border-line overflow-hidden">
+            <div className="relative w-full h-48 sm:h-56 rounded-sm border border-line overflow-hidden">
               <div ref={pickerMapContainerRef} className="w-full h-full z-0" />
             </div>
 
-            <div className="p-3 rounded-sm bg-navy-50/70 border border-line flex items-start gap-2.5">
+            <div className="p-2.5 sm:p-3 rounded-sm bg-navy-50/70 border border-line flex items-start gap-2">
               <MapPin className="w-4 h-4 text-emerald flex-shrink-0 mt-0.5" />
               <div className="text-left text-xs min-w-0">
-                <span className="font-semibold text-navy block">Selected Coordinates:</span>
-                <p className="text-muted truncate">{location.address}</p>
+                <span className="font-semibold text-navy block text-[11px]">Selected Coordinates:</span>
+                <p className="text-muted truncate text-xs">{location.address}</p>
                 <span className="text-[10px] text-muted/70 tabular-nums">
                   {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
                 </span>
               </div>
-            </div>
-
-            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 pt-3 pb-2 sm:pb-0">
-              <Button
-                variant="ghost"
-                size="md"
-                className="w-full sm:w-auto"
-                icon={<ArrowLeft className="w-4 h-4" />}
-                onClick={() => setStep(1)}
-              >
-                Back
-              </Button>
-
-              <Button
-                variant="primary"
-                size="md"
-                className="w-full sm:w-auto"
-                iconRight={<ArrowRight className="w-4 h-4" />}
-                onClick={() => setStep(3)}
-              >
-                Next: Spot details
-              </Button>
             </div>
           </div>
         )}
 
         {/* STEP 3: DETAILS & BOUNTY SUBMIT */}
         {step === 3 && (
-          <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn text-left">
+          <form id="report-spot-form" onSubmit={handleSubmit} className="space-y-3 animate-fadeIn text-left">
             <Input
               label="Spot title *"
               placeholder="e.g. Broken beer bottles & fast food bags along trail"
@@ -520,20 +559,20 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               rows={2}
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <div>
-                <label className="block text-xs font-semibold text-navy mb-1.5">
+                <label className="block text-xs font-semibold text-navy mb-1">
                   Severity level
                 </label>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-3 gap-1">
                   {(['low', 'medium', 'high'] as SeverityLevel[]).map((lvl) => (
                     <button
                       key={lvl}
                       type="button"
                       onClick={() => setSeverity(lvl)}
-                      className={`py-2 text-xs rounded-sm border transition-colors select-none capitalize ${
+                      className={`py-1.5 sm:py-2 text-xs rounded-sm border transition-colors select-none capitalize ${
                         severity === lvl
-                          ? 'bg-emerald text-white border-emerald font-semibold shadow-sm'
+                          ? 'bg-emerald text-white border-emerald font-semibold shadow-xs'
                           : 'bg-white text-muted border-line hover:text-navy hover:bg-navy-50'
                       }`}
                     >
@@ -544,7 +583,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-navy mb-1.5">
+                <label className="block text-xs font-semibold text-navy mb-1">
                   Estimated waste (kg)
                 </label>
                 <input
@@ -553,58 +592,34 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                   max={200}
                   value={estimatedKg}
                   onChange={(e) => setEstimatedKg(Number(e.target.value) || 1)}
-                  className="w-full h-10 rounded-sm bg-white text-navy text-sm px-3 border border-line outline-none focus:ring-2 focus:ring-emerald focus:border-emerald tabular-nums"
+                  className="w-full h-8 sm:h-9 rounded-sm bg-white text-navy text-xs sm:text-sm px-3 border border-line outline-none focus:ring-2 focus:ring-emerald focus:border-emerald tabular-nums"
                 />
               </div>
             </div>
 
-            {/* Bounty Reward Summary Strip */}
-            <div className="p-3.5 rounded-sm bg-navy-50/70 border border-line flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-navy block">
-                  Volunteer Civic Bounty
-                </span>
-                <span className="text-[11px] text-muted">
-                  Points awarded to the neighbour who verifies the cleanup
-                </span>
+            {/* Combined Civic Bounty & EcoScaners 48h Team Guarantee Banner (Single Slim Row) */}
+            <div className="p-2.5 sm:p-3 rounded-lg bg-emerald-50/80 border border-emerald-300 flex items-center justify-between gap-2.5 text-left">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-emerald text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-heading font-bold text-navy text-xs">
+                      Civic Cleanup Bounty
+                    </span>
+                    <span className="inline-flex items-center text-[9px] font-extrabold text-emerald-950 bg-emerald-200/90 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                      48h Team SLA
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-emerald-900 leading-tight truncate">
+                    Community clean or EcoScaners Team deploys in 48h
+                  </p>
+                </div>
               </div>
-              <Badge variant="points" size="md">
+              <Badge variant="points" size="md" className="flex-shrink-0 shadow-xs">
                 +{calculateBounty()} pts
               </Badge>
-            </div>
-
-            {/* EcoScaners Team 48h Backup Guarantee Notice (Solid, High-Contrast) */}
-            <div className="p-3.5 rounded-lg bg-white border border-emerald-500 shadow-sm flex items-start gap-3 text-left">
-              <div className="w-7 h-7 rounded-full bg-emerald text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div className="text-[11px] leading-relaxed text-ink">
-                <strong className="text-emerald font-bold">EcoScaners Team Guarantee:</strong> All reported spots enter the open community registry for anyone to clean. If no volunteer claims this spot within 48 hours, our dedicated <strong className="text-navy font-bold">EcoScaners Team</strong> will deploy with equipment to clean and restore it.
-              </div>
-            </div>
-
-            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 pt-4 pb-4 sm:pb-1 border-t border-line">
-              <Button
-                type="button"
-                variant="ghost"
-                size="md"
-                className="w-full sm:w-auto"
-                icon={<ArrowLeft className="w-4 h-4" />}
-                onClick={() => setStep(2)}
-              >
-                Back
-              </Button>
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                className="w-full sm:w-auto"
-                disabled={!title.trim()}
-                icon={<Sparkles className="w-4 h-4" />}
-              >
-                Submit dirty spot & launch bounty
-              </Button>
             </div>
           </form>
         )}

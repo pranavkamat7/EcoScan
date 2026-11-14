@@ -59,8 +59,8 @@ export const EditSpotModal: React.FC<EditSpotModalProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!title.trim() || !spot) return;
 
     const tags = tagsInput
@@ -99,8 +99,37 @@ export const EditSpotModal: React.FC<EditSpotModalProps> = ({
       title="Edit Reported Spot"
       description="Update spot title, severity, estimated waste, or description."
       size="md"
+      footer={
+        <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full">
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
+            onClick={onClose}
+            disabled={isSaving}
+          >
+            Cancel
+          </Button>
+          <Button
+            form="edit-spot-form"
+            type="submit"
+            variant="primary"
+            size="md"
+            className="flex-1 sm:flex-initial"
+            disabled={!title.trim() || isSaving || isCompressingPhoto}
+            onClick={(e) => {
+              if (title.trim() && !isSaving && !isCompressingPhoto) {
+                handleSubmit(e);
+              }
+            }}
+            icon={isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
+      }
     >
-      <form onSubmit={handleSubmit} className="space-y-4 text-left">
+      <form id="edit-spot-form" onSubmit={handleSubmit} className="space-y-4 text-left">
         {/* Photo Preview & Change */}
         <div className="space-y-1.5">
           <label className="block text-xs font-semibold text-navy">
@@ -200,30 +229,6 @@ export const EditSpotModal: React.FC<EditSpotModalProps> = ({
           onChange={(e) => setTagsInput(e.target.value)}
           placeholder="Beach, Plastics, High Traffic"
         />
-
-        {/* Actions */}
-        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-3 pb-3 sm:pb-0 border-t border-line">
-          <Button
-            type="button"
-            variant="ghost"
-            size="md"
-            className="w-full sm:w-auto"
-            onClick={onClose}
-            disabled={isSaving}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            className="w-full sm:w-auto"
-            disabled={!title.trim() || isSaving || isCompressingPhoto}
-            icon={isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          >
-            {isSaving ? 'Saving changes...' : 'Save Changes'}
-          </Button>
-        </div>
       </form>
     </Modal>
   );

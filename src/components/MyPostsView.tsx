@@ -315,20 +315,8 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
           onClose={() => !isDeleting && setSpotToDelete(null)}
           title="Delete Spot Permanently?"
           size="sm"
-        >
-          <div className="space-y-4 text-left">
-            <div className="p-3.5 rounded-lg bg-coral-50 border border-coral-200 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-coral flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-coral-900 space-y-1">
-                <p className="font-bold">Permanent Deletion Warning</p>
-                <p className="leading-relaxed">
-                  Are you sure you want to permanently delete{' '}
-                  <strong className="font-bold">"{spotToDelete.title}"</strong>? This will remove the spot from the global community feed, Leaflet map, and cloud registry permanently. This cannot be undone.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-2.5 pt-2">
+          footer={
+            <div className="flex items-center justify-end gap-2.5 w-full">
               <Button
                 variant="ghost"
                 size="md"
@@ -347,6 +335,19 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
               >
                 {isDeleting ? 'Deleting...' : 'Yes, Delete Permanently'}
               </Button>
+            </div>
+          }
+        >
+          <div className="text-left">
+            <div className="p-3.5 rounded-lg bg-coral-50 border border-coral-200 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-coral flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-coral-900 space-y-1">
+                <p className="font-bold">Permanent Deletion Warning</p>
+                <p className="leading-relaxed">
+                  Are you sure you want to permanently delete{' '}
+                  <strong className="font-bold">"{spotToDelete.title}"</strong>? This will remove the spot from the global community feed, Leaflet map, and cloud registry permanently. This cannot be undone.
+                </p>
+              </div>
             </div>
           </div>
         </Modal>

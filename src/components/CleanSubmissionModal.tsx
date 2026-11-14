@@ -115,8 +115,8 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!afterPhotoUrl) return;
 
     // Trigger celebration confetti
@@ -157,8 +157,31 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
       title="Submit Clean Proof & Claim Bounty"
       description={`Spot: ${spot.title}`}
       size="lg"
+      footer={
+        <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full">
+          <Button type="button" variant="ghost" size="md" onClick={onClose}>
+            Cancel
+          </Button>
+
+          <Button
+            form="clean-submission-form"
+            type="submit"
+            variant="primary"
+            size="md"
+            disabled={!afterPhotoUrl}
+            onClick={(e) => {
+              if (afterPhotoUrl) handleSubmit(e);
+            }}
+            icon={<Sparkles className="w-4 h-4 text-lime" />}
+            className="flex-1 sm:flex-initial"
+          >
+            <span className="hidden sm:inline">Submit proof & claim bounty</span>
+            <span className="sm:hidden">Submit proof & claim</span>
+          </Button>
+        </div>
+      }
     >
-      <form onSubmit={handleSubmit} className="space-y-5 text-left">
+      <form id="clean-submission-form" onSubmit={handleSubmit} className="space-y-4 text-left">
         {/* Comparison: Before Spot Photo + After Photo Upload */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {/* Before Spot Reference */}
@@ -322,24 +345,6 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
           <Badge variant="points" size="md">
             +{pointsCalc.totalPoints} pts
           </Badge>
-        </div>
-
-        {/* Actions */}
-        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-3 pb-3 sm:pb-0 border-t border-line">
-          <Button type="button" variant="ghost" size="md" className="w-full sm:w-auto" onClick={onClose}>
-            Cancel
-          </Button>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            className="w-full sm:w-auto"
-            disabled={!afterPhotoUrl}
-            icon={<Sparkles className="w-4 h-4 text-lime" />}
-          >
-            Submit proof & claim bounty
-          </Button>
         </div>
       </form>
     </Modal>
