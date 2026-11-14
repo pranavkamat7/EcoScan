@@ -740,7 +740,7 @@ export const MapView: React.FC<MapViewProps> = ({
                           </div>
                           <div className="flex items-center gap-1 text-navy">
                             <Calendar className="w-3.5 h-3.5 text-emerald flex-shrink-0" />
-                            <span>{new Date(activeSpot.verification.completedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span>{new Date(activeSpot.verification.cleanedAt || activeSpot.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                           </div>
                         </div>
 
@@ -765,13 +765,15 @@ export const MapView: React.FC<MapViewProps> = ({
                         icon={<Award className="w-4 h-4 text-lime" />}
                         onClick={() => {
                           onViewCertificate({
-                            id: `CERT-${activeSpot.id.substring(0, 8).toUpperCase()}`,
-                            cleanerName: activeSpot.verification?.cleanerName || activeSpot.reporterName || 'Civic Volunteer',
+                            id: `ECO-CLEAN-${activeSpot.id.slice(0, 8).toUpperCase()}`,
+                            recipientName: activeSpot.verification?.cleanerName || activeSpot.reporterName || 'Civic Volunteer',
+                            recipientAvatar: activeSpot.verification?.cleanerAvatar || '',
+                            title: 'Certificate of Verified Environmental Restoration',
                             spotTitle: activeSpot.title,
-                            locationAddress: activeSpot.location.address,
-                            wasteKg: activeSpot.estimatedWasteKg || 10,
-                            pointsAwarded: activeSpot.rewardPoints,
-                            completedAt: activeSpot.verification?.completedAt || activeSpot.createdAt,
+                            spotLocation: activeSpot.location.address,
+                            wasteClearedKg: activeSpot.estimatedWasteKg || 10,
+                            pointsEarned: activeSpot.rewardPoints,
+                            issueDate: activeSpot.verification?.cleanedAt || activeSpot.createdAt,
                             category: 'cleanup',
                           });
                         }}
