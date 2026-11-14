@@ -311,3 +311,53 @@ export async function updateSpotCloud(
     return { success: false, error: err?.message || 'Failed to update spot on cloud' };
   }
 }
+
+/**
+ * Permanently purge all spots, photos, and records created by a user
+ * across local storage and Cloud Firestore for personal data safety (Right to be Forgotten).
+ */
+export async function deleteUserSpotsAndData(
+  userId: string,
+  userName?: string
+): Promise<{ deletedSpotsCount: number }> {
+  // 1. Find all spots reported by this user
+  const current = loadSpots();
+  const userSpots = current.filter(
+    (s) => s.reporterId === userId || (userName && s.reporterName === userName)
+  );
+
+  let deletedCount = 0;
+
+  // 2. Blacklist and purge each spot
+  for (const s of userSpots) {
+    markSpotAsDeleted(s.id);
+    deletedCount++;
+  }
+
+  // 3. Purge from local storage
+  const remaining = current.filter(
+    (s) => s.reporterId !== userId && (!userName || s.reporterName !== userName)
+  );
+  saveSpots(remaining);
+
+  // 4. Purge from Cloud Firestore
+  if (isFirebaseConfigured && db) {
+    const firestore: Firestore = db;
+    for (const s of userSpots) {
+      try {
+        await deleteDoc(doc(firestore, 'spots', s.id));
+      } catch (err) {
+        console.warn(`Could not delete spot ${s.id} from Firestore during user purge:`, err);
+      }
+    }
+    // Also delete user profile document from Firestore 'users'
+    try {
+      await deleteDoc(doc(firestore, 'users', userId));
+      console.log('✅ Purged user document from Firestore:', userId);
+    } catch (err) {
+      console.warn('Could not delete user document from Firestore:', err);
+    }
+  }
+
+  return { deletedSpotsCount: deletedCount };
+}

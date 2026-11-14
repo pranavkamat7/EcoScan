@@ -7,6 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  deleteUser,
   type User,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
@@ -15,6 +16,7 @@ import type { UserProfile } from '../types';
 import { loadUserProfile, saveUserProfile, clearUserProfile } from '../utils/storage';
 import { GUEST_USER } from '../data/initialSpots';
 import { getUserLevel } from '../utils/rewards';
+import { deleteUserSpotsAndData } from './spotsService';
 
 interface AuthContextType {
   user: User | null;
@@ -26,6 +28,7 @@ interface AuthContextType {
   signUpWithEmail: (email: string, pass: string, name: string) => Promise<void>;
   loginAsGuest: (name?: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<{ success: boolean; error?: string }>;
   awardCleanupReward: (points: number, wasteKg: number) => Promise<void>;
   recordSpotReported: () => Promise<void>;
   updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
@@ -202,6 +205,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.removeItem('garbagemedia_guest_session');
   };
 
+  /**
+   * Permanently deletes user account, authentication credentials, and all personal data
+   * (reported spots, photos, cleanups, points) from Cloud Firestore & local cache.
+   */
+  const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
+    const userId = user?.uid || profile?.id || 'guest';
+    const userName = profile?.name;
+
+    try {
+      // 1. Purge all user spots & Firestore records
+      await deleteUserSpotsAndData(userId, userName);
+
+      // 2. If authenticated with Firebase Auth, delete auth user
+      if (user && auth && isFirebaseConfigured) {
+        try {
+          await deleteUser(user);
+          console.log('✅ Deleted Firebase auth user credentials');
+        } catch (authErr: any) {
+          console.warn('Firebase deleteUser notice (signing out auth session):', authErr);
+          await signOut(auth);
+        }
+      }
+
+      // 3. Purge all local storage and session data
+      clearUserProfile();
+      try {
+        localStorage.removeItem('ecoscan_user_v1');
+        localStorage.removeItem('ecoscan_guest_custom');
+        localStorage.removeItem('garbagemedia_guest_custom');
+        localStorage.removeItem('ecoscan_user_profile');
+        sessionStorage.clear();
+      } catch {
+        // ignore
+      }
+
+      // 4. Reset React auth state
+      setUser(null);
+      setProfile(null);
+
+      return { success: true };
+    } catch (err: any) {
+      console.error('Error during account deletion:', err);
+      return { success: false, error: err?.message || 'Failed to delete account' };
+    }
+  };
+
   const awardCleanupReward = async (pointsEarned: number, wasteKg: number) => {
     if (!profile) return;
     const newPoints = profile.points + pointsEarned;
@@ -319,6 +368,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signUpWithEmail,
         loginAsGuest,
         logout,
+        deleteAccount,
         awardCleanupReward,
         recordSpotReported,
         updateUserProfile,

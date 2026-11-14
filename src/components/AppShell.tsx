@@ -10,6 +10,7 @@ import {
   UserCog,
   Heart,
   FileText,
+  Trash2,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
@@ -177,6 +178,20 @@ export const AppShell: React.FC<AppShellProps> = ({
                       >
                         <UserCog className="w-4 h-4 text-muted" />
                         <span>Edit profile & photo</span>
+                      </button>
+                    )}
+
+                    {onOpenEditProfile && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          onOpenEditProfile();
+                        }}
+                        className="w-full text-left px-4 py-2 text-xs text-coral hover:bg-coral-50 flex items-center gap-2.5 transition-colors font-medium border-t border-line"
+                      >
+                        <Trash2 className="w-4 h-4 text-coral" />
+                        <span>Delete account & data</span>
                       </button>
                     )}
 

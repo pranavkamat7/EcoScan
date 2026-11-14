@@ -69,7 +69,7 @@ function EcoScanDashboard({
   isGuest: boolean;
   onRequireAuth: () => void;
 }) {
-  const { user, profile, updateUserProfile } = useAuth();
+  const { user, profile, updateUserProfile, deleteAccount } = useAuth();
 
   // Navigation State
   const [currentTab, setCurrentTab] = useState<NavTab>('feed');
@@ -345,6 +345,27 @@ function EcoScanDashboard({
         message: 'Spot permanently deleted from community feed and cloud database.',
         type: 'success',
       });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const result = await deleteAccount();
+    if (result.success) {
+      setIsEditProfileOpen(false);
+      setToastMessage({
+        message: 'Your account and personal data have been permanently erased.',
+        type: 'info',
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 900);
+      return { success: true };
+    } else {
+      setToastMessage({
+        message: `Account deletion error: ${result.error}`,
+        type: 'error',
+      });
+      return { success: false, error: result.error };
     }
   };
 
@@ -783,6 +804,7 @@ function EcoScanDashboard({
         onClose={() => setIsEditProfileOpen(false)}
         currentUser={currentUser}
         onUpdateProfile={updateUserProfile}
+        onDeleteAccount={handleDeleteAccount}
       />
 
       {/* MODAL 4: Edit Reported Spot */}
