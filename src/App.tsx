@@ -28,6 +28,7 @@ import { CleanSubmissionModal } from './components/CleanSubmissionModal';
 import { EditProfileModal } from './components/EditProfileModal';
 import { MyPostsView } from './components/MyPostsView';
 import { EditSpotModal } from './components/EditSpotModal';
+import { CertificateModal, CertificateData } from './components/CertificateModal';
 import {
   PageHeader,
   Card,
@@ -56,6 +57,10 @@ import {
   deleteSpotCloud,
   markSpotAsDeleted,
 } from './firebase/spotsService';
+import {
+  subscribeToLeaderboard,
+  syncUserToLeaderboard,
+} from './firebase/leaderboardService';
 
 function EcoScanDashboard({
   isGuest,
@@ -82,6 +87,7 @@ function EcoScanDashboard({
   const [selectedSpotForMap, setSelectedSpotForMap] = useState<Spot | null>(null);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [editingSpot, setEditingSpot] = useState<Spot | null>(null);
+  const [activeCertificate, setActiveCertificate] = useState<CertificateData | null>(null);
 
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -138,36 +144,17 @@ function EcoScanDashboard({
     return () => unsubscribe();
   }, []);
 
-  // Sync user profile into leaderboard
+  // Real-time synchronization: subscribe to global leaderboard from Firestore
   useEffect(() => {
-    setLeaderboard((prev) => {
-      const existingIdx = prev.findIndex((item) => item.id === currentUser.id);
-      const userItem: LeaderboardItem = {
-        id: currentUser.id,
-        name: currentUser.name,
-        handle: currentUser.handle || '@volunteer',
-        avatar: currentUser.avatar || '',
-        points: currentUser.points,
-        spotsCleaned: currentUser.spotsCleaned,
-        cleanupsCount: currentUser.spotsCleaned,
-        wasteKg: currentUser.wasteClearedKg,
-        wasteClearedKg: currentUser.wasteClearedKg,
-        rank: 1,
-      };
-
-      let updated: LeaderboardItem[];
-      if (existingIdx !== -1) {
-        updated = [...prev];
-        updated[existingIdx] = userItem;
-      } else {
-        updated = [...prev, userItem];
-      }
-
-      updated.sort((a, b) => b.points - a.points);
-      updated = updated.map((item, idx) => ({ ...item, rank: idx + 1 }));
-      saveLeaderboard(updated);
-      return updated;
+    const unsubscribe = subscribeToLeaderboard(currentUser, (items) => {
+      setLeaderboard(items || []);
     });
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Sync active user profile into Firestore leaderboard
+  useEffect(() => {
+    syncUserToLeaderboard(currentUser);
   }, [currentUser]);
 
   // Statistics calculation
@@ -734,6 +721,7 @@ function EcoScanDashboard({
           currentUser={currentUser}
           leaderboardData={leaderboard}
           onOpenReportModal={() => setIsReportModalOpen(true)}
+          onViewCertificate={(cert) => setActiveCertificate(cert)}
         />
       )}
 
@@ -743,6 +731,7 @@ function EcoScanDashboard({
           currentUser={currentUser}
           onOpenEditProfile={() => setIsEditProfileOpen(true)}
           onOpenReportModal={() => setIsReportModalOpen(true)}
+          onViewCertificate={(cert) => setActiveCertificate(cert)}
         />
       )}
 
@@ -756,6 +745,7 @@ function EcoScanDashboard({
           onOpenReportModal={() => setIsReportModalOpen(true)}
           onCleanSpot={(spot) => setActiveCleanSpot(spot)}
           onOpenMapForSpot={handleOpenMapForSpot}
+          onViewCertificate={(cert) => setActiveCertificate(cert)}
         />
       )}
 
@@ -784,6 +774,7 @@ function EcoScanDashboard({
         onClose={() => setActiveCleanSpot(null)}
         onSubmitClean={handleCleanSubmit}
         currentUser={currentUser}
+        onAwardCertificate={(cert) => setActiveCertificate(cert)}
       />
 
       {/* MODAL 3: Edit Profile Photo & Details */}
@@ -800,6 +791,13 @@ function EcoScanDashboard({
         isOpen={Boolean(editingSpot)}
         onClose={() => setEditingSpot(null)}
         onSave={handleSaveEditedSpot}
+      />
+
+      {/* MODAL 5: Authentic Civic Certificate Award Modal */}
+      <CertificateModal
+        isOpen={Boolean(activeCertificate)}
+        onClose={() => setActiveCertificate(null)}
+        data={activeCertificate}
       />
 
       {/* FLOATING TOAST NOTIFICATIONS */}

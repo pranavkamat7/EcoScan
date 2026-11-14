@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Award, Gift, UserCog, MapPin, Check, Sparkles, ShieldCheck } from 'lucide-react';
+import { Award, Gift, UserCog, MapPin, Check, Sparkles, ShieldCheck, Download, FileText } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { getUserLevel } from '../utils/rewards';
 import {
@@ -11,11 +11,13 @@ import {
   ProgressBar,
   SectionTitle,
 } from './ui';
+import type { CertificateData } from './CertificateModal';
 
 interface RewardsViewProps {
   currentUser: UserProfile;
   onOpenEditProfile?: () => void;
   onOpenReportModal?: () => void;
+  onViewCertificate?: (certData: CertificateData) => void;
 }
 
 const CIVIC_PERKS = [
@@ -57,14 +59,44 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
   currentUser,
   onOpenEditProfile,
   onOpenReportModal,
+  onViewCertificate,
 }) => {
   const levelInfo = getUserLevel(currentUser.points);
-  const [claimedPerks, setClaimedPerks] = useState<string[]>([]);
+  const [claimedPerks, setClaimedPerks] = useState<string[]>(['perk-1']);
 
-  const handleClaim = (perkId: string, cost: number) => {
-    if (currentUser.points >= cost && !claimedPerks.includes(perkId)) {
-      setClaimedPerks([...claimedPerks, perkId]);
+  const handleClaim = (perk: (typeof CIVIC_PERKS)[0]) => {
+    if (!claimedPerks.includes(perk.id)) {
+      setClaimedPerks([...claimedPerks, perk.id]);
     }
+
+    if (onViewCertificate) {
+      onViewCertificate({
+        id: `ECO-REWARD-${perk.id}-${Date.now().toString().slice(-4)}`,
+        recipientName: currentUser.name,
+        recipientAvatar: currentUser.avatar,
+        title: perk.title,
+        spotTitle: perk.title,
+        spotLocation: currentUser.city || 'Civic Community Grounds',
+        wasteClearedKg: currentUser.wasteClearedKg || 12,
+        pointsEarned: perk.cost,
+        category: 'reward',
+      });
+    }
+  };
+
+  const handleOpenMyCertificate = () => {
+    if (!onViewCertificate) return;
+    onViewCertificate({
+      id: `ECO-CIVIC-${currentUser.id.slice(0, 8)}`,
+      recipientName: currentUser.name,
+      recipientAvatar: currentUser.avatar,
+      title: 'Certificate of Verified Civic Excellence',
+      spotTitle: 'Community Environmental Stewardship',
+      spotLocation: currentUser.city || 'Local Neighbourhood Grounds',
+      wasteClearedKg: currentUser.wasteClearedKg || 15,
+      pointsEarned: currentUser.points || 200,
+      category: 'general',
+    });
   };
 
   const nextTierPoints = levelInfo.nextLevelPoints || 1000;
@@ -187,6 +219,36 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
             <p className="text-[11px] font-bold text-navy uppercase tracking-wider mt-0.5">Badges Earned</p>
           </div>
         </div>
+
+        {/* Certificate Callout Bar */}
+        {onViewCertificate && (
+          <div className="pt-3 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 bg-amber-50/50 p-3.5 rounded-lg border border-amber-200">
+            <div className="flex items-center gap-2.5 text-left">
+              <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Award className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="font-heading font-bold text-xs text-navy block">
+                  Official Civic Award Credentials
+                </span>
+                <span className="text-[11px] text-muted block">
+                  Download authentic, high-resolution certificate for your community profile
+                </span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              icon={<Download className="w-3.5 h-3.5 text-lime" />}
+              onClick={handleOpenMyCertificate}
+              className="w-full sm:w-auto"
+            >
+              Download My Certificate
+            </Button>
+          </div>
+        )}
       </Card>
 
       {/* 3. CIVIC PERKS CATALOG */}
@@ -199,7 +261,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {CIVIC_PERKS.map((perk) => {
             const isClaimed = claimedPerks.includes(perk.id);
-            const canClaim = currentUser.points >= perk.cost && !isClaimed;
+            const canClaim = currentUser.points >= perk.cost || isClaimed;
 
             return (
               <Card
@@ -208,7 +270,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
                 interactive
                 className="flex flex-col justify-between p-5 space-y-4"
               >
-                <div className="space-y-2.5">
+                <div className="space-y-2.5 text-left">
                   <div className="flex items-start justify-between gap-3">
                     <span className="text-2xl p-2 rounded-sm bg-navy-50 border border-line flex-shrink-0">
                       {perk.icon}
@@ -228,25 +290,31 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-line flex items-center justify-between">
+                <div className="pt-2 border-t border-line flex items-center justify-between gap-2 flex-wrap">
                   <span className="text-[11px] text-muted font-medium">
                     {perk.category}
                   </span>
 
-                  {isClaimed ? (
-                    <Badge variant="restored" size="sm" icon={<Check className="w-3 h-3" />}>
-                      Claimed
-                    </Badge>
-                  ) : (
+                  <div className="flex items-center gap-2">
+                    {isClaimed && (
+                      <Badge variant="restored" size="sm" icon={<Check className="w-3 h-3" />}>
+                        Claimed
+                      </Badge>
+                    )}
+
                     <Button
-                      variant={canClaim ? 'primary' : 'secondary'}
+                      variant={isClaimed ? 'secondary' : canClaim ? 'primary' : 'ghost'}
                       size="sm"
-                      disabled={!canClaim}
-                      onClick={() => handleClaim(perk.id, perk.cost)}
+                      onClick={() => handleClaim(perk)}
+                      icon={isClaimed ? <Download className="w-3.5 h-3.5 text-emerald" /> : undefined}
                     >
-                      {canClaim ? 'Redeem perk' : `${perk.cost - currentUser.points} pts needed`}
+                      {isClaimed
+                        ? 'Download Certificate'
+                        : canClaim
+                        ? 'Claim & Get Certificate'
+                        : `${perk.cost - currentUser.points} pts needed`}
                     </Button>
-                  )}
+                  </div>
                 </div>
               </Card>
             );

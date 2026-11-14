@@ -23,6 +23,7 @@ import {
   Badge,
   Textarea,
 } from './ui';
+import type { CertificateData } from './CertificateModal';
 
 interface CleanSubmissionModalProps {
   spot: Spot | null;
@@ -30,6 +31,7 @@ interface CleanSubmissionModalProps {
   onClose: () => void;
   onSubmitClean: (spotId: string, verification: CleanVerification) => void;
   currentUser: UserProfile;
+  onAwardCertificate?: (certData: CertificateData) => void;
 }
 
 const PRESET_CLEAN_PHOTOS = [
@@ -56,6 +58,7 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
   onClose,
   onSubmitClean,
   currentUser,
+  onAwardCertificate,
 }) => {
   if (!isOpen || !spot) return null;
 
@@ -147,6 +150,21 @@ export const CleanSubmissionModal: React.FC<CleanSubmissionModalProps> = ({
     };
 
     onSubmitClean(spot.id, verification);
+
+    if (onAwardCertificate) {
+      onAwardCertificate({
+        id: `ECO-CLEAN-${spot.id.slice(0, 8)}`,
+        recipientName: currentUser.name,
+        recipientAvatar: currentUser.avatar,
+        title: 'Certificate of Verified Environmental Restoration',
+        spotTitle: spot.title,
+        spotLocation: spot.location.address || 'Restoration Site',
+        wasteClearedKg: spot.estimatedWasteKg || 10,
+        pointsEarned: pointsCalc.totalPoints,
+        category: 'cleanup',
+      });
+    }
+
     onClose();
   };
 

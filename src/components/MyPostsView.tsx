@@ -24,6 +24,7 @@ import {
   EmptyState,
   Modal,
 } from './ui';
+import type { CertificateData } from './CertificateModal';
 
 interface MyPostsViewProps {
   currentUser: UserProfile;
@@ -33,6 +34,7 @@ interface MyPostsViewProps {
   onOpenReportModal: () => void;
   onCleanSpot: (spot: Spot) => void;
   onOpenMapForSpot: (spot: Spot) => void;
+  onViewCertificate?: (certData: CertificateData) => void;
 }
 
 export const MyPostsView: React.FC<MyPostsViewProps> = ({
@@ -43,6 +45,7 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
   onOpenReportModal,
   onCleanSpot,
   onOpenMapForSpot,
+  onViewCertificate,
 }) => {
   const [filter, setFilter] = useState<'all' | 'needs_cleaning' | 'cleaned'>('all');
   const [spotToDelete, setSpotToDelete] = useState<Spot | null>(null);
@@ -263,6 +266,30 @@ export const MyPostsView: React.FC<MyPostsViewProps> = ({
                       onClick={() => onCleanSpot(spot)}
                     >
                       I Cleaned This
+                    </Button>
+                  )}
+
+                  {/* Certificate Button (if cleaned) */}
+                  {spot.status === 'cleaned' && onViewCertificate && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon={<Award className="w-3.5 h-3.5 text-amber-500" />}
+                      onClick={() => {
+                        onViewCertificate({
+                          id: `ECO-CLEAN-${spot.id.slice(0, 8)}`,
+                          recipientName: spot.verification?.cleanerName || spot.reporterName || currentUser.name,
+                          recipientAvatar: spot.verification?.cleanerAvatar || spot.reporterAvatar || currentUser.avatar,
+                          title: 'Certificate of Verified Environmental Restoration',
+                          spotTitle: spot.title,
+                          spotLocation: spot.location.address || 'Restoration Site',
+                          wasteClearedKg: spot.estimatedWasteKg || 10,
+                          pointsEarned: spot.rewardPoints || 200,
+                          category: 'cleanup',
+                        });
+                      }}
+                    >
+                      Download Certificate
                     </Button>
                   )}
                 </div>

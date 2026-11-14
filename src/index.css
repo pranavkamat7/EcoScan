@@ -119,3 +119,25 @@
 .leaflet-popup-tip {
   background: var(--white) !important;
 }
+
+/* Print optimizations for authentic certificate output */
+@media print {
+  @page {
+    size: landscape;
+    margin: 1cm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide navigation, modals backdrop, and header bars when printing */
+  header,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+}
