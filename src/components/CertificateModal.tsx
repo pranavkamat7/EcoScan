@@ -2,17 +2,12 @@ import React, { useRef, useState } from 'react';
 import {
   Download,
   Printer,
-  Share2,
-  Sparkles,
-  ShieldCheck,
   Award,
-  CheckCircle2,
-  QrCode,
-  X,
   FileCheck,
+  ShieldCheck,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { Modal, Button, Badge } from './ui';
+import { Modal, Button } from './ui';
 
 export interface CertificateData {
   id: string;
@@ -27,10 +22,6 @@ export interface CertificateData {
   verificationHash?: string;
   rank?: number;
   category?: 'cleanup' | 'reward' | 'leader' | 'general';
-  signatory1Name?: string;
-  signatory1Title?: string;
-  signatory2Name?: string;
-  signatory2Title?: string;
 }
 
 interface CertificateModalProps {
@@ -46,7 +37,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 }) => {
   const certificateCardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
 
   if (!isOpen || !data) return null;
 
@@ -62,12 +52,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     year: 'numeric',
   });
   const certHash = data.verificationHash || `SHA256-${Math.random().toString(36).substring(2, 10).toUpperCase()}-VERIFIED`;
-
-  // Chief People / Dignitary Signatories
-  const chief1Name = data.signatory1Name || '';
-  const chief1Title = data.signatory1Title || 'Director of Civic Action';
-  const chief2Name = data.signatory2Name || '';
-  const chief2Title = data.signatory2Title || 'Chief Community Field Coordinator';
 
   // Celebration confetti upon opening
   const triggerConfetti = () => {
@@ -86,6 +70,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   /**
    * Generates a 2400x1600 ultra-high-resolution, authentic PNG of the certificate
    * directly on a Canvas element and triggers an instant download to the user's device.
+   * Keeps the bottom footer clean and blank with no chief names or signatures.
    */
   const handleDownloadPNG = () => {
     setIsGenerating(true);
@@ -114,7 +99,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
       // Subtle guilloche watermark rosette in center
       ctx.save();
-      ctx.translate(width / 2, height / 2 + 40);
+      ctx.translate(width / 2, height / 2 + 30);
       ctx.strokeStyle = 'rgba(212, 175, 55, 0.05)';
       ctx.lineWidth = 1.5;
       for (let i = 0; i < 36; i++) {
@@ -175,82 +160,82 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       ctx.font = 'bold 34px "Cinzel", Georgia, serif';
       ctx.textAlign = 'center';
       ctx.letterSpacing = '8px';
-      ctx.fillText('ECOSCAN GLOBAL CIVIC INITIATIVE FOR ENVIRONMENTAL RECOVERY', width / 2, 175);
+      ctx.fillText('ECOSCAN GLOBAL CIVIC INITIATIVE FOR ENVIRONMENTAL RECOVERY', width / 2, 195);
 
       ctx.fillStyle = '#9C7823';
       ctx.font = '600 24px "Cinzel", Georgia, serif';
       ctx.letterSpacing = '5px';
-      ctx.fillText('CONFERRED BY THE CIVIC STEWARDSHIP ALLIANCE & DIRECTED BY CITIZEN ACTION', width / 2, 220);
+      ctx.fillText('CONFERRED BY THE CIVIC STEWARDSHIP ALLIANCE & DIRECTED BY CITIZEN ACTION', width / 2, 245);
 
       // Horizontal Divider with Gold Diamond
       ctx.strokeStyle = '#D4AF37';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(width / 2 - 380, 245);
-      ctx.lineTo(width / 2 + 380, 245);
+      ctx.moveTo(width / 2 - 380, 275);
+      ctx.lineTo(width / 2 + 380, 275);
       ctx.stroke();
 
       ctx.fillStyle = '#C99D36';
       ctx.beginPath();
-      ctx.arc(width / 2, 245, 8, 0, Math.PI * 2);
+      ctx.arc(width / 2, 275, 8, 0, Math.PI * 2);
       ctx.fill();
 
       // 5. Grand Certificate Title
       ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 74px "Cinzel", Georgia, serif';
+      ctx.font = 'bold 76px "Cinzel", Georgia, serif';
       ctx.letterSpacing = '3px';
-      ctx.fillText('CERTIFICATE OF CIVIC EXCELLENCE', width / 2, 335);
+      ctx.fillText('CERTIFICATE OF CIVIC EXCELLENCE', width / 2, 380);
 
       ctx.fillStyle = '#238253';
-      ctx.font = 'bold 42px "Cinzel", Georgia, serif';
+      ctx.font = 'bold 44px "Cinzel", Georgia, serif';
       ctx.letterSpacing = '4px';
-      ctx.fillText('& ENVIRONMENTAL RESTORATION', width / 2, 395);
+      ctx.fillText('& ENVIRONMENTAL RESTORATION', width / 2, 445);
 
       // 6. Presentation Line
       ctx.fillStyle = '#5A6258';
-      ctx.font = 'italic 30px Georgia, serif';
+      ctx.font = 'italic 32px Georgia, serif';
       ctx.letterSpacing = '2px';
-      ctx.fillText('This official citation of honour and civic heroism is proudly presented to', width / 2, 475);
+      ctx.fillText('This official citation of honour and civic heroism is proudly presented to', width / 2, 535);
 
       // 7. Recipient's Name (Grand, Prestigious display)
       ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 88px "Cinzel", Georgia, serif';
+      ctx.font = 'bold 92px "Cinzel", Georgia, serif';
       ctx.letterSpacing = '2px';
-      ctx.fillText(recipient.toUpperCase(), width / 2, 580);
+      ctx.fillText(recipient.toUpperCase(), width / 2, 655);
 
       // Gold under-flourish line beneath recipient's name
       const nameWidth = ctx.measureText(recipient.toUpperCase()).width;
-      const lineLen = Math.max(nameWidth + 120, 600);
+      const lineLen = Math.max(nameWidth + 120, 640);
       ctx.strokeStyle = '#C99D36';
       ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(width / 2 - lineLen / 2, 610);
-      ctx.lineTo(width / 2 + lineLen / 2, 610);
+      ctx.moveTo(width / 2 - lineLen / 2, 685);
+      ctx.lineTo(width / 2 + lineLen / 2, 685);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(width / 2, 610, 6, 0, Math.PI * 2);
+      ctx.arc(width / 2, 685, 6, 0, Math.PI * 2);
       ctx.fillStyle = '#0F291E';
       ctx.fill();
 
       // 8. Formal Authentic Citation Prose
       ctx.fillStyle = '#24332B';
-      ctx.font = '28px Georgia, serif';
+      ctx.font = '30px Georgia, serif';
       ctx.letterSpacing = '0.5px';
       const line1 = 'In solemn recognition of extraordinary civic leadership, selfless environmental stewardship, and distinguished';
       const line2 = 'service to public hygiene. Having taken direct personal action to identify, clean, and restore community lands,';
       const line3 = 'diverting dangerous waste hazards, reviving natural ecosystems, and setting a shining example of neighbourhood pride.';
-      ctx.fillText(line1, width / 2, 690);
-      ctx.fillText(line2, width / 2, 735);
-      ctx.fillText(line3, width / 2, 780);
+      ctx.fillText(line1, width / 2, 770);
+      ctx.fillText(line2, width / 2, 820);
+      ctx.fillText(line3, width / 2, 870);
 
       // 9. Verified Field Impact Dossier Box
       const boxX = 220;
-      const boxY = 835;
+      const boxY = 935;
       const boxW = width - 440;
-      const boxH = 210;
+      const boxH = 240;
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       ctx.fillRect(boxX, boxY, boxW, boxH);
       ctx.strokeStyle = '#C99D36';
       ctx.lineWidth = 2.5;
@@ -259,195 +244,43 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       // Dossier columns
       ctx.textAlign = 'left';
       ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 22px "Cinzel", Georgia, serif';
-      ctx.fillText('VERIFIED FIELD RESTORATION DOSSIER', boxX + 40, boxY + 45);
+      ctx.font = 'bold 24px "Cinzel", Georgia, serif';
+      ctx.fillText('VERIFIED FIELD RESTORATION DOSSIER', boxX + 45, boxY + 50);
 
       ctx.fillStyle = '#5A6258';
-      ctx.font = '20px Georgia, serif';
-      ctx.fillText(`Target Location:`, boxX + 40, boxY + 85);
-      ctx.fillText(`Restoration Scope:`, boxX + 40, boxY + 120);
-      ctx.fillText(`Official Verification Hash:`, boxX + 40, boxY + 155);
+      ctx.font = '22px Georgia, serif';
+      ctx.fillText('Target Location:', boxX + 45, boxY + 95);
+      ctx.fillText('Restoration Scope:', boxX + 45, boxY + 138);
+      ctx.fillText('Official Registry ID:', boxX + 45, boxY + 180);
 
       ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 20px Georgia, serif';
-      ctx.fillText(`${location}`, boxX + 260, boxY + 85);
-      ctx.fillText(`${spotName}`, boxX + 260, boxY + 120);
-      ctx.font = 'bold 18px monospace';
+      ctx.font = 'bold 22px Georgia, serif';
+      ctx.fillText(`${location}`, boxX + 270, boxY + 95);
+      ctx.fillText(`${spotName}`, boxX + 270, boxY + 138);
+      ctx.font = 'bold 20px monospace';
       ctx.fillStyle = '#238253';
-      ctx.fillText(`${certHash}`, boxX + 310, boxY + 155);
+      ctx.fillText(`${certId} • ${certHash}`, boxX + 270, boxY + 180);
 
       // Right column of Dossier Box
       ctx.textAlign = 'left';
       ctx.fillStyle = '#5A6258';
-      ctx.font = '20px Georgia, serif';
-      ctx.fillText(`Waste Diverted:`, boxX + 1150, boxY + 85);
-      ctx.fillText(`Civic Bounty:`, boxX + 1150, boxY + 120);
-      ctx.fillText(`Date Conferred:`, boxX + 1150, boxY + 155);
+      ctx.font = '22px Georgia, serif';
+      ctx.fillText('Waste Diverted:', boxX + 1150, boxY + 95);
+      ctx.fillText('Civic Bounty:', boxX + 1150, boxY + 138);
+      ctx.fillText('Date Conferred:', boxX + 1150, boxY + 180);
 
       ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 22px Georgia, serif';
-      ctx.fillText(`${wasteKg} kg of Litter & Hazards`, boxX + 1340, boxY + 85);
+      ctx.font = 'bold 24px Georgia, serif';
+      ctx.fillText(`${wasteKg} kg of Litter & Hazards`, boxX + 1350, boxY + 95);
       ctx.fillStyle = '#238253';
-      ctx.fillText(`+${points} EcoScan Points`, boxX + 1340, boxY + 120);
-      ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 20px Georgia, serif';
-      ctx.fillText(`${certDate}`, boxX + 1340, boxY + 155);
-
-      // 10. Official Golden Embossed Seal (Bottom Left)
-      const sealX = 380;
-      const sealY = 1260;
-      const sealRadius = 110;
-
-      // Satin Ribbon tails hanging down
-      ctx.save();
-      ctx.fillStyle = '#1A593A';
-      ctx.beginPath();
-      ctx.moveTo(sealX - 45, sealY + 70);
-      ctx.lineTo(sealX - 70, sealY + 220);
-      ctx.lineTo(sealX - 40, sealY + 195);
-      ctx.lineTo(sealX - 10, sealY + 220);
-      ctx.lineTo(sealX - 15, sealY + 70);
-      ctx.fill();
-
-      ctx.fillStyle = '#B38728';
-      ctx.beginPath();
-      ctx.moveTo(sealX + 15, sealY + 70);
-      ctx.lineTo(sealX + 10, sealY + 220);
-      ctx.lineTo(sealX + 40, sealY + 195);
-      ctx.lineTo(sealX + 70, sealY + 220);
-      ctx.lineTo(sealX + 45, sealY + 70);
-      ctx.fill();
-      ctx.restore();
-
-      // Scalloped Gold Starburst Seal
-      ctx.save();
-      ctx.translate(sealX, sealY);
-      ctx.fillStyle = '#D4AF37';
-      ctx.beginPath();
-      for (let i = 0; i < 32; i++) {
-        const angle = (i * Math.PI) / 16;
-        const r = i % 2 === 0 ? sealRadius : sealRadius - 12;
-        ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
-      }
-      ctx.closePath();
-      ctx.fill();
-
-      // Inner embossed rings
-      ctx.strokeStyle = '#8E6F1D';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(0, 0, sealRadius - 20, 0, Math.PI * 2);
-      ctx.strokeStyle = '#F7E7A6';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 15px "Cinzel", Georgia, serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('★ OFFICIAL SEAL ★', 0, -35);
-      ctx.font = 'bold 20px "Cinzel", Georgia, serif';
-      ctx.fillText('VERIFIED', 0, -5);
-      ctx.fillText('CIVIC IMPACT', 0, 20);
-      ctx.font = 'bold 13px Georgia, serif';
-      ctx.fillText('100% RESTORED', 0, 45);
-      ctx.restore();
-
-      // 11. Security QR Code / Hologram Stamp (Bottom Center)
-      const qrX = width / 2;
-      const qrY = 1270;
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(qrX - 60, qrY - 60, 120, 120);
-      ctx.strokeStyle = '#0F291E';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(qrX - 60, qrY - 60, 120, 120);
-
-      // Draw simulated authentic QR pattern
-      ctx.fillStyle = '#0F291E';
-      ctx.fillRect(qrX - 48, qrY - 48, 30, 30);
-      ctx.fillRect(qrX + 18, qrY - 48, 30, 30);
-      ctx.fillRect(qrX - 48, qrY + 18, 30, 30);
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(qrX - 40, qrY - 40, 14, 14);
-      ctx.fillRect(qrX + 26, qrY - 40, 14, 14);
-      ctx.fillRect(qrX - 40, qrY + 26, 14, 14);
-      ctx.fillStyle = '#0F291E';
-      ctx.fillRect(qrX - 35, qrY - 35, 4, 4);
-      ctx.fillRect(qrX + 31, qrY - 35, 4, 4);
-      ctx.fillRect(qrX - 35, qrY + 31, 4, 4);
-      // center dots
-      ctx.fillRect(qrX - 10, qrY - 10, 20, 20);
-      ctx.fillRect(qrX + 20, qrY + 10, 12, 12);
-      ctx.fillRect(qrX - 15, qrY + 20, 8, 8);
-
-      ctx.fillStyle = '#5A6258';
-      ctx.font = 'bold 15px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(`REGISTRY ID: ${certId}`, qrX, qrY + 80);
-      ctx.font = '13px Georgia, serif';
-      ctx.fillText('SCAN TO VERIFY OFFICIAL REGISTRY CREDENTIAL', qrX, qrY + 100);
-
-      // 12. Executive Signatures (Bottom Right)
-      const sigX = width - 520;
-      const sigY = 1270;
-
-      // Signature 1
-      ctx.strokeStyle = '#0F291E';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(sigX - 120, sigY);
-      ctx.lineTo(sigX + 120, sigY);
-      ctx.stroke();
-
-      // Cursive signature drawing 1
-      ctx.save();
-      ctx.strokeStyle = '#1D3B2C';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(sigX - 100, sigY - 25);
-      ctx.bezierCurveTo(sigX - 60, sigY - 70, sigX - 30, sigY - 10, sigX + 10, sigY - 40);
-      ctx.bezierCurveTo(sigX + 40, sigY - 60, sigX + 70, sigY - 15, sigX + 90, sigY - 30);
-      ctx.stroke();
-      ctx.restore();
-
+      ctx.fillText(`+${points} EcoScan Points`, boxX + 1350, boxY + 138);
       ctx.fillStyle = '#0F291E';
       ctx.font = 'bold 22px Georgia, serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(chief1Name, sigX, sigY + 30);
-      ctx.fillStyle = '#5A6258';
-      ctx.font = 'italic 18px Georgia, serif';
-      ctx.fillText(chief1Title, sigX, sigY + 55);
+      ctx.fillText(`${certDate}`, boxX + 1350, boxY + 180);
 
-      // Signature 2 (Secondary Signatory)
-      const sig2X = width - 240;
-      ctx.strokeStyle = '#0F291E';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(sig2X - 100, sigY);
-      ctx.lineTo(sig2X + 100, sigY);
-      ctx.stroke();
+      // Bottom footer is kept completely clean, spacious, and blank (no chief names or signatures)
 
-      // Cursive signature drawing 2
-      ctx.save();
-      ctx.strokeStyle = '#1D3B2C';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(sig2X - 80, sigY - 20);
-      ctx.bezierCurveTo(sig2X - 40, sigY - 55, sig2X - 10, sigY - 5, sig2X + 30, sigY - 45);
-      ctx.bezierCurveTo(sig2X + 50, sigY - 50, sig2X + 70, sigY - 10, sig2X + 85, sigY - 25);
-      ctx.stroke();
-      ctx.restore();
-
-      ctx.fillStyle = '#0F291E';
-      ctx.font = 'bold 22px Georgia, serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(chief2Name, sig2X, sigY + 30);
-      ctx.fillStyle = '#5A6258';
-      ctx.font = 'italic 18px Georgia, serif';
-      ctx.fillText(chief2Title, sig2X, sigY + 55);
-
-      // 13. Convert canvas to high-res PNG and download immediately
+      // 10. Convert canvas to high-res PNG and download immediately
       canvas.toBlob((blob) => {
         if (!blob) {
           setIsGenerating(false);
@@ -475,12 +308,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
    */
   const handlePrintPDF = () => {
     window.print();
-  };
-
-  const handleShare = () => {
-    navigator.clipboard?.writeText?.(window.location.href);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
   };
 
   return (
@@ -533,7 +360,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         {/* Certificate Display Frame */}
         <div
           ref={certificateCardRef}
-          className="relative bg-[#FCFAF2] rounded-lg border-4 border-[#C99D36] shadow-xl p-5 sm:p-10 text-navy max-w-4xl mx-auto overflow-hidden select-none"
+          className="relative bg-[#FCFAF2] rounded-lg border-4 border-[#C99D36] shadow-xl p-6 sm:p-12 text-navy max-w-4xl mx-auto overflow-hidden select-none"
           style={{
             backgroundImage:
               'radial-gradient(#E8DFC8 1px, transparent 1px), radial-gradient(#F3ECE0 1px, #FCFAF2 1px)',
@@ -600,7 +427,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           </div>
 
           {/* 4. Verified Field Record Box */}
-          <div className="my-5 p-3.5 sm:p-5 rounded-md bg-white/90 border border-[#D4AF37] shadow-sm max-w-2xl mx-auto text-left relative z-10">
+          <div className="my-5 p-4 sm:p-6 rounded-md bg-white/90 border border-[#D4AF37] shadow-sm max-w-2xl mx-auto text-left relative z-10">
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-line flex-wrap gap-2">
               <span className="text-[11px] font-bold text-[#0F291E] tracking-wider uppercase font-heading flex items-center gap-1.5">
                 <FileCheck className="w-3.5 h-3.5 text-emerald" />
@@ -629,76 +456,15 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <strong className="text-emerald font-bold block">+{points} Points</strong>
               </div>
             </div>
-          </div>
 
-          {/* 5. Seals & Authentic Signatures of Chief Dignitaries */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center sm:items-end justify-between gap-5 relative z-10 border-t border-[#D4AF37]/50 mt-2">
-            {/* Scalloped Gold Foil Ribbon Seal */}
-            <div className="flex items-center gap-3 text-left">
-              <div className="relative flex flex-col items-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#D4AF37] border-2 border-[#8E6F1D] flex flex-col items-center justify-center text-center shadow-md p-1">
-                  <span className="text-[8px] sm:text-[9px] font-bold text-[#0F291E] uppercase leading-tight">
-                    ★ SEAL OF ★
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] font-extrabold text-[#0F291E] uppercase leading-none font-heading">
-                    EXCELLENCE
-                  </span>
-                  <span className="text-[7px] text-[#0F291E] leading-tight">
-                    RESTORED
-                  </span>
-                </div>
-                {/* Ribbons */}
-                <div className="flex gap-1 -mt-1">
-                  <div className="w-2.5 h-6 bg-[#0F291E] rounded-b-xs shadow-xs" />
-                  <div className="w-2.5 h-6 bg-[#C99D36] rounded-b-xs shadow-xs" />
-                </div>
-              </div>
-              <div>
-                <span className="text-[11px] font-bold text-navy block font-heading">
-                  Official Civic Seal
-                </span>
-                <span className="text-[10px] text-muted block leading-tight">
-                  100% On-Site GPS Verified
-                </span>
-                <span className="text-[9px] text-[#C99D36] font-mono font-bold block mt-0.5">
-                  ID: {certId}
-                </span>
-              </div>
-            </div>
-
-            {/* Authentic Calligraphy Signatures of Chief People */}
-            <div className="flex items-center justify-center sm:justify-end gap-6 sm:gap-10 text-center sm:text-right w-full sm:w-auto">
-              {/* Dignitary 1 */}
-              <div className="text-center min-w-[130px]">
-                {/* Realistic Calligraphy Cursive Ink Signature */}
-                <svg className="h-8 w-28 mx-auto -mb-1 text-[#1D3B2C] stroke-current" viewBox="0 0 120 35" fill="none">
-                  <path d="M10 26 C 28 8, 38 6, 52 20 C 62 30, 72 6, 88 18 C 98 25, 108 12, 114 16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M30 14 L 75 17" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-                <div className="font-serif italic text-sm sm:text-base text-navy border-b border-[#0F291E] px-2 pb-0.5 font-bold">
-                  {chief1Name}
-                </div>
-                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5 font-medium">
-                  {chief1Title}
-                </span>
-              </div>
-
-              {/* Dignitary 2 */}
-              <div className="text-center min-w-[130px]">
-                {/* Realistic Calligraphy Cursive Ink Signature */}
-                <svg className="h-8 w-28 mx-auto -mb-1 text-[#1D3B2C] stroke-current" viewBox="0 0 120 35" fill="none">
-                  <path d="M14 24 C 24 6, 32 30, 48 14 C 58 4, 68 24, 82 10 C 94 4, 104 22, 110 18" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M18 28 Q 58 20 102 26" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-                <div className="font-serif italic text-sm sm:text-base text-navy border-b border-[#0F291E] px-2 pb-0.5 font-bold">
-                  {chief2Name}
-                </div>
-                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5 font-medium">
-                  {chief2Title}
-                </span>
-              </div>
+            <div className="mt-3 pt-2.5 border-t border-line/60 flex items-center justify-between text-[11px] text-muted flex-wrap gap-2">
+              <span>Date: <strong className="text-navy">{certDate}</strong></span>
+              <span className="font-mono text-[10px]">Official Registry ID: <strong className="text-emerald font-bold">{certId}</strong></span>
             </div>
           </div>
+
+          {/* Bottom of certificate is kept completely clean, spacious, and blank */}
+          <div className="h-4 sm:h-6" />
         </div>
       </div>
     </Modal>

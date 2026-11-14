@@ -24,7 +24,7 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'md',
   className = '',
 }) => {
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(typeof document !== 'undefined');
 
   useEffect(() => {
     setMounted(true);
@@ -59,7 +59,7 @@ export const Modal: React.FC<ModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-hidden animate-fadeIn"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 sm:p-4 md:p-6 overflow-hidden animate-fadeIn"
     >
       {/* Backdrop */}
       <div
@@ -70,7 +70,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog Card (Centered, never exceeds viewport, internal smooth scroll) */}
       <div
-        className={`relative w-full ${sizeClasses} max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2.5rem)] flex flex-col bg-white rounded-lg border border-line shadow-2xl z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left overflow-hidden ${className}`}
+        className={`relative w-full ${sizeClasses} max-h-[calc(100vh-1.5rem)] max-h-[calc(100dvh-1.5rem)] flex flex-col bg-white rounded-lg border border-line shadow-2xl z-10 my-auto transform transition-all duration-180 animate-scaleUp text-left overflow-hidden ${className}`}
       >
         {/* Header - Fixed at top */}
         {(title || description) && (
@@ -97,14 +97,14 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         )}
 
-        {/* Scrollable Content Body with proper padding & bottom clearance */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6">
+        {/* Scrollable Content Body with min-h-0 so flexbox allows internal scrolling without pushing footer out */}
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3.5 sm:p-6">
           {children}
         </div>
 
         {/* Fixed Pinned Footer - Never hidden or pushed off screen on mobile */}
         {footer && (
-          <div className="flex-shrink-0 px-3.5 sm:px-6 py-3 sm:py-3.5 bg-white border-t border-line z-20">
+          <div className="flex-shrink-0 px-3.5 sm:px-6 py-3 sm:py-3.5 bg-white border-t border-line z-20 pb-safe">
             {footer}
           </div>
         )}
