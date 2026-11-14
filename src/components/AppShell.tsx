@@ -11,6 +11,7 @@ import {
   Heart,
   FileText,
   Trash2,
+  Sparkles,
 } from 'lucide-react';
 import type { UserProfile } from '../types';
 import { useAuth } from '../firebase/authContext';
@@ -18,7 +19,7 @@ import { Avatar } from './ui/Avatar';
 import { Badge } from './ui/Badge';
 import { Logo } from './ui/Logo';
 
-export type NavTab = 'feed' | 'map' | 'my_posts' | 'leaderboard' | 'rewards';
+export type NavTab = 'feed' | 'map' | 'my_posts' | 'leaderboard' | 'rewards' | 'about';
 
 export interface AppShellProps {
   currentTab: NavTab;
@@ -43,12 +44,18 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const isGuestMode = isGuest || !user;
 
-  const navItems: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
-    { id: 'feed', label: 'Feed', icon: Compass },
-    { id: 'map', label: 'Map', icon: Map },
-    { id: 'my_posts', label: 'My Posts', icon: FileText },
-    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
-    { id: 'rewards', label: 'Rewards', icon: Award },
+  const navItems: {
+    id: NavTab;
+    label: string;
+    mobileLabel: string;
+    icon: React.FC<{ className?: string }>;
+  }[] = [
+    { id: 'feed', label: 'Feed', mobileLabel: 'Feed', icon: Compass },
+    { id: 'map', label: 'Map', mobileLabel: 'Map', icon: Map },
+    { id: 'my_posts', label: 'My Posts', mobileLabel: 'Posts', icon: FileText },
+    { id: 'leaderboard', label: 'Leaderboard', mobileLabel: 'Ranks', icon: Trophy },
+    { id: 'rewards', label: 'Rewards', mobileLabel: 'Perks', icon: Award },
+    { id: 'about', label: 'About', mobileLabel: 'About', icon: Sparkles },
   ];
 
   return (
@@ -167,6 +174,18 @@ export const AppShell: React.FC<AppShellProps> = ({
                       <span>My Reported Posts</span>
                     </button>
 
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onTabChange('about');
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-xs text-navy hover:bg-navy-50 flex items-center gap-2.5 transition-colors font-medium border-b border-line"
+                    >
+                      <Sparkles className="w-4 h-4 text-emerald" />
+                      <span>About &amp; Student Guide 💡</span>
+                    </button>
+
                     {onOpenEditProfile && (
                       <button
                         type="button"
@@ -237,7 +256,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       {/* 3. SHARED MOBILE BOTTOM TAB BAR (Solid White, Clean & Crisp) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line shadow-md pb-safe">
-        <nav className="grid grid-cols-5 h-14" aria-label="Mobile navigation">
+        <nav className="grid grid-cols-6 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
             const Icon = item.icon;
@@ -246,7 +265,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 type="button"
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`relative flex flex-col items-center justify-center gap-1 transition-colors select-none outline-none active:scale-95 ${
+                className={`relative flex flex-col items-center justify-center gap-0.5 transition-colors select-none outline-none active:scale-95 px-0.5 ${
                   isActive ? 'text-emerald font-bold' : 'text-muted hover:text-navy'
                 }`}
               >
@@ -255,7 +274,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                   <span className="absolute top-0 left-1/4 right-1/4 h-[3px] bg-emerald rounded-full" />
                 )}
                 <Icon className={`w-4 h-4 ${isActive ? 'text-emerald' : 'text-muted'}`} />
-                <span className="text-[10px] leading-none">{item.label}</span>
+                <span className="text-[9px] sm:text-[10px] leading-tight truncate">{item.mobileLabel}</span>
               </button>
             );
           })}

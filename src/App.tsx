@@ -29,6 +29,7 @@ import { EditProfileModal } from './components/EditProfileModal';
 import { MyPostsView } from './components/MyPostsView';
 import { EditSpotModal } from './components/EditSpotModal';
 import { CertificateModal, CertificateData } from './components/CertificateModal';
+import { AboutView } from './components/AboutView';
 import {
   PageHeader,
   Card,
@@ -387,9 +388,19 @@ function EcoScanDashboard({
           {/* Shared Page Header Pattern */}
           <PageHeader
             badge={
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald text-white shadow-xs">
-                🌱 Grassroots Civic Transformations
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald text-white shadow-xs">
+                  🌱 Grassroots Civic Transformations
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCurrentTab('about')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-lime text-navy hover:bg-lime-300 border border-lime-500/20 shadow-xs transition-colors cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-navy" />
+                  <span>Student Field Guide &amp; About &rarr;</span>
+                </button>
+              </div>
             }
             title="Clean your neighbourhood. Post proofs. Earn rewards."
             description="Snap dirty spots, clean them with on-site GPS verification, and publish before & after split sliders for civic points."
@@ -770,8 +781,19 @@ function EcoScanDashboard({
         />
       )}
 
-      {/* VIEW 6: 404 Fallback State if tab is invalid */}
-      {!['feed', 'map', 'my_posts', 'leaderboard', 'rewards'].includes(currentTab) && (
+      {/* VIEW 6: About & Student Field Guide */}
+      {currentTab === 'about' && (
+        <AboutView
+          onTabChange={(tab) => {
+            setCurrentTab(tab);
+            if (tab !== 'map') setSelectedSpotForMap(null);
+          }}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      )}
+
+      {/* 404 Fallback State if tab is invalid */}
+      {!['feed', 'map', 'my_posts', 'leaderboard', 'rewards', 'about'].includes(currentTab) && (
         <EmptyState
           title="Page not found"
           description="The civic page or view you requested could not be found."
