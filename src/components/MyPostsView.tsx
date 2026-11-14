@@ -12,6 +12,7 @@ import {
   Loader2,
   Calendar,
   ExternalLink,
+  Award,
 } from 'lucide-react';
 import type { Spot, UserProfile } from '../types';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
