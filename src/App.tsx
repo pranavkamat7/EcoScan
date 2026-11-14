@@ -744,6 +744,7 @@ function EcoScanDashboard({
           onCleanSpot={(s) => setActiveCleanSpot(s)}
           currentUser={currentUser}
           onOpenReportModal={() => setIsReportModalOpen(true)}
+          onViewCertificate={(cert) => setActiveCertificate(cert)}
         />
       )}
 

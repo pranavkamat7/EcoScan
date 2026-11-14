@@ -166,26 +166,24 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
             {onOpenReportModal && (
-              <Button
-                variant="primary"
-                size="lg"
-                icon={<Camera className="w-4 h-4 text-lime" />}
+              <button
+                type="button"
                 onClick={onOpenReportModal}
-                className="bg-emerald hover:bg-emerald-600 text-white shadow-md font-bold"
+                className="inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-sm bg-emerald hover:bg-emerald-600 text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 cursor-pointer"
               >
-                Snap & Report a Spot
-              </Button>
+                <Camera className="w-4 h-4 text-lime" />
+                <span>Snap &amp; Report a Spot</span>
+              </button>
             )}
 
-            <Button
-              variant="secondary"
-              size="lg"
-              icon={<Compass className="w-4 h-4 text-emerald" />}
+            <button
+              type="button"
               onClick={() => onTabChange('map')}
-              className="bg-white/10 hover:bg-white/20 text-white border-white/20 font-semibold backdrop-blur-xs"
+              className="inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-sm bg-white hover:bg-emerald-50 text-navy font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 cursor-pointer border border-white"
             >
-              Explore Clean Map
-            </Button>
+              <Compass className="w-4 h-4 text-emerald" />
+              <span>Explore Clean Map</span>
+            </button>
           </div>
         </div>
 
@@ -669,36 +667,33 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
         <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
           {onOpenReportModal && (
-            <Button
-              variant="primary"
-              size="lg"
-              icon={<Camera className="w-4 h-4 text-lime" />}
+            <button
+              type="button"
               onClick={onOpenReportModal}
-              className="bg-emerald hover:bg-emerald-600 font-bold"
+              className="inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-sm bg-emerald hover:bg-emerald-600 text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 cursor-pointer"
             >
-              Report a Spot Now
-            </Button>
+              <Camera className="w-4 h-4 text-lime" />
+              <span>Report a Spot Now</span>
+            </button>
           )}
 
-          <Button
-            variant="secondary"
-            size="lg"
-            icon={<Trophy className="w-4 h-4 text-yellow-400" />}
+          <button
+            type="button"
             onClick={() => onTabChange('leaderboard')}
-            className="bg-white/10 hover:bg-white/20 text-white border-white/20 font-semibold"
+            className="inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-sm bg-white hover:bg-emerald-50 text-navy font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 cursor-pointer border border-white"
           >
-            Check Leaderboard
-          </Button>
+            <Trophy className="w-4 h-4 text-amber-500" />
+            <span>Check Leaderboard</span>
+          </button>
 
-          <Button
-            variant="ghost"
-            size="lg"
-            icon={<Compass className="w-4 h-4 text-emerald-400" />}
+          <button
+            type="button"
             onClick={() => onTabChange('feed')}
-            className="text-white hover:bg-white/10"
+            className="inline-flex items-center justify-center gap-2 h-11 sm:h-12 px-5 sm:px-6 rounded-sm bg-white/15 hover:bg-white/25 text-white font-semibold text-sm sm:text-base border border-white/25 transition-all active:scale-95 cursor-pointer backdrop-blur-xs"
           >
-            Browse Community Feed
-          </Button>
+            <Compass className="w-4 h-4 text-lime" />
+            <span>Browse Community Feed</span>
+          </button>
         </div>
       </div>
     </div>

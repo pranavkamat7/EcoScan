@@ -11,6 +11,12 @@ import {
   RotateCcw,
   Loader2,
   Plus,
+  Award,
+  CheckCircle2,
+  Calendar,
+  Scale,
+  ShieldCheck,
+  Check,
 } from 'lucide-react';
 import { searchLocations, GeocodeSearchResult } from '../utils/geo';
 import {
@@ -21,6 +27,7 @@ import {
   Badge,
   Avatar,
 } from './ui';
+import type { CertificateData } from './CertificateModal';
 
 interface MapViewProps {
   spots: Spot[];
@@ -29,6 +36,7 @@ interface MapViewProps {
   onCleanSpot: (spot: Spot) => void;
   currentUser: UserProfile;
   onOpenReportModal?: () => void;
+  onViewCertificate?: (cert: CertificateData) => void;
 }
 
 type MapTileStyle = 'streets' | 'terrain' | 'satellite';
@@ -63,6 +71,7 @@ export const MapView: React.FC<MapViewProps> = ({
   onSelectSpot,
   onCleanSpot,
   onOpenReportModal,
+  onViewCertificate,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -71,6 +80,7 @@ export const MapView: React.FC<MapViewProps> = ({
   const userMarkerRef = useRef<L.Marker | null>(null);
 
   const [activeSpot, setActiveSpot] = useState<Spot | null>(selectedSpot || null);
+  const [previewPhotoTab, setPreviewPhotoTab] = useState<'after' | 'before'>('after');
   const [mapFilter, setMapFilter] = useState<'all' | 'needs_cleaning' | 'cleaned'>('all');
   const [tileStyle, setTileStyle] = useState<MapTileStyle>('streets');
   const [showLayerMenu, setShowLayerMenu] = useState(false);
@@ -85,6 +95,7 @@ export const MapView: React.FC<MapViewProps> = ({
   useEffect(() => {
     if (selectedSpot) {
       setActiveSpot(selectedSpot);
+      setPreviewPhotoTab(selectedSpot.status === 'cleaned' ? 'after' : 'before');
     }
   }, [selectedSpot]);
 
@@ -134,7 +145,7 @@ export const MapView: React.FC<MapViewProps> = ({
     tileLayerRef.current = newTileLayer;
   }, [tileStyle]);
 
-  // Render Spots as Custom Markers (Coral for needs clean, Emerald for restored)
+  // Render Spots as Custom Markers (Coral for needs clean, Sparkling Emerald for restored so far)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -151,45 +162,125 @@ export const MapView: React.FC<MapViewProps> = ({
       const isSelected = activeSpot?.id === spot.id;
       const isCleaned = spot.status === 'cleaned';
 
-      // Brand mapping: Coral #F0533D for Needs Clean, Emerald #00B86B for Restored
-      const markerColor = isCleaned ? '#00B86B' : '#F0533D';
-      const markerEmoji = isCleaned ? '✨' : '⚠️';
-
+      // Distinct, prominent marker styling for restored vs needs clean
       const customIcon = L.divIcon({
         className: 'custom-spot-marker',
-        html: `
-          <div class="relative group cursor-pointer transition-transform duration-180 ${
-            isSelected ? 'scale-125 z-30' : 'hover:scale-110'
-          }">
-            <div style="
-              background-color: ${markerColor};
-              width: ${isSelected ? '38px' : '32px'};
-              height: ${isSelected ? '38px' : '32px'};
-              border-radius: 50% 50% 50% 0;
-              transform: rotate(-45deg);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              box-shadow: 0 4px 12px rgba(23, 37, 54, 0.25);
-              border: 2px solid white;
-            ">
-              <span style="transform: rotate(45deg); font-size: ${isSelected ? '15px' : '12px'};">
-                ${markerEmoji}
-              </span>
+        html: isCleaned
+          ? `
+            <div class="relative group cursor-pointer transition-transform duration-200 ${
+              isSelected ? 'scale-125 z-30' : 'hover:scale-115'
+            }">
+              <!-- Glowing animated halo to celebrate restored spots so far -->
+              <div style="
+                position: absolute;
+                inset: -5px;
+                border-radius: 50%;
+                background: rgba(0, 184, 107, 0.4);
+                animation: ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+              "></div>
+              <!-- Cleaned Pin -->
+              <div style="
+                position: relative;
+                background: linear-gradient(135deg, #00B86B 0%, #157A49 100%);
+                width: ${isSelected ? '40px' : '34px'};
+                height: ${isSelected ? '40px' : '34px'};
+                border-radius: 50% 50% 50% 0;
+                transform: rotate(-45deg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 14px rgba(0, 184, 107, 0.55);
+                border: 2.5px solid white;
+              ">
+                <span style="transform: rotate(45deg); font-size: ${isSelected ? '16px' : '13px'};">
+                  ✨
+                </span>
+              </div>
+              <!-- Mini verified checkmark badge -->
+              <div style="
+                position: absolute;
+                top: -3px;
+                right: -3px;
+                width: 15px;
+                height: 15px;
+                background: #C7F284;
+                border: 1.5px solid white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #0F291E;
+                font-weight: 800;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+              ">✓</div>
             </div>
-          </div>
-        `,
-        iconSize: isSelected ? [38, 38] : [32, 32],
-        iconAnchor: isSelected ? [19, 38] : [16, 32],
+          `
+          : `
+            <div class="relative group cursor-pointer transition-transform duration-180 ${
+              isSelected ? 'scale-125 z-30' : 'hover:scale-110'
+            }">
+              <div style="
+                background-color: #F0533D;
+                width: ${isSelected ? '38px' : '32px'};
+                height: ${isSelected ? '38px' : '32px'};
+                border-radius: 50% 50% 50% 0;
+                transform: rotate(-45deg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 12px rgba(240, 83, 61, 0.35);
+                border: 2px solid white;
+              ">
+                <span style="transform: rotate(45deg); font-size: ${isSelected ? '15px' : '12px'};">
+                  ⚠️
+                </span>
+              </div>
+            </div>
+          `,
+        iconSize: isSelected ? [40, 40] : [34, 34],
+        iconAnchor: isSelected ? [20, 40] : [17, 34],
       });
 
       const marker = L.marker([spot.location.lat, spot.location.lng], {
         icon: customIcon,
-        zIndexOffset: isSelected ? 1000 : 100,
+        zIndexOffset: isSelected ? 1000 : isCleaned ? 300 : 100,
       }).addTo(map);
+
+      // Tooltips for immediate, accurate information on hover / tap
+      if (isCleaned) {
+        marker.bindTooltip(
+          `<div style="font-family: inherit; padding: 3px 6px; text-align: left; min-width: 150px;">
+            <div style="font-weight: 800; color: #00B86B; font-size: 11px; display: flex; align-items: center; gap: 4px;">
+              <span>✨ Restored by ${spot.verification?.cleanerName || 'Volunteer'}</span>
+            </div>
+            <div style="font-weight: 700; color: #172536; font-size: 11px; margin-top: 1px;">
+              ${spot.title}
+            </div>
+            <div style="font-size: 10px; color: #4B5563; margin-top: 2px;">
+              🌱 <strong>${spot.estimatedWasteKg || 10} kg</strong> diverted • <strong>+${spot.rewardPoints} pts</strong>
+            </div>
+          </div>`,
+          { direction: 'top', offset: [0, -32], opacity: 0.98 }
+        );
+      } else {
+        marker.bindTooltip(
+          `<div style="font-family: inherit; padding: 3px 6px; text-align: left; min-width: 140px;">
+            <div style="font-weight: 800; color: #F0533D; font-size: 11px;">⚠️ Needs Cleanup</div>
+            <div style="font-weight: 700; color: #172536; font-size: 11px; margin-top: 1px;">
+              ${spot.title}
+            </div>
+            <div style="font-size: 10px; color: #4B5563; margin-top: 2px;">
+              🎯 Bounty: <strong style="color: #00B86B;">+${spot.rewardPoints} pts</strong> • ~<strong>${spot.estimatedWasteKg || 10} kg</strong> waste
+            </div>
+          </div>`,
+          { direction: 'top', offset: [0, -30], opacity: 0.98 }
+        );
+      }
 
       marker.on('click', () => {
         setActiveSpot(spot);
+        setPreviewPhotoTab(spot.status === 'cleaned' ? 'after' : 'before');
         onSelectSpot(spot);
         map.panTo([spot.location.lat, spot.location.lng], { animate: true });
       });
@@ -281,8 +372,21 @@ export const MapView: React.FC<MapViewProps> = ({
     map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
   };
 
+  // Filter & Focus on restored spots so far
+  const handleFilterRestored = () => {
+    setMapFilter('cleaned');
+    const cleanedSpots = spots.filter((s) => s.status === 'cleaned');
+    if (cleanedSpots.length > 0 && mapInstanceRef.current) {
+      const bounds = L.latLngBounds(cleanedSpots.map((s) => [s.location.lat, s.location.lng]));
+      mapInstanceRef.current.fitBounds(bounds, { padding: [70, 70], maxZoom: 15 });
+    }
+  };
+
   const needsCleanCount = spots.filter((s) => s.status === 'needs_cleaning').length;
   const restoredCount = spots.filter((s) => s.status === 'cleaned').length;
+  const totalKgCleaned = spots
+    .filter((s) => s.status === 'cleaned')
+    .reduce((sum, s) => sum + (s.estimatedWasteKg || 10), 0);
 
   return (
     <div className="space-y-6">
@@ -316,14 +420,14 @@ export const MapView: React.FC<MapViewProps> = ({
         <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
           {/* Left: Filter Chips & Search Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pointer-events-auto">
-            {/* Filter Chips Container (Solid White, Crisp & High-Contrast) */}
+            {/* Filter Chips Container */}
             <div className="bg-white p-1.5 rounded-sm border border-line shadow-sm flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setMapFilter('all')}
                 className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors select-none ${
                   mapFilter === 'all'
-                    ? 'bg-navy text-white'
+                    ? 'bg-navy text-white shadow-xs'
                     : 'text-muted hover:text-navy'
                 }`}
               >
@@ -335,7 +439,7 @@ export const MapView: React.FC<MapViewProps> = ({
                 onClick={() => setMapFilter('needs_cleaning')}
                 className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors flex items-center gap-1.5 select-none ${
                   mapFilter === 'needs_cleaning'
-                    ? 'bg-coral text-white'
+                    ? 'bg-coral text-white shadow-xs'
                     : 'text-coral hover:bg-coral-50'
                 }`}
               >
@@ -345,15 +449,15 @@ export const MapView: React.FC<MapViewProps> = ({
 
               <button
                 type="button"
-                onClick={() => setMapFilter('cleaned')}
+                onClick={handleFilterRestored}
                 className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-colors flex items-center gap-1.5 select-none ${
                   mapFilter === 'cleaned'
-                    ? 'bg-emerald text-white'
-                    : 'text-emerald hover:bg-emerald-50'
+                    ? 'bg-emerald text-white shadow-xs font-bold'
+                    : 'text-emerald hover:bg-emerald-50 font-medium'
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-emerald inline-block" />
-                Restored ({restoredCount})
+                ✨ Restored so far ({restoredCount})
               </button>
             </div>
 
@@ -417,7 +521,7 @@ export const MapView: React.FC<MapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowLayerMenu(!showLayerMenu)}
-                className="h-9 px-3 bg-white hover:bg-navy-50 border border-line rounded-sm shadow-sm text-xs font-semibold text-navy flex items-center gap-1.5 transition-colors"
+                className="h-9 px-3 bg-white hover:bg-navy-50 border border-line rounded-sm shadow-sm text-xs font-semibold text-navy flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Layers className="w-3.5 h-3.5 text-emerald" />
                 <span>{TILE_PROVIDERS[tileStyle].name}</span>
@@ -479,12 +583,32 @@ export const MapView: React.FC<MapViewProps> = ({
           </div>
         </div>
 
-        {/* BOTTOM SHEET / SIDE PANEL PREVIEW (20px Card style) */}
+        {/* RESTORED SPOTS FLOATING BANNER */}
+        {mapFilter === 'cleaned' && (
+          <div className="absolute top-20 left-4 right-4 sm:left-auto sm:right-4 z-20 pointer-events-auto animate-fadeIn">
+            <div className="bg-emerald-950/90 backdrop-blur-md text-white px-4 py-2.5 rounded-lg shadow-lg border border-emerald-500/40 flex items-center gap-2.5 text-xs">
+              <Sparkles className="w-4 h-4 text-lime flex-shrink-0" />
+              <span>
+                {restoredCount > 0 ? (
+                  <>
+                    Showing <strong>{restoredCount}</strong> spots cleaned so far • <strong>{totalKgCleaned} kg</strong> waste diverted from nature
+                  </>
+                ) : (
+                  <>
+                    No spots cleaned yet in this area. Claim a bounty to place the first restoration pin!
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* BOTTOM SHEET / SIDE PANEL PREVIEW (Accurate Cleaned Information Dossier) */}
         {activeSpot && (
           <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-20 pointer-events-auto animate-slideUp">
             <Card
               variant="default"
-              className="p-4 sm:p-5 shadow-modal border-line-strong relative"
+              className="p-4 sm:p-5 shadow-modal border-line-strong relative max-h-[85vh] overflow-y-auto"
             >
               <IconButton
                 label="Close preview"
@@ -497,36 +621,73 @@ export const MapView: React.FC<MapViewProps> = ({
               </IconButton>
 
               <div className="space-y-3 text-left">
-                {/* Status + Points */}
-                <div className="flex items-center gap-2">
+                {/* Status + Points + Waste kg */}
+                <div className="flex items-center gap-2 flex-wrap">
                   {activeSpot.status === 'cleaned' ? (
                     <Badge variant="restored" size="sm">
-                      Restored & verified
+                      ✨ Restored &amp; verified
                     </Badge>
                   ) : (
                     <Badge variant="coral" size="sm">
-                      Needs clean
+                      ⚠️ Needs clean
                     </Badge>
                   )}
                   <Badge variant="points" size="sm">
                     +{activeSpot.rewardPoints} pts
                   </Badge>
+                  <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
+                    {activeSpot.estimatedWasteKg || 10} kg waste
+                  </span>
                 </div>
 
-                {/* Photo Preview */}
-                <div className="relative w-full h-36 rounded-sm overflow-hidden bg-navy-100 border border-line">
+                {/* Photo Switcher: Toggle between After Proof and Before Dirty State */}
+                {activeSpot.status === 'cleaned' && activeSpot.verification && (
+                  <div className="flex items-center gap-1.5 p-1 bg-navy-50/80 rounded-md border border-line">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewPhotoTab('after')}
+                      className={`flex-1 py-1 px-2 rounded-sm text-[11px] font-bold transition-all cursor-pointer ${
+                        previewPhotoTab === 'after'
+                          ? 'bg-emerald text-white shadow-xs'
+                          : 'text-muted hover:text-navy'
+                      }`}
+                    >
+                      ✨ After Restored Proof
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewPhotoTab('before')}
+                      className={`flex-1 py-1 px-2 rounded-sm text-[11px] font-bold transition-all cursor-pointer ${
+                        previewPhotoTab === 'before'
+                          ? 'bg-coral text-white shadow-xs'
+                          : 'text-muted hover:text-navy'
+                      }`}
+                    >
+                      ⚠️ Original Dirty State
+                    </button>
+                  </div>
+                )}
+
+                {/* Photo Preview Container */}
+                <div className="relative w-full h-40 rounded-sm overflow-hidden bg-navy-100 border border-line">
                   <img
                     src={
                       activeSpot.status === 'cleaned' && activeSpot.verification
-                        ? activeSpot.verification.afterPhotoUrl
+                        ? previewPhotoTab === 'after'
+                          ? activeSpot.verification.afterPhotoUrl
+                          : activeSpot.beforePhotoUrl
                         : activeSpot.beforePhotoUrl
                     }
                     alt={activeSpot.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-2 left-2">
-                    <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-sm bg-navy/80">
-                      {activeSpot.status === 'cleaned' ? 'After Proof' : 'Before Photo'}
+                    <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-sm bg-navy/80 backdrop-blur-xs">
+                      {activeSpot.status === 'cleaned'
+                        ? previewPhotoTab === 'after'
+                          ? '✨ Restored After Proof'
+                          : '⚠️ Original Dirty State'
+                        : '⚠️ Before Photo'}
                     </span>
                   </div>
                 </div>
@@ -542,28 +703,82 @@ export const MapView: React.FC<MapViewProps> = ({
                   </p>
                 </div>
 
-                {/* Action Button */}
+                {/* Cleaned vs Needs Clean Actions & Accurate Info */}
                 {activeSpot.status === 'needs_cleaning' ? (
                   <Button
                     variant="primary"
                     size="sm"
-                    className="w-full"
+                    className="w-full font-bold"
                     icon={<Sparkles className="w-3.5 h-3.5 text-lime" />}
                     onClick={() => onCleanSpot(activeSpot)}
                   >
-                    Clean this spot & earn +{activeSpot.rewardPoints} pts
+                    Clean this spot &amp; earn +{activeSpot.rewardPoints} pts
                   </Button>
                 ) : (
-                  <div className="pt-2 flex items-center justify-between text-xs text-muted border-t border-line">
-                    <span className="flex items-center gap-1.5 font-medium">
-                      <Avatar
-                        src={activeSpot.verification?.cleanerAvatar}
-                        name={activeSpot.verification?.cleanerName}
-                        size="xs"
-                      />
-                      <span>By {activeSpot.verification?.cleanerName}</span>
-                    </span>
-                    <span className="text-emerald font-bold">Restored</span>
+                  <div className="space-y-2.5 pt-1">
+                    {/* Accurate Cleaned Information Dossier */}
+                    {activeSpot.verification ? (
+                      <div className="p-3 rounded-lg bg-emerald-50/80 border border-emerald-200 text-left space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="flex items-center gap-1.5 font-bold text-navy">
+                            <Avatar
+                              src={activeSpot.verification.cleanerAvatar}
+                              name={activeSpot.verification.cleanerName}
+                              size="xs"
+                            />
+                            <span>Restored by {activeSpot.verification.cleanerName}</span>
+                          </span>
+                          <span className="text-[10px] text-emerald-900 font-bold bg-emerald-200/80 px-2 py-0.5 rounded-full">
+                            ✓ GPS Verified
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-emerald-200/60 text-[11px]">
+                          <div className="flex items-center gap-1 text-navy">
+                            <Scale className="w-3.5 h-3.5 text-emerald flex-shrink-0" />
+                            <span><strong>{activeSpot.estimatedWasteKg || 10} kg</strong> diverted</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-navy">
+                            <Calendar className="w-3.5 h-3.5 text-emerald flex-shrink-0" />
+                            <span>{new Date(activeSpot.verification.completedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          </div>
+                        </div>
+
+                        {activeSpot.verification.notes && (
+                          <p className="text-[11px] text-emerald-950/80 italic leading-snug pt-1 border-t border-emerald-200/60">
+                            &quot;{activeSpot.verification.notes}&quot;
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
+                        Restored by community civic volunteer.
+                      </div>
+                    )}
+
+                    {/* Download Certificate Action */}
+                    {onViewCertificate && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        className="w-full bg-emerald hover:bg-emerald-600 font-bold text-white shadow-xs"
+                        icon={<Award className="w-4 h-4 text-lime" />}
+                        onClick={() => {
+                          onViewCertificate({
+                            id: `CERT-${activeSpot.id.substring(0, 8).toUpperCase()}`,
+                            cleanerName: activeSpot.verification?.cleanerName || activeSpot.reporterName || 'Civic Volunteer',
+                            spotTitle: activeSpot.title,
+                            locationAddress: activeSpot.location.address,
+                            wasteKg: activeSpot.estimatedWasteKg || 10,
+                            pointsAwarded: activeSpot.rewardPoints,
+                            completedAt: activeSpot.verification?.completedAt || activeSpot.createdAt,
+                            category: 'cleanup',
+                          });
+                        }}
+                      >
+                        View &amp; Download Civic Certificate
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
