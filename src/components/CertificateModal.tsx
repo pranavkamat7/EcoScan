@@ -64,9 +64,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   const certHash = data.verificationHash || `SHA256-${Math.random().toString(36).substring(2, 10).toUpperCase()}-VERIFIED`;
 
   // Chief People / Dignitary Signatories
-  const chief1Name = data.signatory1Name || 'Dr. Alistair Vance';
+  const chief1Name = data.signatory1Name || '';
   const chief1Title = data.signatory1Title || 'Director of Civic Action';
-  const chief2Name = data.signatory2Name || 'Prof. Smita K. Verma';
+  const chief2Name = data.signatory2Name || '';
   const chief2Title = data.signatory2Title || 'Chief Community Field Coordinator';
 
   // Celebration confetti upon opening
