@@ -27,6 +27,10 @@ export interface CertificateData {
   verificationHash?: string;
   rank?: number;
   category?: 'cleanup' | 'reward' | 'leader' | 'general';
+  signatory1Name?: string;
+  signatory1Title?: string;
+  signatory2Name?: string;
+  signatory2Title?: string;
 }
 
 interface CertificateModalProps {
@@ -58,6 +62,12 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     year: 'numeric',
   });
   const certHash = data.verificationHash || `SHA256-${Math.random().toString(36).substring(2, 10).toUpperCase()}-VERIFIED`;
+
+  // Chief People / Dignitary Signatories
+  const chief1Name = data.signatory1Name || 'Dr. Alistair Vance';
+  const chief1Title = data.signatory1Title || 'Director of Civic Action';
+  const chief2Name = data.signatory2Name || 'Prof. Smita K. Verma';
+  const chief2Title = data.signatory2Title || 'Chief Community Field Coordinator';
 
   // Celebration confetti upon opening
   const triggerConfetti = () => {
@@ -390,7 +400,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       ctx.lineTo(sigX + 120, sigY);
       ctx.stroke();
 
-      // Cursive signature drawing
+      // Cursive signature drawing 1
       ctx.save();
       ctx.strokeStyle = '#1D3B2C';
       ctx.lineWidth = 3;
@@ -404,10 +414,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       ctx.fillStyle = '#0F291E';
       ctx.font = 'bold 22px Georgia, serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Dr. Alistair Vance', sigX, sigY + 30);
+      ctx.fillText(chief1Name, sigX, sigY + 30);
       ctx.fillStyle = '#5A6258';
       ctx.font = 'italic 18px Georgia, serif';
-      ctx.fillText('Director of Civic Environmental Action', sigX, sigY + 55);
+      ctx.fillText(chief1Title, sigX, sigY + 55);
 
       // Signature 2 (Secondary Signatory)
       const sig2X = width - 240;
@@ -418,6 +428,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       ctx.lineTo(sig2X + 100, sigY);
       ctx.stroke();
 
+      // Cursive signature drawing 2
       ctx.save();
       ctx.strokeStyle = '#1D3B2C';
       ctx.lineWidth = 3;
@@ -431,10 +442,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       ctx.fillStyle = '#0F291E';
       ctx.font = 'bold 22px Georgia, serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Elena Rostova', sig2X, sigY + 30);
+      ctx.fillText(chief2Name, sig2X, sigY + 30);
       ctx.fillStyle = '#5A6258';
       ctx.font = 'italic 18px Georgia, serif';
-      ctx.fillText('Chief Community Field Coordinator', sig2X, sigY + 55);
+      ctx.fillText(chief2Title, sig2X, sigY + 55);
 
       // 13. Convert canvas to high-res PNG and download immediately
       canvas.toBlob((blob) => {
@@ -522,7 +533,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         {/* Certificate Display Frame */}
         <div
           ref={certificateCardRef}
-          className="relative bg-[#FCFAF2] rounded-lg border-4 border-[#C99D36] shadow-xl p-6 sm:p-10 text-navy max-w-4xl mx-auto overflow-hidden select-none"
+          className="relative bg-[#FCFAF2] rounded-lg border-4 border-[#C99D36] shadow-xl p-5 sm:p-10 text-navy max-w-4xl mx-auto overflow-hidden select-none"
           style={{
             backgroundImage:
               'radial-gradient(#E8DFC8 1px, transparent 1px), radial-gradient(#F3ECE0 1px, #FCFAF2 1px)',
@@ -620,8 +631,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           </div>
 
-          {/* 5. Seals & Authentic Signatures Footer */}
-          <div className="pt-4 flex items-end justify-between gap-4 flex-wrap relative z-10">
+          {/* 5. Seals & Authentic Signatures of Chief Dignitaries */}
+          <div className="pt-4 flex flex-col sm:flex-row items-center sm:items-end justify-between gap-5 relative z-10 border-t border-[#D4AF37]/50 mt-2">
             {/* Scalloped Gold Foil Ribbon Seal */}
             <div className="flex items-center gap-3 text-left">
               <div className="relative flex flex-col items-center">
@@ -644,7 +655,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
               <div>
                 <span className="text-[11px] font-bold text-navy block font-heading">
-                  Official Civic Stamp
+                  Official Civic Seal
                 </span>
                 <span className="text-[10px] text-muted block leading-tight">
                   100% On-Site GPS Verified
@@ -655,23 +666,35 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
             </div>
 
-            {/* Signatures */}
-            <div className="flex items-center gap-6 sm:gap-10 text-right ml-auto">
-              <div className="text-center">
-                <div className="font-serif italic text-base sm:text-lg text-navy border-b border-[#0F291E] px-3 pb-0.5 font-bold">
-                  Dr. Alistair Vance
+            {/* Authentic Calligraphy Signatures of Chief People */}
+            <div className="flex items-center justify-center sm:justify-end gap-6 sm:gap-10 text-center sm:text-right w-full sm:w-auto">
+              {/* Dignitary 1 */}
+              <div className="text-center min-w-[130px]">
+                {/* Realistic Calligraphy Cursive Ink Signature */}
+                <svg className="h-8 w-28 mx-auto -mb-1 text-[#1D3B2C] stroke-current" viewBox="0 0 120 35" fill="none">
+                  <path d="M10 26 C 28 8, 38 6, 52 20 C 62 30, 72 6, 88 18 C 98 25, 108 12, 114 16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M30 14 L 75 17" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <div className="font-serif italic text-sm sm:text-base text-navy border-b border-[#0F291E] px-2 pb-0.5 font-bold">
+                  {chief1Name}
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5">
-                  Director of Civic Action
+                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5 font-medium">
+                  {chief1Title}
                 </span>
               </div>
 
-              <div className="text-center">
-                <div className="font-serif italic text-base sm:text-lg text-navy border-b border-[#0F291E] px-3 pb-0.5 font-bold">
-                  Elena Rostova
+              {/* Dignitary 2 */}
+              <div className="text-center min-w-[130px]">
+                {/* Realistic Calligraphy Cursive Ink Signature */}
+                <svg className="h-8 w-28 mx-auto -mb-1 text-[#1D3B2C] stroke-current" viewBox="0 0 120 35" fill="none">
+                  <path d="M14 24 C 24 6, 32 30, 48 14 C 58 4, 68 24, 82 10 C 94 4, 104 22, 110 18" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M18 28 Q 58 20 102 26" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <div className="font-serif italic text-sm sm:text-base text-navy border-b border-[#0F291E] px-2 pb-0.5 font-bold">
+                  {chief2Name}
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5">
-                  Chief Field Coordinator
+                <span className="text-[10px] sm:text-[11px] text-muted block mt-0.5 font-medium">
+                  {chief2Title}
                 </span>
               </div>
             </div>
