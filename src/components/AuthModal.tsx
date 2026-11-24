@@ -124,6 +124,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       size="sm"
     >
       <div className="space-y-4 text-left">
+        {/* School Partner Badge */}
+        <div className="flex items-center justify-center pb-0.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-950">
+            <img
+              src="/school-logo.jpg"
+              alt="Shri Nirakar Vidyalaya Logo"
+              className="w-4 h-4 rounded-full object-contain bg-white"
+            />
+            <span>Shri Nirakar Vidyalaya, Mashem</span>
+          </div>
+        </div>
+
         {/* Sign in / Sign up Mode Switcher */}
         <div className="flex border-b border-line">
           <button

@@ -93,15 +93,42 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-between p-4 sm:p-6 lg:p-8">
       {/* Top Header Bar */}
-      <header className="max-w-shell w-full mx-auto flex items-center justify-between pb-6">
-        <div className="flex items-center">
+      <header className="max-w-shell w-full mx-auto flex items-center justify-between pb-6 gap-2 sm:gap-4">
+        <div className="flex items-center flex-shrink-0">
           <Logo size="md" />
+        </div>
+
+        {/* Center: Official School Logo Badge (Shri Nirakar Vidyalaya, Mashem) */}
+        <div className="flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 py-1 px-2.5 sm:px-3 rounded-full border border-line/70 bg-white shadow-2xs">
+            <div className="relative flex-shrink-0">
+              <img
+                src="/school-logo.jpg"
+                alt="Shri Nirakar Vidyalaya, Mashem Logo"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-contain border border-emerald-400/40 shadow-xs bg-white p-0.5"
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald rounded-full border border-white" title="Verified School Initiative" />
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <div className="flex items-center gap-1.5">
+                <span className="font-heading font-extrabold text-[11px] sm:text-[13px] text-navy tracking-tight whitespace-nowrap">
+                  Shri Nirakar Vidyalaya
+                </span>
+                <span className="hidden sm:inline-flex items-center text-[9px] font-bold bg-emerald-100 text-emerald-900 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                  Mashem
+                </span>
+              </div>
+              <span className="text-[9px] sm:text-[10px] text-muted font-medium truncate max-w-[125px] sm:max-w-none">
+                सा विद्या या विमुक्तये &bull; Estd. 1939
+              </span>
+            </div>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={handleGuest}
-          className="text-xs font-semibold text-emerald hover:underline flex items-center gap-1"
+          className="text-xs font-semibold text-emerald hover:underline flex items-center gap-1 flex-shrink-0"
         >
           <span>Explore as guest</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -112,9 +139,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       <main className="max-w-shell w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6">
         {/* Left: Civic Manifesto */}
         <div className="lg:col-span-7 space-y-6 text-left">
-          <Badge variant="restored" size="md">
-            Grassroots Civic Movement
-          </Badge>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-950 shadow-2xs">
+              <img
+                src="/school-logo.jpg"
+                alt="Shri Nirakar Vidyalaya"
+                className="w-4 h-4 rounded-full object-contain bg-white p-0.5"
+              />
+              <span>Shri Nirakar Vidyalaya, Mashem</span>
+            </div>
+            <Badge variant="restored" size="md">
+              Grassroots Civic Movement
+            </Badge>
+          </div>
 
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy tracking-tight leading-[1.15]">
             Clean your community. <br />
@@ -307,8 +344,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onContinueAsGuest }) => 
       </main>
 
       {/* Footer */}
-      <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-line">
-        <span>EcoScan · Grassroots neighbourhood cleanup registry</span>
+      <footer className="max-w-shell w-full mx-auto text-center text-xs text-muted pt-6 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span className="flex items-center gap-1.5 font-medium">
+          <img src="/school-logo.jpg" alt="Logo" className="w-4 h-4 rounded-full object-contain" />
+          <span>Shri Nirakar Vidyalaya &bull; Mashem, Canacona, Goa &bull; Estd. 1939</span>
+        </span>
+        <span>EcoScan &bull; Grassroots neighbourhood cleanup registry</span>
       </footer>
     </div>
   );
