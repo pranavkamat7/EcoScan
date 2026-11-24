@@ -147,9 +147,17 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
         <div className="relative z-10 max-w-3xl space-y-4 text-left">
           <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-white border border-white/20 backdrop-blur-xs shadow-xs text-xs font-semibold">
+              <img
+                src="/school-logo.jpg"
+                alt="Shri Nirakar Vidyalaya Logo"
+                className="w-5 h-5 rounded-full object-contain bg-white p-0.5"
+              />
+              <span>Shri Nirakar Vidyalaya, Mashem</span>
+            </div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-lime text-navy shadow-sm">
               <GraduationCap className="w-3.5 h-3.5" />
-              Student & Citizen Field Guide
+              Student &amp; Citizen Field Guide
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/15 text-white/90 backdrop-blur-xs">
               ⚡ Zero Boring Lectures

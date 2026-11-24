@@ -62,7 +62,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     <div className="min-h-screen flex flex-col bg-bg text-ink">
       {/* 1. SHARED STICKY HEADER (Solid White, Crisp & High-Contrast) */}
       <header className="sticky top-0 z-50 bg-white border-b border-line shadow-xs transition-colors">
-        <div className="max-w-shell mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+        <div className="max-w-shell mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Official Brand Logo with Clear Space (Clicking goes to Feed) */}
           <div className="flex items-center flex-shrink-0">
             <Logo
@@ -72,33 +72,67 @@ export const AppShell: React.FC<AppShellProps> = ({
             />
           </div>
 
-          {/* Center: Simplified Text Tabs with Signature Emerald Active Underline */}
-          <nav className="hidden md:flex items-center gap-8 h-full" aria-label="Main navigation">
-            {navItems.map((item) => {
-              const isActive = currentTab === item.id;
-              return (
-                <button
-                  type="button"
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  className={`relative h-full flex items-center text-sm transition-colors select-none outline-none ${
-                    isActive
-                      ? 'text-navy font-bold'
-                      : 'text-muted hover:text-navy font-medium'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {/* Signature Emerald active underline indicator */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald rounded-full" />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
+          {/* Center: Official School Logo & Crest (Shri Nirakar Vidyalaya, Mashem) */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => onTabChange('about')}
+              title="Shri Nirakar Vidyalaya, Mashem (Click for Student Field Guide)"
+              className="flex items-center gap-2 sm:gap-2.5 py-1 px-2 sm:px-3 rounded-full hover:bg-navy-50/90 transition-all group outline-none cursor-pointer border border-line/70 bg-white shadow-2xs hover:border-emerald-300"
+            >
+              <div className="relative flex-shrink-0">
+                <img
+                  src="/school-logo.jpg"
+                  alt="Shri Nirakar Vidyalaya, Mashem Logo"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-contain border border-emerald-400/40 shadow-xs bg-white p-0.5 group-hover:scale-105 transition-transform"
+                />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald rounded-full border border-white" title="Verified School Partner" />
+              </div>
+              <div className="flex flex-col text-left leading-tight">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-heading font-extrabold text-[11px] sm:text-[13px] text-navy tracking-tight group-hover:text-emerald transition-colors whitespace-nowrap">
+                    Shri Nirakar Vidyalaya
+                  </span>
+                  <span className="hidden sm:inline-flex items-center text-[9px] font-bold bg-emerald-100 text-emerald-900 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                    Mashem
+                  </span>
+                </div>
+                <span className="text-[9px] sm:text-[10px] text-muted font-medium truncate max-w-[125px] sm:max-w-none">
+                  सा विद्या या विमुक्तये &bull; Estd. 1939
+                </span>
+              </div>
+            </button>
+          </div>
 
-          {/* Right: User Chip (Avatar + Points + Level) */}
-          <div className="flex items-center gap-3">
+          {/* Right: Desktop Navigation Tabs + User Chip */}
+          <div className="flex items-center gap-3 sm:gap-5 xl:gap-6 h-full flex-shrink-0">
+            {/* Desktop Navigation Tabs */}
+            <nav className="hidden lg:flex items-center gap-4 xl:gap-6 h-full" aria-label="Main navigation">
+              {navItems.map((item) => {
+                const isActive = currentTab === item.id;
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    onClick={() => onTabChange(item.id)}
+                    className={`relative h-full flex items-center text-xs xl:text-sm transition-colors select-none outline-none ${
+                      isActive
+                        ? 'text-navy font-bold'
+                        : 'text-muted hover:text-navy font-medium'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {/* Signature Emerald active underline indicator */}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-emerald rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* User Chip (Avatar + Points + Level) */}
+            <div className="flex items-center gap-2 sm:gap-3">
             {/* If in Guest Mode, show a small Sign In button */}
             {isGuestMode && onRequireAuth && (
               <button
@@ -247,7 +281,8 @@ export const AppShell: React.FC<AppShellProps> = ({
             </div>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
       {/* 2. SHARED MAIN CONTENT (Max width 1200px, consistent padding) */}
       <main className="flex-1 max-w-shell w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-20 md:pb-12">
@@ -255,7 +290,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       </main>
 
       {/* 3. SHARED MOBILE BOTTOM TAB BAR (Solid White, Clean & Crisp) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line shadow-md pb-safe">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-line shadow-md pb-safe">
         <nav className="grid grid-cols-6 h-14" aria-label="Mobile navigation">
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
